@@ -1,0 +1,108 @@
+↑isRoot: true
+scriptContent: 
+  - xmlizable: 
+    - ↑classname: com.twinsoft.convertigo.beans.common.FormatedContent
+    - com.twinsoft.convertigo.beans.common.FormatedContent: 
+      →: |
+        '/*Begin_c8o_PageImport*/
+        import { CodeEditor }                                                   from ''../CodeEditor/codeeditor''
+        import { ApplicationRef }                                               from ''@angular/core''
+        /*End_c8o_PageImport*/
+        /*Begin_c8o_PageDeclaration*/
+        	myLayout: GoldenLayout
+        	/*End_c8o_PageDeclaration*/
+        /*Begin_c8o_PageConstructor*/
+        	    let config:any = {
+                    content: [{
+                      type: ''row'',
+                      content: [
+                          {
+                              type:''component'',
+                              componentName: ''Projects'',
+                              componentState: { text: ''Component 1'' }
+                          },
+                          {
+                              type: ''column'',
+                              content : [{
+                                  type:''component'',
+                                  componentName: ''Viewer'',
+                                  componentState: { text: ''Component 2'' }
+                              },
+                              {
+                                  type: ''stack'',
+                                  content: [{
+                                      type:''component'',
+                                      componentName: ''Properties'',
+                                      componentState: { text: ''Component 3'' }
+                                  },
+                                  {
+                                      type:''component'',
+                                      componentName: ''Logs'',
+                                      componentState: { text: ''Component 4'' }
+                                  }]
+                              }] 
+                          }
+                      ]
+                    }]
+                }
+        		
+        		let appRef = this.getInstance(ApplicationRef)
+                this.myLayout = new GoldenLayout( config );
+                this.myLayout.registerComponent(
+                    ''Viewer'', function( container, state ){
+                        //container.getElement().html( ''<h2>'' + state.text + ''</h2>'')
+                        let compFactory = cfr.resolveComponentFactory(CodeEditor);
+                        let cmp = compFactory.create(injector, [], container.getElement().get(0))
+                        appRef.attachView(cmp.hostView);
+                    }
+                )
+                this.myLayout.registerComponent(
+                    ''Properties'',
+                    function( container, state ){
+                        container.getElement().html( ''<h2>'' + state.text + ''</h2>'')
+                    }
+                )
+                this.myLayout.registerComponent(
+                    ''Projects'',
+                    function( container, state ){
+                        container.getElement().html( ''<h2>'' + state.text + ''</h2>'')
+                    }
+                )
+                this.myLayout.registerComponent(
+                    ''Logs'',
+                    function( container, state ){
+                        container.getElement().html( ''<h2>'' + state.text + ''</h2>'')
+                    }
+                )
+        
+                this.myLayout.init()
+        		/*End_c8o_PageConstructor*/
+        /*Begin_c8o_PageFunction*/
+        	/*End_c8o_PageFunction*/
+        '
+segment: path-to-layout
+title: Title for Layout
+↓PageEvent [mobile.components.UIPageEvent-1587822608688]: 
+  viewEvent: onWillEnter
+  ↓initGoldenLayout [mobile.components.UICustomAction-1587828410077]: 
+    actionValue: 
+      - xmlizable: 
+        - ↑classname: com.twinsoft.convertigo.beans.common.FormatedContent
+        - com.twinsoft.convertigo.beans.common.FormatedContent: 
+          →: |
+            '		page.c8o.log.debug(''[MB] ''+ props.actionFunction +'': ''+ props.actionName);
+            		
+            		
+            		resolve();
+            '
+    page_ts_imports: 
+      - xmlizable: 
+        - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+        - com.twinsoft.convertigo.beans.common.XMLVector: 
+          - xmlizable: 
+            - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+            - com.twinsoft.convertigo.beans.common.XMLVector: 
+              - java.lang.String: 
+                - ↑value: '* as GoldenLayout'
+              - java.lang.String: 
+                - ↑value: golden-layout

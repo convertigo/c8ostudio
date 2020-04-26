@@ -1,0 +1,35 @@
+comment: My First Page as root page
+preloadPriority: high
+scriptContent: 
+  - xmlizable: 
+    - ↑classname: com.twinsoft.convertigo.beans.common.FormatedContent
+    - com.twinsoft.convertigo.beans.common.FormatedContent: 
+      →: |
+        '/*Begin_c8o_PageImport*/
+        /*End_c8o_PageImport*/
+        /*Begin_c8o_PageDeclaration*/
+        	codeOptions = {theme: ''vs-dark'', language: ''javascript''}
+        	code = "";
+        	/*End_c8o_PageDeclaration*/
+        /*Begin_c8o_PageConstructor*/
+        		this.code =  "function doSomething() {\n" +
+        				"   console.log(''hello world'')\n" +
+        				"}\n"
+        		/*End_c8o_PageConstructor*/
+        /*Begin_c8o_PageFunction*/
+        	/*End_c8o_PageFunction*/
+        '
+segment: path-to-codeeditor
+title: First page
+↓UseSharedComponent [mobile.components.UIUseShared-1587804391837]: 
+  sharedcomponent: C8oStudio.MobileApplication.Application.CodeEditor
+  ↓code [mobile.components.UIControlVariable-1587804757932]: 
+    varValue: 
+      - xmlizable: 
+        - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
+        - MobileSmartSourceType: script:code
+  ↓options [mobile.components.UIControlVariable-1587804757934]: 
+    varValue: 
+      - xmlizable: 
+        - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
+        - MobileSmartSourceType: script:codeOptions

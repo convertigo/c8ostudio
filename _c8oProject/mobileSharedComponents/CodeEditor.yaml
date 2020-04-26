@@ -1,0 +1,61 @@
+↓PageEvent [mobile.components.UIPageEvent-1587900690144]: 
+  ↓useMonacoEditor [mobile.components.UICustomAction-1587900690162]: 
+    module_ng_imports: 
+      - xmlizable: 
+        - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+        - com.twinsoft.convertigo.beans.common.XMLVector: 
+          - xmlizable: 
+            - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+            - com.twinsoft.convertigo.beans.common.XMLVector: 
+              - java.lang.String: 
+                - ↑value: MonacoEditorModule.forRoot()
+    module_ts_imports: 
+      - xmlizable: 
+        - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+        - com.twinsoft.convertigo.beans.common.XMLVector: 
+          - xmlizable: 
+            - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+            - com.twinsoft.convertigo.beans.common.XMLVector: 
+              - java.lang.String: 
+                - ↑value: MonacoEditorModule
+              - java.lang.String: 
+                - ↑value: ngx-monaco-editor
+    package_dependencies: 
+      - xmlizable: 
+        - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+        - com.twinsoft.convertigo.beans.common.XMLVector: 
+          - xmlizable: 
+            - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+            - com.twinsoft.convertigo.beans.common.XMLVector: 
+              - java.lang.String: 
+                - ↑value: ngx-monaco-editor
+              - java.lang.String: 
+                - ↑value: 6.0.0
+↓Tag [mobile.components.UIElement-1587900690165]: 
+  tagName: ngx-monaco-editor
+  ↓Attr [mobile.components.UIAttribute-1587900690193]: 
+    attrName: '[(ngModel)]'
+    attrValue: 
+      - xmlizable: 
+        - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
+        - MobileSmartSourceType: script:params1587900690141.code
+  ↓Attr3 [mobile.components.UIAttribute-1587900690196]: 
+    attrName: '[options]'
+    attrValue: 
+      - xmlizable: 
+        - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
+        - MobileSmartSourceType: script:params1587900690141.options
+  ↓Attr1 [mobile.components.UIAttribute-1587900690199]: 
+    attrName: style
+    attrValue: 
+      - xmlizable: 
+        - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
+        - MobileSmartSourceType: 'plain:height: 100%'
+  ↓Attr2 [mobile.components.UIAttribute-1587900690202]: 
+    attrName: class
+    attrValue: 
+      - xmlizable: 
+        - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
+        - MobileSmartSourceType: plain:monaco-code-editor
+↓code [mobile.components.UICompVariable-1587900690205]: 
+↓options [mobile.components.UICompVariable-1587900690208]: 

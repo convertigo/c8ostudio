@@ -1,0 +1,18 @@
+↑convertigo: 7.7.0.m006
+↓C8oStudio [core.Project]: 
+  comment: Convertigo Mobile builder Project
+  corsOrigin: =Origin
+  ↓void [connectors.SqlConnector]: 🗏 connectors/void.yaml
+  ↓MobileApplication [core.MobileApplication]: 
+    applicationId: com.convertigo.webstudio
+    applicationName: Convertigo Low Code Web Studio
+    applicationVersion: 1.0-alpha
+    comment: Describes the mobile application global properties
+    splashRemoveMode: beforeUpdate
+    ↓Android [mobileplatforms.Android]: 
+      comment: Android platform
+    ↓iOS [mobileplatforms.IOs]: 
+      comment: iOS platform
+    ↓Application [mobile.components.ApplicationComponent]: 🗏 mobileApplication.yaml
+  ↓Project_reference [references.ProjectSchemaReference]: 
+    projectName: lib_CodeEditor
