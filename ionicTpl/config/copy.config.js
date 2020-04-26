@@ -20,8 +20,8 @@ module.exports = {
         dest: '../DisplayObjects/mobile/build/'
     },
     copyMonaco: {
-        src: ['{{ROOT}}/node_modules/ngx-monaco-editor/assets/**/*'],
-        dest: '../DisplayObjects/mobile/assets/'
+        src: ['{{ROOT}}/node_modules/ngx-monaco-editor/assets/monaco/**/*'],
+        dest: '../DisplayObjects/mobile/assets/monaco'
     },
 
     copyFonts :{
