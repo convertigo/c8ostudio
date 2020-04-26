@@ -19,6 +19,11 @@ module.exports = {
         src: ['{{ROOT}}/node_modules/ionic-angular/polyfills/polyfills.js'],
         dest: '../DisplayObjects/mobile/build/'
     },
+    copyMonaco: {
+        src: ['{{ROOT}}/node_modules/ngx-monaco-editor/assets/**/*'],
+        dest: '../DisplayObjects/mobile/assets/'
+    },
+
     copyFonts :{
         src: ['{{ROOT}}/node_modules/ionicons/dist/fonts/*', '{{ROOT}}/node_modules/ionic-angular/fonts/*'],
         dest: '../DisplayObjects/mobile/assets/fonts'
