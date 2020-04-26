@@ -19,7 +19,12 @@ import { MyApp } 				                                              from './app.c
 
 
 import { CodeEditorModule } from "../pages/CodeEditor/codeeditor.module";
-import { CodeEditor } from "../pages/CodeEditor/codeeditor";
+import { PropertiesModule } from "../pages/Properties/properties.module";
+import { LogViewerModule }  from "../pages/LogViewer/logviewer.module";
+
+import { CodeEditor }       from "../pages/CodeEditor/codeeditor";
+import { Properties }       from "../pages/Properties/properties";
+import { LogViewer }        from "../pages/LogViewer/logviewer";
 
 
 /* Custom Golden Layout */
@@ -62,7 +67,11 @@ export function createTranslateLoader(http: HttpClient) {
   /*End_c8o_NgDeclarations*/],
   imports: [/*Begin_c8o_NgModules*/
     BrowserModule,
+    
     CodeEditorModule,
+    PropertiesModule,
+    LogViewerModule,
+    
     BrowserAnimationsModule,
     HttpClientModule,
 	FormsModule,
@@ -79,7 +88,9 @@ export function createTranslateLoader(http: HttpClient) {
   bootstrap: [IonicApp],
   entryComponents: [/*Begin_c8o_NgComponents*/
     MyApp,
-    CodeEditor
+    CodeEditor,
+    Properties,
+    LogViewer
     /*=c8o_PagesDeclarations*/
   /*End_c8o_NgComponents*/],
   providers: [/*Begin_c8o_NgProviders*/

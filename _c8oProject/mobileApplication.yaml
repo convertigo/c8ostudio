@@ -26,8 +26,11 @@ componentScriptContent:
 tplProjectName: C8oStudio
 ↓Menu [mobile.components.UIDynamicMenu-1500890597895]: 🗏 mobileMenus/Menu.yaml
 ↓CodeEditor [mobile.components.UISharedComponent-1587900690141]: 🗏 mobileSharedComponents/CodeEditor.yaml
+↓Properties [mobile.components.UISharedComponent-1587904783890]: 🗏 mobileSharedComponents/Properties.yaml
 ↓CodeEditor [mobile.components.PageComponent-1500538678074]: 🗏 mobilePages/CodeEditor.yaml
 ↓Layout [mobile.components.PageComponent-1587821570783]: 🗏 mobilePages/Layout.yaml
+↓Properties [mobile.components.PageComponent-1587904800779]: 🗏 mobilePages/Properties.yaml
+↓LogViewer [mobile.components.PageComponent-1587905682093]: 🗏 mobilePages/LogViewer.yaml
 ↓Theme [mobile.components.UITheme-1491635018260]: 
   comment: Global color themes can be customized here
   styleContent: 
@@ -98,6 +101,8 @@ tplProjectName: C8oStudio
           // default are overridden.
           
           @import "ionic.theme.default";
+          @import "../../node_modules/ag-grid-community/dist/styles/ag-grid.scss";
+          @import "../../node_modules/ag-grid-community/dist/styles/ag-theme-balham/sass/ag-theme-balham.scss";
           
           
           // Ionicons
