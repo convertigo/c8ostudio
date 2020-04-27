@@ -8,7 +8,7 @@
             - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
             - com.twinsoft.convertigo.beans.common.XMLVector: 
               - java.lang.String: 
-                - ↑value: MonacoEditorModule.forRoot()
+                - ↑value: 'MonacoEditorModule.forRoot({baseUrl: ''./assets''})'
     module_ts_imports: 
       - xmlizable: 
         - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
