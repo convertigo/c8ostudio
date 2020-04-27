@@ -51,6 +51,12 @@
       - xmlizable: 
         - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
         - MobileSmartSourceType: 'plain:height: 100%'
+  ↓Attr4 [mobile.components.UIAttribute-1588002793861]: 
+    attrName: (onInit)
+    attrValue: 
+      - xmlizable: 
+        - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
+        - MobileSmartSourceType: script:onInit($event)
   ↓Attr2 [mobile.components.UIAttribute-1587900690202]: 
     attrName: class
     attrValue: 

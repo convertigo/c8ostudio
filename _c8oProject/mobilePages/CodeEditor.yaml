@@ -6,10 +6,12 @@ scriptContent:
     - com.twinsoft.convertigo.beans.common.FormatedContent: 
       →: |
         '/*Begin_c8o_PageImport*/
+        import { NgxEditorModel }  from ''ngx-monaco-editor'';
         /*End_c8o_PageImport*/
         /*Begin_c8o_PageDeclaration*/
         	codeOptions = {theme: ''vs-dark'', language: ''javascript''}
         	code = "";
+        	monacoEditor: any
         	/*End_c8o_PageDeclaration*/
         /*Begin_c8o_PageConstructor*/
         		this.code =  "function doSomething() {\n" +
@@ -17,6 +19,13 @@ scriptContent:
         				"}\n"
         		/*End_c8o_PageConstructor*/
         /*Begin_c8o_PageFunction*/
+        	onInit(editor) {
+        	    this.monacoEditor = editor
+        	    var myBinding = editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_S, () => {
+        	        let myCode = editor.getValue()
+        	        this.c8o.log.debug(myCode);
+        	    });
+        	}
         	/*End_c8o_PageFunction*/
         '
 segment: path-to-codeeditor
