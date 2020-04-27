@@ -1,0 +1,52 @@
+scriptContent: 
+  - xmlizable: 
+    - ↑classname: com.twinsoft.convertigo.beans.common.FormatedContent
+    - com.twinsoft.convertigo.beans.common.FormatedContent: 
+      →: |
+        '/*Begin_c8o_PageImport*/
+        /*End_c8o_PageImport*/
+        /*Begin_c8o_PageDeclaration*/
+        	treeNodes = [
+             {
+                 id: 1,
+                 name: ''root1'',
+                 children: [
+                   { id: 2, name: ''child1'' },
+                   { id: 3, name: ''child2'' }
+                 ]
+               },
+               {
+                 id: 4,
+                 name: ''root2'',
+                 children: [
+                   { id: 5, name: ''child2.1'' },
+                   {
+                     id: 6,
+                     name: ''child2.2'',
+                     children: [
+                       { id: 7, name: ''subsub'' }
+                     ]
+                   }
+                 ]
+               }
+             ];
+        	/*End_c8o_PageDeclaration*/
+        /*Begin_c8o_PageConstructor*/
+        		/*End_c8o_PageConstructor*/
+        /*Begin_c8o_PageFunction*/
+        	/*End_c8o_PageFunction*/
+        '
+segment: path-to-projects
+title: Title for Projects
+↓UseSharedComponent [mobile.components.UIUseShared-1587913209464]: 
+  sharedcomponent: C8oStudio.MobileApplication.Application.TreeView
+  ↓nodes [mobile.components.UIControlVariable-1587914837641]: 
+    varValue: 
+      - xmlizable: 
+        - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
+        - MobileSmartSourceType: script:treeNodes
+  ↓options [mobile.components.UIControlVariable-1587914837643]: 
+    varValue: 
+      - xmlizable: 
+        - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
+        - MobileSmartSourceType: script:{}

@@ -8,6 +8,8 @@ scriptContent:
         import { CodeEditor }                                                   from ''../CodeEditor/codeeditor''
         import { Properties }                                                   from ''../Properties/properties''
         import { LogViewer  }                                                   from ''../LogViewer/logviewer''
+        import { Projects  }                                                    from ''../Projects/projects''
+        
         import { ApplicationRef }                                               from ''@angular/core''
         /*End_c8o_PageImport*/
         /*Begin_c8o_PageDeclaration*/
@@ -69,7 +71,9 @@ scriptContent:
                 this.myLayout.registerComponent(
                     ''Projects'',
                     function( container, state ){
-                        container.getElement().html( ''<h2>'' + state.text + ''</h2>'')
+                        let compFactory = cfr.resolveComponentFactory(Projects);
+                        let cmp = compFactory.create(injector, [], container.getElement().get(0))
+                        appRef.attachView(cmp.hostView);
                     }
                 )
                 this.myLayout.registerComponent(

@@ -21,10 +21,12 @@ import { MyApp } 				                                              from './app.c
 import { CodeEditorModule } from "../pages/CodeEditor/codeeditor.module";
 import { PropertiesModule } from "../pages/Properties/properties.module";
 import { LogViewerModule }  from "../pages/LogViewer/logviewer.module";
+import { ProjectsModule }   from "../pages/Projects/projects.module";
 
 import { CodeEditor }       from "../pages/CodeEditor/codeeditor";
 import { Properties }       from "../pages/Properties/properties";
 import { LogViewer }        from "../pages/LogViewer/logviewer";
+import { Projects }         from "../pages/Projects/projects";
 
 
 /* Custom Golden Layout */
@@ -71,6 +73,7 @@ export function createTranslateLoader(http: HttpClient) {
     CodeEditorModule,
     PropertiesModule,
     LogViewerModule,
+    ProjectsModule,
     
     BrowserAnimationsModule,
     HttpClientModule,
@@ -90,7 +93,8 @@ export function createTranslateLoader(http: HttpClient) {
     MyApp,
     CodeEditor,
     Properties,
-    LogViewer
+    LogViewer,
+    Projects
     /*=c8o_PagesDeclarations*/
   /*End_c8o_NgComponents*/],
   providers: [/*Begin_c8o_NgProviders*/

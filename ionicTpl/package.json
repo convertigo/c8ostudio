@@ -44,7 +44,7 @@
   "devDependencies": {
     "@ionic/app-scripts": "3.2.4",
     "@types/jquery": "^3.3.35",
-    "typescript": "~2.7.0"
+    "typescript": "~2.8.2"
   },
   "description": "MyApp: An Ionic project",
   "cordovaPlugins": [

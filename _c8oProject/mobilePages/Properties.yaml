@@ -1,3 +1,21 @@
+scriptContent: 
+  - xmlizable: 
+    - ↑classname: com.twinsoft.convertigo.beans.common.FormatedContent
+    - com.twinsoft.convertigo.beans.common.FormatedContent: 
+      →: |
+        '/*Begin_c8o_PageImport*/
+        /*End_c8o_PageImport*/
+        /*Begin_c8o_PageDeclaration*/
+        	columnDefs = [
+        	              {headerName: ''Property'', field: ''Property''},
+        	              {headerName: ''Value'', field: ''Value''}
+        	]
+        	/*End_c8o_PageDeclaration*/
+        /*Begin_c8o_PageConstructor*/
+        		/*End_c8o_PageConstructor*/
+        /*Begin_c8o_PageFunction*/
+        	/*End_c8o_PageFunction*/
+        '
 segment: path-to-properties
 title: Title for Properties
 ↓UseSharedComponent [mobile.components.UIUseShared-1587905533172]: 
@@ -21,3 +39,15 @@ title: Title for Properties
       - xmlizable: 
         - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
         - MobileSmartSourceType: script:'ag-theme-balham-dark'
+  ↓columnDefs [mobile.components.UIControlVariable-1587911681148]: 
+    comment: 'Array of columnDef {headerName: ''headerName'', field: ''fieldName''} objects'
+    varValue: 
+      - xmlizable: 
+        - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
+        - MobileSmartSourceType: script:columnDefs
+  ↓rowData [mobile.components.UIControlVariable-1587911681151]: 
+    comment: 'Array of row { fieldName1: ''value1'', fieldName2: ''value2'', fieldName3: true, ...} objects'
+    varValue: 
+      - xmlizable: 
+        - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
+        - MobileSmartSourceType: script:logData
