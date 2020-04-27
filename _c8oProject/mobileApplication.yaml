@@ -158,7 +158,7 @@ tplProjectName: C8oStudio
           }
           /* tslint:disable */
           .toggle-children {
-            background-image: url(''../assets/svg/ios-play-outline.svg'');
+            background-color: white;
             height: 8px;
             width: 9px;
             background-size: contain;
