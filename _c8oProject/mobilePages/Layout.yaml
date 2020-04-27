@@ -16,37 +16,36 @@ scriptContent:
         	myLayout: GoldenLayout
         	/*End_c8o_PageDeclaration*/
         /*Begin_c8o_PageConstructor*/
-        	    let config:any = {
+                let config: any = {
                     content: [{
-                      type: ''row'',
-                      content: [
-                          {
-                              type:''component'',
-                              componentName: ''Projects'',
-                              componentState: { text: ''Component 1'' }
-                          },
-                          {
-                              type: ''column'',
-                              content : [{
-                                  type:''component'',
-                                  componentName: ''Viewer'',
-                                  componentState: { text: ''Component 2'' }
-                              },
-                              {
-                                  type: ''stack'',
-                                  content: [{
-                                      type:''component'',
-                                      componentName: ''Properties'',
-                                      componentState: { text: ''Component 3'' }
-                                  },
-                                  {
-                                      type:''component'',
-                                      componentName: ''Logs'',
-                                      componentState: { text: ''Component 4'' }
-                                  }]
-                              }] 
-                          }
-                      ]
+                        type: ''row'',
+                        content: [
+                            {
+                                type: ''column'',
+                                content: [{
+                                    type: ''component'',
+                                    componentName: ''Projects'',
+                                    componentState: { text: ''Component 1'' }
+                                },
+                                {
+                                    type: ''component'',
+                                    componentName: ''Properties'',
+                                    componentState: { text: ''Component 3'' }
+                                }]
+                            },
+                            {
+                                type: ''column'',
+                                content: [{
+                                    type: ''component'',
+                                    componentName: ''Viewer'',
+                                    componentState: { text: ''Component 2'' }
+                                },
+                                {
+                                    type: ''component'',
+                                    componentName: ''Logs'',
+                                    componentState: { text: ''Component 4'' }
+                                }]
+                            }]
                     }]
                 }
         		
@@ -54,7 +53,6 @@ scriptContent:
                 this.myLayout = new GoldenLayout( config );
                 this.myLayout.registerComponent(
                     ''Viewer'', function( container, state ){
-                        //container.getElement().html( ''<h2>'' + state.text + ''</h2>'')
                         let compFactory = cfr.resolveComponentFactory(CodeEditor);
                         let cmp = compFactory.create(injector, [], container.getElement().get(0))
                         appRef.attachView(cmp.hostView);
