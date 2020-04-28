@@ -25,6 +25,9 @@ scriptContent:
         	        let myCode = editor.getValue()
         	        this.c8o.log.debug(myCode);
         	    });
+                editor.onDidChangeModelContent(()=> {
+                    this.c8o.log.debug("Code changed");
+                });
         	}
         	/*End_c8o_PageFunction*/
         '
