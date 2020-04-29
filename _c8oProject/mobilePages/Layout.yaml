@@ -9,6 +9,7 @@ scriptContent:
         import { Properties }                                                   from ''../Properties/properties''
         import { LogViewer  }                                                   from ''../LogViewer/logviewer''
         import { Projects  }                                                    from ''../Projects/projects''
+        import { FlowViewer  }                                                  from ''../FlowViewer/flowviewer''
         
         import { ApplicationRef }                                               from ''@angular/core''
         /*End_c8o_PageImport*/
@@ -40,6 +41,11 @@ scriptContent:
                                     componentName: ''Viewer'',
                                     componentState: { text: ''Component 2'' }
                                 },
+                                {
+                                    type: ''component'',
+                                    componentName: ''FlowViewer'',
+                                    componentState: { text: ''Component 2'' }
+                                },                        
                                 {
                                     type: ''component'',
                                     componentName: ''Logs'',
@@ -78,6 +84,14 @@ scriptContent:
                     ''Logs'',
                     function( container, state ){
                         let compFactory = cfr.resolveComponentFactory(LogViewer);
+                        let cmp = compFactory.create(injector, [], container.getElement().get(0))
+                        appRef.attachView(cmp.hostView);
+                    }
+                )
+                this.myLayout.registerComponent(
+                    ''FlowViewer'',
+                    function( container, state ){
+                        let compFactory = cfr.resolveComponentFactory(FlowViewer);
                         let cmp = compFactory.create(injector, [], container.getElement().get(0))
                         appRef.attachView(cmp.hostView);
                     }

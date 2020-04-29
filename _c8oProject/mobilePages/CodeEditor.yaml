@@ -22,10 +22,12 @@ scriptContent:
         	onInit(editor) {
         	    this.monacoEditor = editor
         	    var myBinding = editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KEY_S, () => {
+        	        // Bind CTRL S to save code
         	        let myCode = editor.getValue()
         	        this.c8o.log.debug(myCode);
         	    });
                 editor.onDidChangeModelContent(()=> {
+                    // Monitor code changes..
                     this.c8o.log.debug("Code changed");
                 });
         	}

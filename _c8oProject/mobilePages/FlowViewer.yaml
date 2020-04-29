@@ -1,0 +1,75 @@
+scriptContent: 
+  - xmlizable: 
+    - ↑classname: com.twinsoft.convertigo.beans.common.FormatedContent
+    - com.twinsoft.convertigo.beans.common.FormatedContent: 
+      →: |
+        '/*Begin_c8o_PageImport*/
+        import * as _           from ''lodash'';
+        import * as backbone    from ''backbone'';
+        import * as joint       from ''jointjs'';
+        import { ElementRef }   from ''@angular/core'';
+        /*End_c8o_PageImport*/
+        /*Begin_c8o_PageDeclaration*/
+        	graph = new joint.dia.Graph;
+        	paper : joint.dia.Paper
+        	gridSize =1
+        	/*End_c8o_PageDeclaration*/
+        /*Begin_c8o_PageConstructor*/
+        		/*End_c8o_PageConstructor*/
+        /*Begin_c8o_PageFunction*/
+        	onGridSizeChanged() {
+        	    this.paper.setGridSize(this.gridSize)
+        	}
+        	
+        	ngAfterViewInit() {
+        	    let element = this.flowID as ElementRef
+                this.paper = new joint.dia.Paper({
+                    el: element.nativeElement,
+                    width: ''100%'',
+                    height: ''100%'',
+                    model: this.graph,
+                    gridSize: this.gridSize
+                });
+        
+                let rect = new joint.shapes.basic.Rect( {
+                    position: { x: 100, y: 30 },
+                    size: { width: 100, height: 30 },
+                    attrs: { rect: { fill: ''blue'' }, text: { text: ''my box'', fill: ''white'' } }
+                });
+        
+                let rect2 = rect.clone() as joint.shapes.basic.Rect
+                rect2.translate(300)
+        
+                let link = new joint.shapes.standard.Link()
+                link.source(rect);
+                link.target(rect2);
+                this.graph.addCells([rect, rect2]);
+        	}
+        	/*End_c8o_PageFunction*/
+        '
+segment: path-to-flowviewer
+title: Title for FlowViewer
+↓RangeSlider [mobile.components.UIDynamicElement-1588159080969]: 
+  beanData: |
+    '{
+     "ionBean": "Range",
+     "Min": "plain:1",
+     "Max": "plain:10",
+     "Snaps": "plain:true",
+     "IonColor": "plain:light"
+    }'
+  tagName: ion-range
+  ↓Attr [mobile.components.UIAttribute-1588159106785]: 
+    attrName: '[(ngModel)]'
+    attrValue: 
+      - xmlizable: 
+        - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
+        - MobileSmartSourceType: script:gridSize
+  ↓Attr1 [mobile.components.UIAttribute-1588159608396]: 
+    attrName: (ngModelChange)
+    attrValue: 
+      - xmlizable: 
+        - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
+        - MobileSmartSourceType: script:onGridSizeChanged()
+↓UseSharedComponent [mobile.components.UIUseShared-1588053007406]: 
+  sharedcomponent: C8oStudio.MobileApplication.Application.Flows

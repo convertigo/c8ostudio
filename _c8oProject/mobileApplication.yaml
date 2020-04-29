@@ -28,11 +28,13 @@ tplProjectName: C8oStudio
 ↓CodeEditor [mobile.components.UISharedComponent-1587900690141]: 🗏 mobileSharedComponents/CodeEditor.yaml
 ↓Properties [mobile.components.UISharedComponent-1587904783890]: 🗏 mobileSharedComponents/Properties.yaml
 ↓TreeView [mobile.components.UISharedComponent-1587912746555]: 🗏 mobileSharedComponents/TreeView.yaml
+↓Flows [mobile.components.UISharedComponent-1588052752048]: 🗏 mobileSharedComponents/Flows.yaml
 ↓CodeEditor [mobile.components.PageComponent-1500538678074]: 🗏 mobilePages/CodeEditor.yaml
 ↓Layout [mobile.components.PageComponent-1587821570783]: 🗏 mobilePages/Layout.yaml
 ↓Properties [mobile.components.PageComponent-1587904800779]: 🗏 mobilePages/Properties.yaml
 ↓LogViewer [mobile.components.PageComponent-1587905682093]: 🗏 mobilePages/LogViewer.yaml
 ↓Projects [mobile.components.PageComponent-1587913187659]: 🗏 mobilePages/Projects.yaml
+↓FlowViewer [mobile.components.PageComponent-1588052988201]: 🗏 mobilePages/FlowViewer.yaml
 ↓Theme [mobile.components.UITheme-1491635018260]: 
   comment: Global color themes can be customized here
   styleContent: 
