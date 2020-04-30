@@ -12,15 +12,25 @@ scriptContent:
         /*Begin_c8o_PageDeclaration*/
         	graph = new joint.dia.Graph;
         	paper : joint.dia.Paper
-        	gridSize =1
+        	scale =1
+        	dragStartPosition = null;
         	/*End_c8o_PageDeclaration*/
         /*Begin_c8o_PageConstructor*/
         		/*End_c8o_PageConstructor*/
         /*Begin_c8o_PageFunction*/
         	onGridSizeChanged() {
-        	    this.paper.setGridSize(this.gridSize)
+        	    this.paper.scale(this.scale)
         	}
-        	
+        
+        	onMouseMove(event) {
+        	    this.c8o.log.debug("Mouse Move")
+        	    if (this.dragStartPosition != null)
+                    this.paper.translate(
+                        event.offsetX - this.dragStartPosition.x, 
+                        event.offsetY - this.dragStartPosition.y);
+                this.paper.scale(this.scale)
+            }
+        
         	ngAfterViewInit() {
         	    let element = this.flowID as ElementRef
                 this.paper = new joint.dia.Paper({
@@ -28,9 +38,20 @@ scriptContent:
                     width: ''100%'',
                     height: ''100%'',
                     model: this.graph,
-                    gridSize: this.gridSize
+                    gridSize: 1
                 });
-        
+        	    
+                this.paper.on(''blank:pointerdown'', (event, x, y) => {
+                    this.c8o.log.debug("Mouse Start")
+                    this.dragStartPosition = { x: x, y: y};
+                });
+                
+                this.paper.on(''cell:pointerup blank:pointerup'', (cellView, x, y) => {
+                    this.c8o.log.debug("Mouse Up")
+                    this.dragStartPosition = null
+                });
+        	    
+        	    
                 let rect = new joint.shapes.basic.Rect( {
                     position: { x: 100, y: 30 },
                     size: { width: 100, height: 30 },
@@ -43,33 +64,99 @@ scriptContent:
                 let link = new joint.shapes.standard.Link()
                 link.source(rect);
                 link.target(rect2);
-                this.graph.addCells([rect, rect2]);
+                link.attr(''line/stroke'', ''#fe854f'');
+                link.router(''manhattan'');
+                link.connector(''rounded'');
+                
+                var link3 = new joint.shapes.standard.Link();
+                link3.source(rect);
+                link3.target(rect2);
+                link3.attr(''line/stroke'', ''white'');
+                link3.connector(''jumpover'', { size: 10 });
+                this.graph.addCells([rect, rect2, link, link3]);
+        
         	}
         	/*End_c8o_PageFunction*/
         '
 segment: path-to-flowviewer
 title: Title for FlowViewer
-↓RangeSlider [mobile.components.UIDynamicElement-1588159080969]: 
-  beanData: |
-    '{
-     "ionBean": "Range",
-     "Min": "plain:1",
-     "Max": "plain:10",
-     "Snaps": "plain:true",
-     "IonColor": "plain:light"
-    }'
-  tagName: ion-range
-  ↓Attr [mobile.components.UIAttribute-1588159106785]: 
-    attrName: '[(ngModel)]'
-    attrValue: 
+↓Grid [mobile.components.UIDynamicElement-1588228737881]: 
+  beanData: '{"ionBean":"Grid","Height":"plain:height:100%"}'
+  tagName: ion-grid
+  ↓GridRow [mobile.components.UIDynamicElement-1588228741415]: 
+    beanData: '{"ionBean":"GridRow","Height":"plain:height:100%"}'
+    tagName: ion-row
+    ↓GridCol [mobile.components.UIDynamicElement-1588228746957]: 
+      beanData: '{"ionBean":"GridCol"}'
+      tagName: ion-col
+      ↓Div [mobile.components.UIDynamicElement-1588137806849]: 
+        beanData: '{"ionBean":"DivTag"}'
+        identifier: flowID
+        tagName: div
+        ↓Attr [mobile.components.UIAttribute-1588238054179]: 
+          attrName: (document:mousemove)
+          attrValue: 
+            - xmlizable: 
+              - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
+              - MobileSmartSourceType: plain:onMouseMove($event)
+  ↓GridRow1 [mobile.components.UIDynamicElement-1588228813856]: 
+    beanData: '{"ionBean":"GridRow","Height":"plain:height:50px"}'
+    tagName: ion-row
+    ↓GridCol [mobile.components.UIDynamicElement-1588228819248]: 
+      beanData: '{"ionBean":"GridCol"}'
+      tagName: ion-col
+      ↓RangeSlider [mobile.components.UIDynamicElement-1588159080969]: 
+        beanData: |
+          '{
+           "ionBean": "Range",
+           "Min": "plain:1",
+           "Max": "plain:10",
+           "Snaps": "plain:true"
+          }'
+        tagName: ion-range
+        ↓Attr [mobile.components.UIAttribute-1588159106785]: 
+          attrName: '[(ngModel)]'
+          attrValue: 
+            - xmlizable: 
+              - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
+              - MobileSmartSourceType: script:scale
+        ↓Attr1 [mobile.components.UIAttribute-1588159608396]: 
+          attrName: (ngModelChange)
+          attrValue: 
+            - xmlizable: 
+              - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
+              - MobileSmartSourceType: script:onGridSizeChanged()
+↓PageEvent [mobile.components.UIPageEvent-1588052803545]: 
+  ↓useJointJS [mobile.components.UICustomAction-1588052817033]: 
+    package_dependencies: 
       - xmlizable: 
-        - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
-        - MobileSmartSourceType: script:gridSize
-  ↓Attr1 [mobile.components.UIAttribute-1588159608396]: 
-    attrName: (ngModelChange)
-    attrValue: 
-      - xmlizable: 
-        - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
-        - MobileSmartSourceType: script:onGridSizeChanged()
-↓UseSharedComponent [mobile.components.UIUseShared-1588053007406]: 
-  sharedcomponent: C8oStudio.MobileApplication.Application.Flows
+        - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+        - com.twinsoft.convertigo.beans.common.XMLVector: 
+          - xmlizable: 
+            - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+            - com.twinsoft.convertigo.beans.common.XMLVector: 
+              - java.lang.String: 
+                - ↑value: jointjs
+              - java.lang.String: 
+                - ↑value: 3.1.1
+          - xmlizable: 
+            - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+            - com.twinsoft.convertigo.beans.common.XMLVector: 
+              - java.lang.String: 
+                - ↑value: '@types/lodash'
+              - java.lang.String: 
+                - ↑value: 3.10.1
+          - xmlizable: 
+            - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+            - com.twinsoft.convertigo.beans.common.XMLVector: 
+              - java.lang.String: 
+                - ↑value: '@types/jquery'
+              - java.lang.String: 
+                - ↑value: 3.3.36
+          - xmlizable: 
+            - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+            - com.twinsoft.convertigo.beans.common.XMLVector: 
+              - java.lang.String: 
+                - ↑value: '@types/backbone'
+              - java.lang.String: 
+                - ↑value: 1.4.1

@@ -36,21 +36,22 @@ scriptContent:
                             },
                             {
                                 type: ''column'',
-                                content: [{
-                                    type: ''component'',
-                                    componentName: ''Viewer'',
-                                    componentState: { text: ''Component 2'' }
-                                },
-                                {
-                                    type: ''component'',
-                                    componentName: ''FlowViewer'',
-                                    componentState: { text: ''Component 2'' }
-                                },                        
-                                {
+                                content: [
+                               {
+                                   type: ''component'',
+                                   componentName: ''FlowViewer'',
+                                   componentState: { text: ''Component 2'' }
+                               },                        
+                               {
+                                   type: ''component'',
+                                   componentName: ''Viewer'',
+                                   componentState: { text: ''Component 2'' }
+                               },
+                               {
                                     type: ''component'',
                                     componentName: ''Logs'',
                                     componentState: { text: ''Component 4'' }
-                                }]
+                               }]
                             }]
                     }]
                 }

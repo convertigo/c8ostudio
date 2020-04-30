@@ -28,7 +28,6 @@ tplProjectName: C8oStudio
 ↓CodeEditor [mobile.components.UISharedComponent-1587900690141]: 🗏 mobileSharedComponents/CodeEditor.yaml
 ↓Properties [mobile.components.UISharedComponent-1587904783890]: 🗏 mobileSharedComponents/Properties.yaml
 ↓TreeView [mobile.components.UISharedComponent-1587912746555]: 🗏 mobileSharedComponents/TreeView.yaml
-↓Flows [mobile.components.UISharedComponent-1588052752048]: 🗏 mobileSharedComponents/Flows.yaml
 ↓CodeEditor [mobile.components.PageComponent-1500538678074]: 🗏 mobilePages/CodeEditor.yaml
 ↓Layout [mobile.components.PageComponent-1587821570783]: 🗏 mobilePages/Layout.yaml
 ↓Properties [mobile.components.PageComponent-1587904800779]: 🗏 mobilePages/Properties.yaml
@@ -252,3 +251,21 @@ tplProjectName: C8oStudio
             padding: 1px;
           }
           '
+↓ShowGrids [mobile.components.UIStyle-1588234332401]: 
+  isEnabled: false
+  styleContent: 
+    - xmlizable: 
+      - ↑classname: com.twinsoft.convertigo.beans.common.FormatedContent
+      - com.twinsoft.convertigo.beans.common.FormatedContent: 
+        →: |
+          'ion-grid {
+          	border: solid 1px blue
+          }
+          
+          ion-col {
+          	border: solid 1px red
+          }
+          
+          ion-row {
+          	border: solid 1px green
+          }'
