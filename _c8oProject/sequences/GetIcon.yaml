@@ -1,4 +1,4 @@
-↓Sequence_JS [steps.SimpleStep-1588603866382]: 
+↓BuildBase64Icon [steps.SimpleStep-1588603866382]: 
   expression: |
     'var bi = com.twinsoft.convertigo.engine.util.CachedIntrospector.getBeanInfo(java.lang.Class.forName(className));
     var iconType = large != null && large.equals("true") ? java.beans.BeanInfo.ICON_COLOR_32x32 : java.beans.BeanInfo.ICON_COLOR_16x16;
