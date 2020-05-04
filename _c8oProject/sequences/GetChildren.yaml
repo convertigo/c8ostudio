@@ -1,0 +1,51 @@
+↓array [steps.XMLComplexStep-1588584638434]: 
+  nodeName: array
+  ↓type [steps.XMLAttributeStep-1588584843062]: 
+    nodeName: type
+    nodeText: array
+  ↓jIfThenElse [steps.IfThenElseStep-1588584569661]: 
+    condition: name == "root"
+    ↓jThen [steps.ThenStep-1588584571511]: 
+      ↓jIterator [steps.SimpleIteratorStep-1588584601870]: 
+        expression: com.twinsoft.convertigo.engine.Engine.theApp.databaseObjectsManager.getAllProjectNamesList(true)
+        ↓dbo [steps.XMLComplexStep-1588584887494]: 
+          nodeName: dbo
+          ↓tpe [steps.XMLAttributeStep-1588585039144]: 
+            nodeName: type
+            nodeText: object
+          ↓name [steps.ElementStep-1588584907760]: 
+            expression: item
+            nodeName: name
+          ↓displayName [steps.ElementStep-1588602676074]: 
+            expression: item
+            nodeName: displayName
+          ↓hasChildren [steps.XMLElementStep-1588585287606]: 
+            nodeName: hasChildren
+            nodeText: true
+          ↓className [steps.ElementStep-1588602905416]: 
+            expression: item.getClass().getName()
+            nodeName: className
+    ↓jElse [steps.ElseStep-1588584571513]: 
+      ↓jIterator [steps.SimpleIteratorStep-1588585452342]: 
+        expression: com.twinsoft.convertigo.engine.Engine.theApp.databaseObjectsManager.getDatabaseObjectByQName(name).getDatabaseObjectChildren()
+        ↓dbo [steps.XMLComplexStep-1588585467857]: 
+          nodeName: dbo
+          ↓tpe [steps.XMLAttributeStep-1588585467860]: 
+            nodeName: type
+            nodeText: object
+          ↓name1 [steps.ElementStep-1588585483114]: 
+            expression: item.getQName()
+            nodeName: name
+          ↓displayName [steps.ElementStep-1588602697198]: 
+            expression: item.getName()
+            nodeName: displayName
+          ↓hasChildren [steps.XMLElementStep-1588585467866]: 
+            nodeName: hasChildren
+            nodeText: true
+          ↓className [steps.ElementStep-1588605527472]: 
+            expression: item.getClass().getName()
+            nodeName: className
+↓name [variables.RequestableVariable-1588584420887]: 
+↓root [core.TestCase]: 
+  ↓name [variables.TestCaseVariable-1588584927680]: 
+    value: root

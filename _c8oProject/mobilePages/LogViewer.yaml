@@ -42,39 +42,36 @@ scriptContent:
         '
 segment: path-to-logviewer
 title: Title for LogViewer
-↓Content [mobile.components.UIDynamicElement-1587908266655]: 
-  beanData: '{"ionBean":"Content","IonPadding":"plain"}'
-  tagName: ion-content
-  ↓UseSharedComponent [mobile.components.UIUseShared-1587906236844]: 
-    sharedcomponent: lib_ExtendedComponents.MobileApplication.Application.agGrid
-    ↓pagination [mobile.components.UIControlVariable-1587907310009]: 
-      comment: |
-        On of the themes defined here :
-        
-        https://www.ag-grid.com/javascript-grid-themes-provided/
-        
-        Also be shure to add the themes in the Themi object :
-        
-        
-      varValue: 
-        - xmlizable: 
-          - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
-          - MobileSmartSourceType: script:false
-    ↓class [mobile.components.UIControlVariable-1587907310012]: 
-      comment: 'boolean: true (default) or false'
-      varValue: 
-        - xmlizable: 
-          - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
-          - MobileSmartSourceType: script:'ag-theme-balham-dark'
-    ↓columnDefs [mobile.components.UIControlVariable-1587907713899]: 
-      comment: 'Array of columnDef {headerName: ''headerName'', field: ''fieldName''} objects'
-      varValue: 
-        - xmlizable: 
-          - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
-          - MobileSmartSourceType: script:columnDefs
-    ↓rowData [mobile.components.UIControlVariable-1587907713901]: 
-      comment: 'Array of row { fieldName1: ''value1'', fieldName2: ''value2'', fieldName3: true, ...} objects'
-      varValue: 
-        - xmlizable: 
-          - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
-          - MobileSmartSourceType: script:logData
+↓UseSharedComponent [mobile.components.UIUseShared-1587906236844]: 
+  sharedcomponent: lib_ExtendedComponents.MobileApplication.Application.agGrid
+  ↓pagination [mobile.components.UIControlVariable-1587907310009]: 
+    comment: |
+      On of the themes defined here :
+      
+      https://www.ag-grid.com/javascript-grid-themes-provided/
+      
+      Also be shure to add the themes in the Themi object :
+      
+      
+    varValue: 
+      - xmlizable: 
+        - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
+        - MobileSmartSourceType: script:false
+  ↓class [mobile.components.UIControlVariable-1587907310012]: 
+    comment: 'boolean: true (default) or false'
+    varValue: 
+      - xmlizable: 
+        - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
+        - MobileSmartSourceType: script:'ag-theme-balham-dark'
+  ↓columnDefs [mobile.components.UIControlVariable-1587907713899]: 
+    comment: 'Array of columnDef {headerName: ''headerName'', field: ''fieldName''} objects'
+    varValue: 
+      - xmlizable: 
+        - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
+        - MobileSmartSourceType: script:columnDefs
+  ↓rowData [mobile.components.UIControlVariable-1587907713901]: 
+    comment: 'Array of row { fieldName1: ''value1'', fieldName2: ''value2'', fieldName3: true, ...} objects'
+    varValue: 
+      - xmlizable: 
+        - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
+        - MobileSmartSourceType: script:logData

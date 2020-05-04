@@ -6,47 +6,107 @@ scriptContent:
         '/*Begin_c8o_PageImport*/
         /*End_c8o_PageImport*/
         /*Begin_c8o_PageDeclaration*/
-        	treeNodes = [
+        	nodes = [
              {
-                 id: 1,
-                 name: ''root1'',
-                 children: [
-                   { id: 2, name: ''child1'' },
-                   { id: 3, name: ''child2'' }
-                 ]
-               },
-               {
-                 id: 4,
-                 name: ''root2'',
-                 children: [
-                   { id: 5, name: ''child2.1'' },
-                   {
-                     id: 6,
-                     name: ''child2.2'',
-                     children: [
-                       { id: 7, name: ''subsub'' }
-                     ]
-                   }
-                 ]
+                 name: ''root'',
+                 displayField: ''displayName'',
+                 hasChildren: true,
+                 displayName: ''Projects'',
+                 className: ''com.twinsoft.convertigo.beans.core.Project''
                }
              ];
+        	options = {
+                getChildren: (node:any) => {
+                    window["lastNode"] = node;
+                    console.log("getChildren of node: " + node);
+                    console.log(node);
+                    return new Promise((resolve, reject) => {
+                        this.c8o.callJson(".GetChildren", "name", node.data.name).then((response, parameters) => {
+                            resolve(response["array"]);
+                            return null;
+                        });
+                    });
+                }
+        	}
         	/*End_c8o_PageDeclaration*/
         /*Begin_c8o_PageConstructor*/
+        		window["convertigo"] = this.c8o;
         		/*End_c8o_PageConstructor*/
         /*Begin_c8o_PageFunction*/
         	/*End_c8o_PageFunction*/
         '
 segment: path-to-projects
 title: Title for Projects
-↓UseSharedComponent [mobile.components.UIUseShared-1587913209464]: 
-  sharedcomponent: C8oStudio.MobileApplication.Application.TreeView
-  ↓nodes [mobile.components.UIControlVariable-1587914837641]: 
-    varValue: 
+↓PageEvent [mobile.components.UIPageEvent-1588600884566]: 
+  ↓useAngularTreeComp [mobile.components.UICustomAction-1588600884569]: 
+    module_ng_imports: 
+      - xmlizable: 
+        - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+        - com.twinsoft.convertigo.beans.common.XMLVector: 
+          - xmlizable: 
+            - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+            - com.twinsoft.convertigo.beans.common.XMLVector: 
+              - java.lang.String: 
+                - ↑value: TreeModule
+    module_ts_imports: 
+      - xmlizable: 
+        - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+        - com.twinsoft.convertigo.beans.common.XMLVector: 
+          - xmlizable: 
+            - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+            - com.twinsoft.convertigo.beans.common.XMLVector: 
+              - java.lang.String: 
+                - ↑value: TreeModule
+              - java.lang.String: 
+                - ↑value: angular-tree-component
+    package_dependencies: 
+      - xmlizable: 
+        - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+        - com.twinsoft.convertigo.beans.common.XMLVector: 
+          - xmlizable: 
+            - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+            - com.twinsoft.convertigo.beans.common.XMLVector: 
+              - java.lang.String: 
+                - ↑value: angular-tree-component
+              - java.lang.String: 
+                - ↑value: 7.2.1
+↓Tag [mobile.components.UIElement-1588600889253]: 
+  identifier: tree
+  tagName: tree-root
+  ↓nodes [mobile.components.UIAttribute-1588600889256]: 
+    attrName: '[nodes]'
+    attrValue: 
       - xmlizable: 
         - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
-        - MobileSmartSourceType: script:treeNodes
-  ↓options [mobile.components.UIControlVariable-1587914837643]: 
-    varValue: 
+        - MobileSmartSourceType: script:nodes
+  ↓options [mobile.components.UIAttribute-1588600889259]: 
+    attrName: '[options]'
+    attrValue: 
       - xmlizable: 
         - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
-        - MobileSmartSourceType: script:{}
+        - MobileSmartSourceType: script:options
+  ↓Tag [mobile.components.UIElement-1588602370121]: 
+    identifier: treeNodeTemplate
+    tagName: ng-template
+    ↓Tag [mobile.components.UIElement-1588602538271]: 
+      selfClose: true
+      tagName: img
+      ↓Attr [mobile.components.UIAttribute-1588602577993]: 
+        attrName: src
+        attrValue: 
+          - xmlizable: 
+            - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
+            - MobileSmartSourceType: plain:{{ this.c8o.endpoint }}/.bin?__sequence=GetIcon&className={{ node.data.className }}
+    ↓span [mobile.components.UIElement-1588602429371]: 
+      tagName: span
+      ↓Text [mobile.components.UIText-1588602449534]: 
+        textValue: 
+          - xmlizable: 
+            - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
+            - MobileSmartSourceType: plain:{{ node.data.displayName }}
+    ↓Attr [mobile.components.UIAttribute-1588602477828]: 
+      attrName: let-node
+      attrValue: 
+        - xmlizable: 
+          - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
+          - MobileSmartSourceType: plain:

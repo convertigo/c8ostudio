@@ -1,0 +1,23 @@
+↓Sequence_JS [steps.SimpleStep-1588603866382]: 
+  expression: |
+    'var bi = com.twinsoft.convertigo.engine.util.CachedIntrospector.getBeanInfo(java.lang.Class.forName(className));
+    var iconType = large != null && large.equals("true") ? java.beans.BeanInfo.ICON_COLOR_32x32 : java.beans.BeanInfo.ICON_COLOR_16x16;
+    var stream = bi.getBeanDescriptor().getBeanClass().getResourceAsStream(com.twinsoft.convertigo.beans.core.MySimpleBeanInfo.getIconName(bi, iconType));
+    var base64 = org.apache.commons.codec.binary.Base64.encodeBase64String(org.apache.commons.io.IOUtils.toByteArray(stream));'
+↓attachment [steps.ElementStep-1588604263441]: 
+  expression: base64
+  nodeName: attachment
+  ↓type [steps.XMLAttributeStep-1588604117113]: 
+    nodeName: type
+    nodeText: attachment
+  ↓name [steps.AttributeStep-1588604173703]: 
+    expression: className + ".png"
+    nodeName: name
+  ↓contentType [steps.XMLAttributeStep-1588604206558]: 
+    nodeName: content-type
+    nodeText: image/png
+  ↓encoding [steps.XMLAttributeStep-1588604299187]: 
+    nodeName: encoding
+    nodeText: base64
+↓className [variables.RequestableVariable-1588603961951]: 
+↓large [variables.RequestableVariable-1588604988555]: 

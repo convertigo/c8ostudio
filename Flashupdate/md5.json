@@ -1,7 +1,7 @@
 {
   "assets\/.gitignore": {
-    "md5": "5defd6834b60d2cd08950ebc7bccb214",
-    "ts": 1587904461682
+    "md5": "d6629ae52dbd272c64310923cc4e6f88",
+    "ts": 1588077044880
   },
   "assets\/css\/animate.min.css": {
     "md5": "c78e4003414fbf2814dc097a5e1c784a",
@@ -384,16 +384,16 @@
     "ts": 1452789305000
   },
   "build\/0.js": {
-    "md5": "6a9e693c862f8c7f5e9f4a36a17320d2",
-    "ts": 1587980214298
+    "md5": "3a8d71215c1138597b08531d1701b2c2",
+    "ts": 1588583529608
   },
   "build\/main.css": {
-    "md5": "65b9b77912acebce8f052f4042b7de97",
-    "ts": 1587980217204
+    "md5": "b1ba96620eb6e41892c22ddf94f48d7e",
+    "ts": 1588581714797
   },
   "build\/main.js": {
-    "md5": "91bc869b69f418ca4442e371378ce758",
-    "ts": 1587980214298
+    "md5": "d95cfcdca899a0b53c3ab1a21bfd600e",
+    "ts": 1588584402847
   },
   "build\/polyfills.js": {
     "md5": "443c697fc904cd88a651d09cf5c2fe2b",
@@ -404,8 +404,8 @@
     "ts": 1587980189708
   },
   "build\/vendor.js": {
-    "md5": "bb5c70ffce94ebda3e3a5fe176df2098",
-    "ts": 1587980214310
+    "md5": "523bb56aa35d17208a996b14259f602e",
+    "ts": 1588583078820
   },
   "env.json": {
     "md5": "d3c2ef6ab81a427df3f9e9e453d447a1",
@@ -420,15 +420,19 @@
     "ts": 1587980189708
   },
   "index.html": {
-    "md5": "eb296e33650efcc8232a240c8b320eda",
-    "ts": 1587980217220
+    "md5": "b15b5015042507653b8dfbd0d8d2edad",
+    "ts": 1588580640673
   },
   "plugins.txt": {
     "md5": "d41d8cd98f00b204e9800998ecf8427e",
     "ts": 1587980189403
   },
   "service-worker.js": {
-    "md5": "7d59ae4550250cd1b310cccc1fe86a24",
-    "ts": 1587980189707
+    "md5": "3a261cd8f489d63327a7f150a68c384c",
+    "ts": 1588580640673
+  },
+  "build\/main.css.map": {
+    "md5": "37a6259cc0c1dae299a7866489dff0bd",
+    "ts": 1588581714805
   }
 }
