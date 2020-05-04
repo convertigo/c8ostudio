@@ -92,6 +92,13 @@ scriptContent:
                     },
                     defaultConnector: {
                         name: ''rounded''
+                    },
+                    validateConnection: function(cellViewS, magnetS, cellViewT, magnetT, end, linkView) {
+                        // console.log(JSON.stringify(magnetS) +":"+ JSON.stringify(magnetT) )
+                        if (magnetT == undefined|| magnetS ==undefined)
+                            return false
+                        else
+                            return true
                     }
                 });
         	    
