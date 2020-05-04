@@ -12,26 +12,63 @@ scriptContent:
         /*Begin_c8o_PageDeclaration*/
         	graph = new joint.dia.Graph;
         	paper : joint.dia.Paper
-        	scale =1
+        	scale : number = 10
         	dragStartPosition = null;
         	/*End_c8o_PageDeclaration*/
         /*Begin_c8o_PageConstructor*/
         		/*End_c8o_PageConstructor*/
         /*Begin_c8o_PageFunction*/
         	onGridSizeChanged() {
-        	    this.paper.scale(this.scale)
+        	    this.paper.scale(this.scale / 10)
         	}
         
         	onMouseMove(event) {
-        	    this.c8o.log.debug("Mouse Move")
-        	    if (this.dragStartPosition != null)
+        	    if (this.dragStartPosition != null) {
+                    // this.c8o.log.debug("Mouse Move : " + JSON.stringify(this.dragStartPosition))
                     this.paper.translate(
                         event.offsetX - this.dragStartPosition.x, 
                         event.offsetY - this.dragStartPosition.y);
-                this.paper.scale(this.scale)
+        	    }
             }
         
+        	addStep() {
+                let rect = new joint.shapes.basic.Rect( {
+                    position: { x: 100, y: 30 },
+                    size: { width: 100, height: 30 },
+                    ports: {
+                        groups: {
+                            ''source'': {
+                                position: ''top'',
+                                attrs: {
+                                    ''.joint-port-body'' : {
+                                        fill: ''orange'',
+                                        magnet: true
+                                    }
+                                }
+                            }
+                        },
+                        items: [{
+                            group: ''source'',
+                            args: {}, // extra arguments for the port layout function, see `layout.Port` section
+                        }]
+                    },            
+                    attrs: {
+                        rect: {
+                            fill: ''blue''
+                        },
+                        text:
+                        {
+                            text: ''my box'',
+                            fill: ''white''
+                        }
+                    }
+                });
+                rect.addTo(this.graph);
+                return rect
+        	}
+        	
         	ngAfterViewInit() {
+        	        
         	    let element = this.flowID as ElementRef
                 this.paper = new joint.dia.Paper({
                     el: element.nativeElement,
@@ -43,7 +80,7 @@ scriptContent:
         	    
                 this.paper.on(''blank:pointerdown'', (event, x, y) => {
                     this.c8o.log.debug("Mouse Start")
-                    this.dragStartPosition = { x: x, y: y};
+                    this.dragStartPosition = { x: x * this.scale / 10, y: y * this.scale / 10};
                 });
                 
                 this.paper.on(''cell:pointerup blank:pointerup'', (cellView, x, y) => {
@@ -51,15 +88,12 @@ scriptContent:
                     this.dragStartPosition = null
                 });
         	    
-        	    
-                let rect = new joint.shapes.basic.Rect( {
-                    position: { x: 100, y: 30 },
-                    size: { width: 100, height: 30 },
-                    attrs: { rect: { fill: ''blue'' }, text: { text: ''my box'', fill: ''white'' } }
-                });
-        
+                
+                let rect = this.addStep()
+                
+                
                 let rect2 = rect.clone() as joint.shapes.basic.Rect
-                rect2.translate(300)
+                rect2.translate(150)
         
                 let link = new joint.shapes.standard.Link()
                 link.source(rect);
@@ -73,7 +107,9 @@ scriptContent:
                 link3.target(rect2);
                 link3.attr(''line/stroke'', ''white'');
                 link3.connector(''jumpover'', { size: 10 });
-                this.graph.addCells([rect, rect2, link, link3]);
+                
+                
+                this.graph.addCells([rect2, link, link3]);
         
         	}
         	/*End_c8o_PageFunction*/
