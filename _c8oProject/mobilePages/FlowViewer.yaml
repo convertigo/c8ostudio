@@ -94,7 +94,7 @@ scriptContent:
                         name: ''rounded''
                     },
                     validateConnection: function(cellViewS, magnetS, cellViewT, magnetT, end, linkView) {
-                        // console.log(JSON.stringify(magnetS) +":"+ JSON.stringify(magnetT) )
+                        // Prevent connections if not on Magnets from ports
                         if (magnetT == undefined|| magnetS ==undefined)
                             return false
                         else
