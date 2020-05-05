@@ -1,0 +1,26 @@
+↓GetBean [steps.SimpleStep-1588664768964]: 
+  expression: |
+    var dbo = com.twinsoft.convertigo.engine.Engine.theApp.databaseObjectsManager.getDatabaseObjectByQName(qname);
+    var propDesc = com.twinsoft.convertigo.engine.util.CachedIntrospector.getBeanInfo(dbo.getClass()).getPropertyDescriptors();
+↓properties [steps.XMLComplexStep-1588665070603]: 
+  nodeName: properties
+  ↓type [steps.XMLAttributeStep-1588665089471]: 
+    nodeName: type
+    nodeText: array
+  ↓props [steps.SimpleIteratorStep-1588665103633]: 
+    expression: propDesc
+    ↓property [steps.XMLComplexStep-1588665169513]: 
+      nodeName: property
+      ↓tpe [steps.XMLAttributeStep-1588665186963]: 
+        nodeName: type
+        nodeText: object
+      ↓displayName [steps.ElementStep-1588665357557]: 
+        expression: item.getDisplayName()
+        nodeName: displayName
+      ↓value [steps.ElementStep-1588665445067]: 
+        expression: '"" + item.getReadMethod().invoke(dbo)'
+        nodeName: value
+↓qname [variables.RequestableVariable-1588664550444]: 
+↓project [core.TestCase]: 
+  ↓qname [variables.TestCaseVariable-1588664862002]: 
+    value: C8oStudio

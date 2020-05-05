@@ -33,6 +33,9 @@ scriptContent:
         		window["convertigo"] = this.c8o;
         		/*End_c8o_PageConstructor*/
         /*Begin_c8o_PageFunction*/
+        //	onFocus = ($event) => {
+        //	    
+        //	}
         	/*End_c8o_PageFunction*/
         '
 segment: path-to-projects
@@ -110,3 +113,13 @@ title: Title for Projects
         - xmlizable: 
           - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
           - MobileSmartSourceType: plain:
+  ↓Event [mobile.components.UIControlEvent-1588665835563]: 
+    attrName: (focus)
+    eventName: (focus)
+    ↓PublishEvent [mobile.components.UIDynamicAction-1588671355654]: 
+      beanData: |
+        '{
+         "ionBean": "PublishEventAction",
+         "topic": "plain:dboFocus",
+         "data": "script:$event.node.data.name"
+        }'
