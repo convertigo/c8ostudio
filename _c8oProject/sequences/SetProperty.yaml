@@ -1,0 +1,69 @@
+↓SetProperty [steps.SimpleStep-1588781563150]: 
+  expression: |
+    'var dbo = com.twinsoft.convertigo.engine.Engine.theApp.databaseObjectsManager.getDatabaseObjectByQName(qname);
+    var propDesc = com.twinsoft.convertigo.engine.util.CachedIntrospector.getBeanInfo(dbo.getClass()).getPropertyDescriptors();
+    var writer, i, j;
+    var success = false;
+    
+    for (i = 0; i < propDesc.length && writer == null; i++) {
+    	if (("" + propDesc[i].getName()) == ("" + name)) {
+    		writer = propDesc[i].getWriteMethod();
+    	}
+    }
+    value = "" + value;
+    log.message("writer: " + writer);
+    var cls = writer.getParameterTypes()[0];
+    log.message ("clsParam: " + cls.getName() + " String: java.lang.String");
+    if (cls.getName() != "java.lang.String") {
+    	var toClass = null;
+    	try {
+    		toClass = cls.getMethod("valueOf", java.lang.String);
+    	} catch (e) {
+    		log.message("valueOf failed: " + e);
+    		var clsMethods = cls.getMethods();
+    		for (i = 0; i < clsMethods.length && toClass == null; i++) {
+    			if (clsMethods[i].getName().startsWith("parse")) {
+    				var types = clsMethods[i].getParameterTypes();
+    				if (types.length == 1 && types[0] == java.lang.String) {
+    					toClass = clsMethods[i];
+    				}
+    			}
+    		}
+    	}
+    	log.message("toClass: " + toClass);
+    	if (toClass != null) {
+    		value = toClass.invoke(null, value);
+    	}
+    }
+    writer.invoke(dbo, value);
+    success = true;'
+↓status [steps.ElementStep-1588782170444]: 
+  expression: success
+  nodeName: success
+  ↓type [steps.XMLAttributeStep-1588782170447]: 
+    nodeName: type
+    nodeText: boolean
+↓qname [variables.RequestableVariable-1588781501998]: 
+↓value [variables.RequestableVariable-1588781511648]: 
+↓name [variables.RequestableVariable-1588781540460]: 
+↓SetANewSequencePublic [core.TestCase]: 
+  ↓qname [variables.TestCaseVariable-1588794398977]: 
+    value: EditMe.NewSequence
+  ↓value [variables.TestCaseVariable-1588794398980]: 
+    value: Public
+  ↓name [variables.TestCaseVariable-1588794398983]: 
+    value: accessibility
+↓SetAoutputfalse [core.TestCase]: 
+  ↓qname [variables.TestCaseVariable-1588794319993]: 
+    value: EditMe.NewSequence.A
+  ↓value [variables.TestCaseVariable-1588794319996]: 
+    value: false
+  ↓name [variables.TestCaseVariable-1588794319999]: 
+    value: output
+↓SetAvalue42 [core.TestCase]: 
+  ↓qname [variables.TestCaseVariable-1588782288045]: 
+    value: EditMe.NewSequence.A
+  ↓value [variables.TestCaseVariable-1588782288047]: 
+    value: 42
+  ↓name [variables.TestCaseVariable-1588782288049]: 
+    value: nodeText

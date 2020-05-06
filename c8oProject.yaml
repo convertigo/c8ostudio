@@ -8,6 +8,7 @@
   ↓GetIcon [sequences.GenericSequence]: 🗏 sequences/GetIcon.yaml
   ↓GetProperties [sequences.GenericSequence]: 🗏 sequences/GetProperties.yaml
   ↓MoveDatabaseObject [sequences.GenericSequence]: 🗏 sequences/MoveDatabaseObject.yaml
+  ↓SetProperty [sequences.GenericSequence]: 🗏 sequences/SetProperty.yaml
   ↓MobileApplication [core.MobileApplication]: 
     applicationId: com.convertigo.webstudio
     applicationName: Convertigo Low Code Web Studio

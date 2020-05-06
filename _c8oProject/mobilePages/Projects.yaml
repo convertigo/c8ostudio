@@ -18,12 +18,9 @@ scriptContent:
              ];
         	options = {
                 getChildren: (node:TreeNode) => {
-                    window["lastNode"] = node;
-                    console.log("getChildren of node: " + node);
-                    console.log(node);
                     return new Promise((resolve, reject) => {
-                        this.c8o.callJson(".GetChildren", "name", node.data.name).then((response, parameters) => {
-                            resolve(response["array"]);
+                        this.c8o.callJson(''.GetChildren'', ''name'', node.data.name).then((response, parameters) => {
+                            resolve(response[''array'']);
                             return null;
                         });
                     });
@@ -32,17 +29,6 @@ scriptContent:
                 actionMapping: {
                     mouse: {
                         drop: (tree:TreeModel, node:TreeNode, $event:any, {from, to}) => {
-                            // use from to get the dragged node.
-                            // use to.parent and to.index to get the drop location
-                            // use TREE_ACTIONS.MOVE_NODE to invoke the original action
-                            console.log(''drop from:'');
-                            console.log(from);
-                            console.log(''drop to:'');
-                            console.log(to);
-                            window[''tFrom''] = from;
-                            window[''tTo''] = to;
-                            window[''tTree''] = tree;
-                            window[''tNode''] = node;
                             var before = '''';
                             if (!to.dropOnNode) {
                                 try {
@@ -54,8 +40,6 @@ scriptContent:
                                 ''to'', to.parent.data.name,
                                 ''before'', before
                             ).then((response, param) => {
-                                console.log(''Drop response:'');
-                                console.log(response);
                                 if (response[''success'']) {
                                     tree.moveNode(from, to);
                                     from.data.name = response[''qname''];
