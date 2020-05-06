@@ -10,7 +10,7 @@
         expression: com.twinsoft.convertigo.engine.Engine.theApp.databaseObjectsManager.getAllProjectNamesList(true)
         ↓dbo [steps.XMLComplexStep-1588584887494]: 
           nodeName: dbo
-          ↓tpe [steps.XMLAttributeStep-1588585039144]: 
+          ↓type [steps.XMLAttributeStep-1588585039144]: 
             nodeName: type
             nodeText: object
           ↓name [steps.ElementStep-1588584907760]: 
@@ -22,6 +22,9 @@
           ↓hasChildren [steps.XMLElementStep-1588585287606]: 
             nodeName: hasChildren
             nodeText: true
+            ↓type [steps.XMLAttributeStep-1588772288023]: 
+              nodeName: type
+              nodeText: boolean
           ↓className [steps.XMLElementStep-1588662704001]: 
             nodeName: className
             nodeText: com.twinsoft.convertigo.beans.core.Project
@@ -30,7 +33,7 @@
         expression: com.twinsoft.convertigo.engine.Engine.theApp.databaseObjectsManager.getDatabaseObjectByQName(name).getDatabaseObjectChildren()
         ↓dbo [steps.XMLComplexStep-1588585467857]: 
           nodeName: dbo
-          ↓tpe [steps.XMLAttributeStep-1588585467860]: 
+          ↓type [steps.XMLAttributeStep-1588585467860]: 
             nodeName: type
             nodeText: object
           ↓name1 [steps.ElementStep-1588585483114]: 
@@ -39,9 +42,12 @@
           ↓displayName [steps.ElementStep-1588602697198]: 
             expression: item.getName()
             nodeName: displayName
-          ↓hasChildren [steps.XMLElementStep-1588585467866]: 
+          ↓jElement [steps.ElementStep-1588771823044]: 
+            expression: '!item.getDatabaseObjectChildren().isEmpty()'
             nodeName: hasChildren
-            nodeText: true
+            ↓type [steps.XMLAttributeStep-1588772282600]: 
+              nodeName: type
+              nodeText: boolean
           ↓className [steps.ElementStep-1588605527472]: 
             expression: item.getClass().getName()
             nodeName: className

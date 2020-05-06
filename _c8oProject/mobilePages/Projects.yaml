@@ -4,6 +4,7 @@ scriptContent:
     - com.twinsoft.convertigo.beans.common.FormatedContent: 
       →: |
         '/*Begin_c8o_PageImport*/
+        import { TreeModel, TreeNode, IActionHandler } from "angular-tree-component/dist/angular-tree-component";
         /*End_c8o_PageImport*/
         /*Begin_c8o_PageDeclaration*/
         	nodes = [
@@ -16,7 +17,7 @@ scriptContent:
                }
              ];
         	options = {
-                getChildren: (node:any) => {
+                getChildren: (node:TreeNode) => {
                     window["lastNode"] = node;
                     console.log("getChildren of node: " + node);
                     console.log(node);
@@ -26,6 +27,43 @@ scriptContent:
                             return null;
                         });
                     });
+                },
+                allowDrag: true,
+                actionMapping: {
+                    mouse: {
+                        drop: (tree:TreeModel, node:TreeNode, $event:any, {from, to}) => {
+                            // use from to get the dragged node.
+                            // use to.parent and to.index to get the drop location
+                            // use TREE_ACTIONS.MOVE_NODE to invoke the original action
+                            console.log(''drop from:'');
+                            console.log(from);
+                            console.log(''drop to:'');
+                            console.log(to);
+                            window[''tFrom''] = from;
+                            window[''tTo''] = to;
+                            window[''tTree''] = tree;
+                            window[''tNode''] = node;
+                            var before = '''';
+                            if (!to.dropOnNode) {
+                                try {
+                                    before = to.parent.children[to.index].data.name
+                                } catch (e) {}
+                            }
+                            this.c8o.callJson(''C8oStudio.MoveDatabaseObject'',
+                                ''from'', from.data.name,
+                                ''to'', to.parent.data.name,
+                                ''before'', before
+                            ).then((response, param) => {
+                                console.log(''Drop response:'');
+                                console.log(response);
+                                if (response[''success'']) {
+                                    tree.moveNode(from, to);
+                                    from.data.name = response[''qname''];
+                                }
+                                return null;
+                            });
+                        },  
+                    }
                 }
         	}
         	/*End_c8o_PageDeclaration*/
