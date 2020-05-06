@@ -31,10 +31,19 @@ scriptContent:
         	    }
             }
         
-        	addStep() {
+        	addLink(source, dest) {
+        	    var link = new joint.shapes.standard.Link();
+                link.source(source);
+                link.target(dest);
+                link.attr(''line/stroke'', ''white'');
+                link.connector(''jumpover'', { size: 10 });	    
+                link.addTo(this.graph);
+        	}
+        	
+        	addStep(position, size, text) {
                 let rect = new joint.shapes.basic.Rect( {
-                    position: { x: 100, y: 30 },
-                    size: { width: 100, height: 30 },
+                    position: position,
+                    size: size,
                     ports: {
                         groups: {
                             ''source'': {
@@ -58,7 +67,7 @@ scriptContent:
                         },
                         text:
                         {
-                            text: ''my box'',
+                            text: text,
                             fill: ''white''
                         }
                     }
@@ -113,7 +122,7 @@ scriptContent:
                 });
         	    
                 
-                let rect = this.addStep()
+                let rect = this.addStep({x: 30, y:30}, {height: 100, width: 200}, "hello")
                 let rect2 = rect.clone() as joint.shapes.basic.Rect
                 rect2.translate(150)
         
@@ -218,3 +227,45 @@ title: Title for FlowViewer
                 - ↑value: '@types/backbone'
               - java.lang.String: 
                 - ↑value: 1.4.1
+↓Subscribe_Handler [mobile.components.UIEventSubscriber-1588686865663]: 
+  topic: dboFocus
+  ↓CallSequence [mobile.components.UIDynamicAction-1588686924736]: 
+    beanData: '{"ionBean":"CallSequenceAction","requestable":"plain:C8oStudio.GetChildren"}'
+    ↓name [mobile.components.UIControlVariable-1588686940942]: 
+      comment: new variable
+      varValue: 
+        - xmlizable: 
+          - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
+          - MobileSmartSourceType: script:out
+    ↓DisplayFlow [mobile.components.UICustomAction-1588687209815]: 
+      actionValue: 
+        - xmlizable: 
+          - ↑classname: com.twinsoft.convertigo.beans.common.FormatedContent
+          - com.twinsoft.convertigo.beans.common.FormatedContent: 
+            →: |
+              '		page.c8o.log.debug(''[MB] ''+ props.actionFunction +'': ''+ props.actionName);
+              		this.graph.clear();
+              		//this.paper.remove();
+              		let previous = null
+              		for (var i=0; i < vars.flow.length ; i++) {
+              		    let step = this.addStep({
+                  		        x: 30,
+                  		        y: 30 + 70 * i		        
+                  		    }, 
+                  		    {
+                                  width: 200,
+                                  height: 50              
+                              }, 
+                              vars.flow[i].displayName
+              		    )
+              		    if (previous != null)
+              		        this.addLink(previous, step)
+              		    previous = step;
+              		}
+              		resolve();
+              '
+      ↓flow [mobile.components.UIControlVariable-1588693303067]: 
+        varValue: 
+          - xmlizable: 
+            - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
+            - MobileSmartSourceType: source:{"filter":"Sequence","project":"C8oStudio","input":"listen(['C8oStudio.GetChildren'])?.array"}
