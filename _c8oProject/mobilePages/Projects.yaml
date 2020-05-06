@@ -116,7 +116,7 @@ title: Title for Projects
   ↓Event [mobile.components.UIControlEvent-1588665835563]: 
     attrName: (focus)
     eventName: (focus)
-    ↓PublishEvent [mobile.components.UIDynamicAction-1588671355654]: 
+    ↓PublishEvent [mobile.components.UIDynamicAction-1588686512803]: 
       beanData: |
         '{
          "ionBean": "PublishEventAction",
