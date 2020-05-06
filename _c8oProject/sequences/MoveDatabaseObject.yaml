@@ -1,0 +1,33 @@
+↓Move [steps.SimpleStep-1588753954573]: 
+  expression: |
+    'var dboFrom = com.twinsoft.convertigo.engine.Engine.theApp.databaseObjectsManager.getDatabaseObjectByQName(from);
+    var dboTo = com.twinsoft.convertigo.engine.Engine.theApp.databaseObjectsManager.getDatabaseObjectByQName(to);
+    var dboCloneFrom = dboFrom.clone();
+    success = false;
+    try {
+    	dboTo.add(dboCloneFrom);
+    	dboCloneFrom.delete();
+    	dboFrom.delete();
+    	dboTo.add(dboFrom);
+    	if (before != null && before != "") {
+    		var dboBefore = com.twinsoft.convertigo.engine.Engine.theApp.databaseObjectsManager.getDatabaseObjectByQName(before);
+    		dboTo.insertAtOrder(dboFrom, dboBefore.priority);
+    	}
+    	qname = dboFrom.getQName();
+    	success = true;
+    } catch (e) {
+    	log.error("" + e);
+    	dboCloneFrom.delete();
+    }'
+↓status [steps.ElementStep-1588755206297]: 
+  expression: success
+  nodeName: success
+  ↓type [steps.XMLAttributeStep-1588769546548]: 
+    nodeName: type
+    nodeText: boolean
+↓qname [steps.ElementStep-1588770968876]: 
+  expression: qname
+  nodeName: qname
+↓from [variables.RequestableVariable-1588752878536]: 
+↓to [variables.RequestableVariable-1588752893748]: 
+↓before [variables.RequestableVariable-1588752914053]: 

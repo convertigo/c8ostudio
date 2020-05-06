@@ -20,6 +20,17 @@
       ↓value [steps.ElementStep-1588665445067]: 
         expression: '"" + item.getReadMethod().invoke(dbo)'
         nodeName: value
+  ↓property [steps.XMLComplexStep-1588771560552]: 
+    nodeName: property
+    ↓tpe [steps.XMLAttributeStep-1588771560556]: 
+      nodeName: type
+      nodeText: object
+    ↓displayName [steps.XMLElementStep-1588771640705]: 
+      nodeName: displayName
+      nodeText: Priority
+    ↓value [steps.ElementStep-1588771560564]: 
+      expression: '"" + dbo.priority'
+      nodeName: value
 ↓qname [variables.RequestableVariable-1588664550444]: 
 ↓project [core.TestCase]: 
   ↓qname [variables.TestCaseVariable-1588664862002]: 
