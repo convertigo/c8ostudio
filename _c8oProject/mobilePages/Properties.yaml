@@ -7,9 +7,26 @@ scriptContent:
         /*End_c8o_PageImport*/
         /*Begin_c8o_PageDeclaration*/
         	columnDefs = [
-        	              {headerName: ''Property'', field: ''displayName''},
-        	              {headerName: ''Value'', field: ''value''}
-        	]
+              {headerName: ''Property'', field: ''displayName'', editable: false},
+              {headerName: ''Value'', field: ''value'', onCellValueChanged: (param) => {
+                  var onFail = () => {
+                      param.data.value = param.oldValue;
+                      param.node.setData(param.data);
+                  };
+                  this.c8o.callJson(''C8oStudio.SetProperty'',
+                      ''qname'', this.currentQName,
+                      ''name'', param.data.name,
+                      ''value'', param.newValue).then((response, parameters) => {
+                          if (!response[''success'']) {
+                              onFail();
+                          }
+                          return null;
+                      }).fail((response) => {
+                          onFail();
+                      })
+              }}
+        	];
+        	currentQName = '''';
         	/*End_c8o_PageDeclaration*/
         /*Begin_c8o_PageConstructor*/
         		/*End_c8o_PageConstructor*/
@@ -72,5 +89,6 @@ title: Title for Properties
             →: |
               '		page.c8o.log.debug(''[MB] ''+ props.actionFunction +'': ''+ props.actionName);
               		this.agGrid.api.setRowData(props.out.properties);
+              		this.currentQName = props.out.qname;
               		resolve();
               '

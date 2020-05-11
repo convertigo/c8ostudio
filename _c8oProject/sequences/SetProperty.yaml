@@ -20,6 +20,7 @@
     		toClass = cls.getMethod("valueOf", java.lang.String);
     	} catch (e) {
     		log.message("valueOf failed: " + e);
+    		cls = org.apache.commons.lang3.ClassUtils.primitiveToWrapper(cls);
     		var clsMethods = cls.getMethods();
     		for (i = 0; i < clsMethods.length && toClass == null; i++) {
     			if (clsMethods[i].getName().startsWith("parse")) {

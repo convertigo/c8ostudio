@@ -2,6 +2,9 @@
   expression: |
     var dbo = com.twinsoft.convertigo.engine.Engine.theApp.databaseObjectsManager.getDatabaseObjectByQName(qname);
     var propDesc = com.twinsoft.convertigo.engine.util.CachedIntrospector.getBeanInfo(dbo.getClass()).getPropertyDescriptors();
+↓qname [steps.ElementStep-1589188633563]: 
+  expression: qname
+  nodeName: qname
 ↓properties [steps.XMLComplexStep-1588665070603]: 
   nodeName: properties
   ↓type [steps.XMLAttributeStep-1588665089471]: 
@@ -17,6 +20,9 @@
       ↓displayName [steps.ElementStep-1588665357557]: 
         expression: item.getDisplayName()
         nodeName: displayName
+      ↓name [steps.ElementStep-1589189400582]: 
+        expression: item.getName()
+        nodeName: name
       ↓value [steps.ElementStep-1588665445067]: 
         expression: '"" + item.getReadMethod().invoke(dbo)'
         nodeName: value
@@ -28,6 +34,9 @@
     ↓displayName [steps.XMLElementStep-1588771640705]: 
       nodeName: displayName
       nodeText: Priority
+    ↓name [steps.XMLElementStep-1589189527970]: 
+      nodeName: name
+      nodeText: priority
     ↓value [steps.ElementStep-1588771560564]: 
       expression: '"" + dbo.priority'
       nodeName: value
