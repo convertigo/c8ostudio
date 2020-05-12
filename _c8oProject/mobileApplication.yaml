@@ -33,6 +33,7 @@ tplProjectName: C8oStudio
 ↓LogViewer [mobile.components.PageComponent-1587905682093]: 🗏 mobilePages/LogViewer.yaml
 ↓Projects [mobile.components.PageComponent-1587913187659]: 🗏 mobilePages/Projects.yaml
 ↓FlowViewer [mobile.components.PageComponent-1588052988201]: 🗏 mobilePages/FlowViewer.yaml
+↓Palette [mobile.components.PageComponent-1589293088863]: 🗏 mobilePages/Palette.yaml
 ↓Theme [mobile.components.UITheme-1491635018260]: 
   comment: Global color themes can be customized here
   styleContent: 

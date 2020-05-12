@@ -9,6 +9,9 @@ scriptContent:
         	columnDefs = [
               {headerName: ''Property'', field: ''displayName'', editable: false},
               {headerName: ''Value'', field: ''value'', onCellValueChanged: (param) => {
+                  if (param.newValue == param.oldValue) {
+                      return;
+                  }
                   var onFail = () => {
                       param.data.value = param.oldValue;
                       param.node.setData(param.data);

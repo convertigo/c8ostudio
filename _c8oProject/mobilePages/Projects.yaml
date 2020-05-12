@@ -29,6 +29,12 @@ scriptContent:
                 actionMapping: {
                     mouse: {
                         drop: (tree:TreeModel, node:TreeNode, $event:any, {from, to}) => {
+                            console.log(''drop $event:'');
+                            console.log($event);
+                            console.log(''drop from:'');
+                            console.log(from);
+                            console.log(''drop to:'');
+                            console.log(to);
                             var before = '''';
                             if (!to.dropOnNode) {
                                 try {
