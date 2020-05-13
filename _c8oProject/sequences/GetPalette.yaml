@@ -12,6 +12,22 @@
   ↓jIfThenElse [steps.IfThenElseStep-1589379425259]: 
     condition: dbo instanceof com.twinsoft.convertigo.beans.core.MobileComponent
     ↓jThen [steps.ThenStep-1589379426675]: 
+      ↓jIf [steps.IfStep-1589385406499]: 
+        condition: dbo instanceof com.twinsoft.convertigo.beans.mobile.components.ApplicationComponent
+        ↓bean [steps.XMLComplexStep-1589385390303]: 
+          nodeName: bean
+          ↓tpe [steps.XMLAttributeStep-1589385390306]: 
+            nodeName: type
+            nodeText: object
+          ↓Element [steps.XMLElementStep-1589385509602]: 
+            nodeName: className
+            nodeText: com.twinsoft.convertigo.beans.mobile.components.PageComponent
+          ↓Element1 [steps.XMLElementStep-1589385569295]: 
+            nodeName: group
+            nodeText: Page
+          ↓Element2 [steps.XMLElementStep-1589385581311]: 
+            nodeName: displayName
+            nodeText: Page
       ↓jIterator [steps.SimpleIteratorStep-1589377524280]: 
         expression: com.twinsoft.convertigo.beans.mobile.components.dynamic.ComponentManager.getComponents()
         ↓jIf [steps.IfStep-1589379523471]: 
