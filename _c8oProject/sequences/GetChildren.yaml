@@ -4,7 +4,7 @@
     nodeName: type
     nodeText: array
   ↓jIfThenElse [steps.IfThenElseStep-1588584569661]: 
-    condition: name == "root"
+    condition: qname == "root"
     ↓jThen [steps.ThenStep-1588584571511]: 
       ↓jIterator [steps.SimpleIteratorStep-1588584601870]: 
         expression: com.twinsoft.convertigo.engine.Engine.theApp.databaseObjectsManager.getAllProjectNamesList(true)
@@ -13,9 +13,9 @@
           ↓type [steps.XMLAttributeStep-1588585039144]: 
             nodeName: type
             nodeText: object
-          ↓name [steps.ElementStep-1588584907760]: 
+          ↓qname [steps.ElementStep-1588584907760]: 
             expression: item
-            nodeName: name
+            nodeName: qname
           ↓displayName [steps.ElementStep-1588602676074]: 
             expression: item
             nodeName: displayName
@@ -30,15 +30,15 @@
             nodeText: com.twinsoft.convertigo.beans.core.Project
     ↓jElse [steps.ElseStep-1588584571513]: 
       ↓jIterator [steps.SimpleIteratorStep-1588585452342]: 
-        expression: com.twinsoft.convertigo.engine.Engine.theApp.databaseObjectsManager.getDatabaseObjectByQName(name).getDatabaseObjectChildren()
+        expression: com.twinsoft.convertigo.engine.Engine.theApp.databaseObjectsManager.getDatabaseObjectByQName(qname).getDatabaseObjectChildren()
         ↓dbo [steps.XMLComplexStep-1588585467857]: 
           nodeName: dbo
           ↓type [steps.XMLAttributeStep-1588585467860]: 
             nodeName: type
             nodeText: object
-          ↓name1 [steps.ElementStep-1588585483114]: 
+          ↓qname [steps.ElementStep-1588585483114]: 
             expression: item.getQName()
-            nodeName: name
+            nodeName: qname
           ↓displayName [steps.ElementStep-1588602697198]: 
             expression: item.getName()
             nodeName: displayName
@@ -48,10 +48,18 @@
             ↓type [steps.XMLAttributeStep-1588772282600]: 
               nodeName: type
               nodeText: boolean
-          ↓className [steps.ElementStep-1588605527472]: 
+          ↓className [steps.ElementStep-1589384787514]: 
             expression: item.getClass().getName()
             nodeName: className
-↓name [variables.RequestableVariable-1588584420887]: 
+          ↓jIfThenElse [steps.IfThenElseStep-1589384770715]: 
+            condition: dbo instanceof com.twinsoft.convertigo.beans.core.MobileComponent
+            isEnabled: false
+            ↓jThen [steps.ThenStep-1589384771922]: 
+            ↓jElse [steps.ElseStep-1589384771924]: 
+              ↓className [steps.ElementStep-1588605527472]: 
+                expression: item.getClass().getName()
+                nodeName: className
+↓qname [variables.RequestableVariable-1588584420887]: 
 ↓root [core.TestCase]: 
-  ↓name [variables.TestCaseVariable-1588584927680]: 
+  ↓qname [variables.TestCaseVariable-1588584927680]: 
     value: root

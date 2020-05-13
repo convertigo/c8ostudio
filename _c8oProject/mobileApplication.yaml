@@ -134,6 +134,7 @@ tplProjectName: C8oStudio
           	 		background-color: your color; 
           	 		background-image: url(some background image);
           	*/
+          	background-color: color($colors, ''dark'')
           }
           
           .toolbar-background {

@@ -39,7 +39,7 @@ scriptContent:
                                 type: ''column'',
                                 content: [
                                {
-                                   type: ''stack'',
+                                   type: ''row'',
                                    content: [
                                     {
                                         type: ''component'',
@@ -50,18 +50,23 @@ scriptContent:
                                         type: ''component'',
                                         componentName: ''FlowViewer'',
                                         componentState: { text: ''Component 2'' }
-                                    },
-                                    {
-                                        type: ''component'',
-                                        componentName: ''Viewer'',
-                                        componentState: { text: ''Component 2'' }
                                     }
                                    ]
                                },
                                {
-                                    type: ''component'',
-                                    componentName: ''Logs'',
-                                    componentState: { text: ''Component 4'' }
+                                  type: ''stack'',
+                                  content: [
+                                    {
+                                        type: ''component'',
+                                        componentName: ''Viewer'',
+                                        componentState: { text: ''Component 2'' }
+                                    },
+                                    {
+                                         type: ''component'',
+                                         componentName: ''Logs'',
+                                         componentState: { text: ''Component 4'' }
+                                    }
+                                  ]
                                }]
                             }]
                     }]

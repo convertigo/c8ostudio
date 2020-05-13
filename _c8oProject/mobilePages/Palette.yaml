@@ -65,9 +65,44 @@ title: Title for Palette
                   attrValue: 
                     - xmlizable: 
                       - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
-                      - MobileSmartSourceType: plain:{{ this.c8o.endpoint }}/.bin?__sequence=GetIcon&className={{ item1589294466370.className }}
+                      - MobileSmartSourceType: plain:{{ this.c8o.endpoint }}/.bin?__sequence=GetIcon&className={{ item1589294466370.className }}&large=true
+                ↓Attr1 [mobile.components.UIAttribute-1589310725332]: 
+                  attrName: draggable
+                  attrValue: 
+                    - xmlizable: 
+                      - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
+                      - MobileSmartSourceType: plain:false
               ↓Text [mobile.components.UIText-1589296402954]: 
                 textValue: 
                   - xmlizable: 
                     - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
                     - MobileSmartSourceType: source:{"filter":"Iteration","project":"C8oStudio","input":"item1589294466370?.displayName"}
+            ↓Attr [mobile.components.UIAttribute-1589307787206]: 
+              attrName: draggable
+              attrValue: 
+                - xmlizable: 
+                  - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
+                  - MobileSmartSourceType: plain:true
+            ↓Event [mobile.components.UIControlEvent-1589307855989]: 
+              attrName: (dragstart)
+              eventName: (dragstart)
+              ↓DragStart [mobile.components.UICustomAction-1589308407994]: 
+                actionValue: 
+                  - xmlizable: 
+                    - ↑classname: com.twinsoft.convertigo.beans.common.FormatedContent
+                    - com.twinsoft.convertigo.beans.common.FormatedContent: 
+                      →: |
+                        '		page.c8o.log.debug(''[MB] ''+ props.actionFunction +'': ''+ props.actionName);
+                        		console.log(props);
+                        		console.log(event);
+                        		console.log(event.srcElement.getAttribute(''data-classname''));
+                        		event.dataTransfer.setData(''application/json'', JSON.stringify({''from'':''Palette'', ''className'': event.srcElement.getAttribute(''data-classname'')}));
+                        		console.log(event.srcElement.getAttribute(''data-classname''));
+                        		resolve();
+                        '
+            ↓Attr1 [mobile.components.UIAttribute-1589308698329]: 
+              attrName: attr.data-classname
+              attrValue: 
+                - xmlizable: 
+                  - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
+                  - MobileSmartSourceType: source:{"filter":"Iteration","project":"C8oStudio","input":"item1589294466370?.className"}

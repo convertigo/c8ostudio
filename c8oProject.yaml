@@ -6,9 +6,11 @@
   ↓void [connectors.SqlConnector]: 🗏 connectors/void.yaml
   ↓GetChildren [sequences.GenericSequence]: 🗏 sequences/GetChildren.yaml
   ↓GetIcon [sequences.GenericSequence]: 🗏 sequences/GetIcon.yaml
+  ↓GetMobileComponents [sequences.GenericSequence]: 🗏 sequences/GetMobileComponents.yaml
   ↓GetPalette [sequences.GenericSequence]: 🗏 sequences/GetPalette.yaml
   ↓GetProperties [sequences.GenericSequence]: 🗏 sequences/GetProperties.yaml
   ↓MoveDatabaseObject [sequences.GenericSequence]: 🗏 sequences/MoveDatabaseObject.yaml
+  ↓NewDatabaseObject [sequences.GenericSequence]: 🗏 sequences/NewDatabaseObject.yaml
   ↓Save [sequences.GenericSequence]: 🗏 sequences/Save.yaml
   ↓SetProperty [sequences.GenericSequence]: 🗏 sequences/SetProperty.yaml
   ↓MobileApplication [core.MobileApplication]: 
