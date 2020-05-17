@@ -8,8 +8,9 @@ scriptContent:
         import { CodeEditor }                                                   from ''../CodeEditor/codeeditor''
         import { Properties }                                                   from ''../Properties/properties''
         import { LogViewer  }                                                   from ''../LogViewer/logviewer''
-        import { Projects  }                                                    from ''../Projects/projects''
-        import { FlowViewer  }                                                  from ''../FlowViewer/flowviewer''
+        import { Projects   }                                                   from ''../Projects/projects''
+        import { FlowViewer }                                                   from ''../FlowViewer/flowviewer''
+        import { Palette    }                                                   from ''../Palette/palette''
         
         import { ApplicationRef }                                               from ''@angular/core''
         /*End_c8o_PageImport*/
@@ -38,19 +39,34 @@ scriptContent:
                                 type: ''column'',
                                 content: [
                                {
-                                   type: ''component'',
-                                   componentName: ''FlowViewer'',
-                                   componentState: { text: ''Component 2'' }
-                               },                        
-                               {
-                                   type: ''component'',
-                                   componentName: ''Viewer'',
-                                   componentState: { text: ''Component 2'' }
+                                   type: ''row'',
+                                   content: [
+                                    {
+                                        type: ''component'',
+                                        componentName: ''Palette'',
+                                        componentState: { text: ''Component 2'' }
+                                    },
+                                    {
+                                        type: ''component'',
+                                        componentName: ''FlowViewer'',
+                                        componentState: { text: ''Component 2'' }
+                                    }
+                                   ]
                                },
                                {
-                                    type: ''component'',
-                                    componentName: ''Logs'',
-                                    componentState: { text: ''Component 4'' }
+                                  type: ''stack'',
+                                  content: [
+                                    {
+                                        type: ''component'',
+                                        componentName: ''Viewer'',
+                                        componentState: { text: ''Component 2'' }
+                                    },
+                                    {
+                                         type: ''component'',
+                                         componentName: ''Logs'',
+                                         componentState: { text: ''Component 4'' }
+                                    }
+                                  ]
                                }]
                             }]
                     }]
@@ -58,6 +74,7 @@ scriptContent:
         		
         		let appRef = this.getInstance(ApplicationRef)
                 this.myLayout = new GoldenLayout( config );
+        		window[''myLayout''] = this.myLayout;
                 this.myLayout.registerComponent(
                     ''Viewer'', function( container, state ){
                         let compFactory = cfr.resolveComponentFactory(CodeEditor);
@@ -93,6 +110,14 @@ scriptContent:
                     ''FlowViewer'',
                     function( container, state ){
                         let compFactory = cfr.resolveComponentFactory(FlowViewer);
+                        let cmp = compFactory.create(injector, [], container.getElement().get(0))
+                        appRef.attachView(cmp.hostView);
+                    }
+                )
+                this.myLayout.registerComponent(
+                    ''Palette'',
+                    function( container, state ){
+                        let compFactory = cfr.resolveComponentFactory(Palette);
                         let cmp = compFactory.create(injector, [], container.getElement().get(0))
                         appRef.attachView(cmp.hostView);
                     }

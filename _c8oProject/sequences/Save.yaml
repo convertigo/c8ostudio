@@ -1,0 +1,13 @@
+↓Save [steps.SimpleStep-1589203353614]: 
+  expression: |
+    var success = false;
+    project = com.twinsoft.convertigo.engine.Engine.theApp.databaseObjectsManager.getOriginalProjectByName(project);
+    com.twinsoft.convertigo.engine.Engine.theApp.databaseObjectsManager.exportProject(project);
+    success = true;
+↓status [steps.ElementStep-1589203372617]: 
+  expression: success
+  nodeName: success
+  ↓type [steps.XMLAttributeStep-1589203372620]: 
+    nodeName: type
+    nodeText: boolean
+↓project [variables.RequestableVariable-1589203289072]: 

@@ -9,7 +9,7 @@ scriptContent:
         /*Begin_c8o_PageDeclaration*/
         	nodes = [
              {
-                 name: ''root'',
+                 qname: ''root'',
                  displayField: ''displayName'',
                  hasChildren: true,
                  displayName: ''Projects'',
@@ -17,13 +17,11 @@ scriptContent:
                }
              ];
         	options = {
+        	    idField: ''qname'',
                 getChildren: (node:TreeNode) => {
-                    window["lastNode"] = node;
-                    console.log("getChildren of node: " + node);
-                    console.log(node);
                     return new Promise((resolve, reject) => {
-                        this.c8o.callJson(".GetChildren", "name", node.data.name).then((response, parameters) => {
-                            resolve(response["array"]);
+                        this.c8o.callJson(''.GetChildren'', ''qname'', node.data.qname).then((response, parameters) => {
+                            resolve(response[''array'']);
                             return null;
                         });
                     });
@@ -32,48 +30,65 @@ scriptContent:
                 actionMapping: {
                     mouse: {
                         drop: (tree:TreeModel, node:TreeNode, $event:any, {from, to}) => {
-                            // use from to get the dragged node.
-                            // use to.parent and to.index to get the drop location
-                            // use TREE_ACTIONS.MOVE_NODE to invoke the original action
+                            var data = $event.dataTransfer.getData(''application/json'');
+                            data = data ? JSON.parse(data) : null;
+                            console.log(''drop $event:'');
+                            console.log($event);
+                            console.log(''drop datatr:'');
+                            console.log(data);
                             console.log(''drop from:'');
                             console.log(from);
                             console.log(''drop to:'');
                             console.log(to);
-                            window[''tFrom''] = from;
-                            window[''tTo''] = to;
-                            window[''tTree''] = tree;
-                            window[''tNode''] = node;
                             var before = '''';
                             if (!to.dropOnNode) {
                                 try {
-                                    before = to.parent.children[to.index].data.name
+                                    before = to.parent.children[to.index].data.qname
                                 } catch (e) {}
                             }
-                            this.c8o.callJson(''C8oStudio.MoveDatabaseObject'',
-                                ''from'', from.data.name,
-                                ''to'', to.parent.data.name,
-                                ''before'', before
-                            ).then((response, param) => {
-                                console.log(''Drop response:'');
-                                console.log(response);
-                                if (response[''success'']) {
-                                    tree.moveNode(from, to);
-                                    from.data.name = response[''qname''];
+                            if (from != null) {
+                                this.c8o.callJson(''C8oStudio.MoveDatabaseObject'',
+                                    ''from'', from.data.qname,
+                                    ''to'', to.parent.data.qname,
+                                    ''before'', before
+                                ).then((response, param) => {
+                                    if (response[''success'']) {
+                                        tree.moveNode(from, to);
+                                        from.data.qname = response[''qname''];
+                                    }
+                                    return null;
+                                });
+                            } else if (data != null) {
+                                if (data[''from''] == ''Palette'') {
+                                    console.log(''ClassName: '' + data[''className'']);
+                                    this.c8o.callJson(''C8oStudio.NewDatabaseObject'',
+                                        ''className'', data[''className''],
+                                        ''to'', to.parent.data.qname,
+                                        ''before'', before
+                                    ).then((response, param) => {
+                                        if (response[''success'']) {
+                                            this.refresh(to.parent.data.qname);
+                                        }
+                                        return null;
+                                    });
                                 }
-                                return null;
-                            });
+                            }
                         },  
                     }
                 }
         	}
         	/*End_c8o_PageDeclaration*/
         /*Begin_c8o_PageConstructor*/
-        		window["convertigo"] = this.c8o;
+        		window[''c8o_c8o''] = this.c8o;
         		/*End_c8o_PageConstructor*/
         /*Begin_c8o_PageFunction*/
-        //	onFocus = ($event) => {
-        //	    
-        //	}
+        	refresh = (qname) => {
+        	    var node:TreeNode = this.tree.treeModel.getNodeById(qname);
+                node.collapse();
+                node.data.hasChildren = true;
+                node.children = null;
+                node.expand();
+        	}
         	/*End_c8o_PageFunction*/
         '
 segment: path-to-projects
@@ -111,6 +126,43 @@ title: Title for Projects
                 - ↑value: angular-tree-component
               - java.lang.String: 
                 - ↑value: 7.2.1
+↓ButtonSet [mobile.components.UIDynamicElement-1589198919296]: 
+  beanData: '{"ionBean":"ButtonSet"}'
+  tagName: ion-buttons
+  ↓Save [mobile.components.UIDynamicElement-1589198944828]: 
+    beanData: '{"ionBean":"Button"}'
+    tagName: button
+    ↓Icon [mobile.components.UIDynamicElement-1589198839410]: 
+      beanData: '{"ionBean":"Icon","IconName":"plain:archive"}'
+      tagName: ion-icon
+    ↓Event [mobile.components.UIControlEvent-1589203245136]: 
+      ↓Save [mobile.components.UIDynamicAction-1589203255756]: 
+        beanData: '{"ionBean":"CallSequenceAction","requestable":"plain:C8oStudio.Save"}'
+        ↓project [mobile.components.UIControlVariable-1589203568250]: 
+          comment: new variable
+          varValue: 
+            - xmlizable: 
+              - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
+              - MobileSmartSourceType: script:this.tree.treeModel.getFocusedNode().data.qname.replace(/\\..*/, '')
+        ↓Log [mobile.components.UIDynamicAction-1589207109103]: 
+          beanData: '{"ionBean":"LogAction","message":"script:out.success ? ''saved'' : ''save failed''"}'
+  ↓Refresh [mobile.components.UIDynamicElement-1589356972701]: 
+    beanData: '{"ionBean":"Button"}'
+    tagName: button
+    ↓Icon [mobile.components.UIDynamicElement-1589356972704]: 
+      beanData: '{"ionBean":"Icon","IconName":"plain:refresh-circle"}'
+      tagName: ion-icon
+    ↓Event [mobile.components.UIControlEvent-1589356972707]: 
+      ↓Refresh [mobile.components.UICustomAction-1589357096393]: 
+        actionValue: 
+          - xmlizable: 
+            - ↑classname: com.twinsoft.convertigo.beans.common.FormatedContent
+            - com.twinsoft.convertigo.beans.common.FormatedContent: 
+              →: |
+                '		page.c8o.log.debug(''[MB] ''+ props.actionFunction +'': ''+ props.actionName);
+                		this.refresh(this.tree.treeModel.getFocusedNode().data.qname);
+                		resolve();
+                '
 ↓Tag [mobile.components.UIElement-1588600889253]: 
   identifier: tree
   tagName: tree-root
@@ -145,6 +197,7 @@ title: Title for Projects
           - xmlizable: 
             - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
             - MobileSmartSourceType: plain:{{ node.data.displayName }}
+      ↓Attr [mobile.components.UIAttribute-1589307825059]: 
     ↓Attr [mobile.components.UIAttribute-1588602477828]: 
       attrName: let-node
       attrValue: 
@@ -159,5 +212,5 @@ title: Title for Projects
         '{
          "ionBean": "PublishEventAction",
          "topic": "plain:dboFocus",
-         "data": "script:$event.node.data.name"
+         "data": "script:$event.node.data.qname"
         }'

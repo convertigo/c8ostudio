@@ -1,0 +1,95 @@
+↓GetPalette [steps.SimpleStep-1589289617815]: 
+  expression: |
+    var theApp = com.twinsoft.convertigo.engine.Engine.theApp;
+    var dbo = theApp.databaseObjectsManager.getDatabaseObjectByQName(qname);
+    var dboc = dbo.getClass();
+    var manager = theApp.getDboExplorerManager();
+↓beans [steps.XMLComplexStep-1589294310601]: 
+  nodeName: beans
+  ↓type [steps.XMLAttributeStep-1589294338931]: 
+    nodeName: type
+    nodeText: array
+  ↓jIfThenElse [steps.IfThenElseStep-1589379425259]: 
+    condition: dbo instanceof com.twinsoft.convertigo.beans.core.MobileComponent
+    ↓jThen [steps.ThenStep-1589379426675]: 
+      ↓jIf [steps.IfStep-1589385406499]: 
+        condition: dbo instanceof com.twinsoft.convertigo.beans.mobile.components.ApplicationComponent
+        ↓bean [steps.XMLComplexStep-1589385390303]: 
+          nodeName: bean
+          ↓tpe [steps.XMLAttributeStep-1589385390306]: 
+            nodeName: type
+            nodeText: object
+          ↓Element [steps.XMLElementStep-1589385509602]: 
+            nodeName: className
+            nodeText: com.twinsoft.convertigo.beans.mobile.components.PageComponent
+          ↓Element1 [steps.XMLElementStep-1589385569295]: 
+            nodeName: group
+            nodeText: Page
+          ↓Element2 [steps.XMLElementStep-1589385581311]: 
+            nodeName: displayName
+            nodeText: Page
+      ↓jIterator [steps.SimpleIteratorStep-1589377524280]: 
+        expression: com.twinsoft.convertigo.beans.mobile.components.dynamic.ComponentManager.getComponents()
+        ↓jIf [steps.IfStep-1589379523471]: 
+          condition: item.isAllowedIn(dbo)
+          ↓bean [steps.XMLComplexStep-1589377620200]: 
+            nodeName: bean
+            ↓tpe [steps.XMLAttributeStep-1589379987131]: 
+              nodeName: type
+              nodeText: object
+            ↓className [steps.ElementStep-1589377634768]: 
+              expression: '''mobileComponent:'' + item.getName()'
+              nodeName: className
+            ↓group [steps.ElementStep-1589380273894]: 
+              expression: item.getGroup()
+              nodeName: group
+            ↓displayName [steps.ElementStep-1589377671372]: 
+              expression: item.getLabel()
+              nodeName: displayName
+            ↓image [steps.ElementStep-1589380507259]: 
+              expression: item.getImagePath()
+              nodeName: image
+    ↓jElse [steps.ElseStep-1589379426677]: 
+      ↓group [steps.SimpleIteratorStep-1589292228992]: 
+        expression: manager.getGroups()
+        ↓category [steps.SimpleIteratorStep-1589292316415]: 
+          expression: group = item; group.getCategories()
+          ↓beansCategory [steps.SimpleIteratorStep-1589292377292]: 
+            expression: category = item; category.getBeans()
+            ↓bean [steps.SimpleIteratorStep-1589292435920]: 
+              expression: beansCategory = item; beansCategory.getBeans()
+              ↓jIf [steps.IfStep-1589292499488]: 
+                condition: bean = item; com.twinsoft.convertigo.engine.DatabaseObjectsManager.checkParent(dboc, bean)
+                ↓bean [steps.XMLComplexStep-1589292522922]: 
+                  nodeName: bean
+                  ↓tpe [steps.XMLAttributeStep-1589294353134]: 
+                    nodeName: type
+                    nodeText: object
+                  ↓className [steps.ElementStep-1589292537570]: 
+                    expression: bean.getClassName()
+                    nodeName: className
+                  ↓beansCategory [steps.ElementStep-1589292682991]: 
+                    expression: beansCategory.getName()
+                    nodeName: beansCategory
+                  ↓category [steps.ElementStep-1589292740655]: 
+                    expression: category.getName()
+                    nodeName: category
+                  ↓group [steps.ElementStep-1589292781150]: 
+                    expression: group.getName()
+                    nodeName: group
+                  ↓displayName [steps.ElementStep-1589294855960]: 
+                    expression: '"" + com.twinsoft.convertigo.engine.util.CachedIntrospector.getBeanInfo(dbo.getClass().forName(bean.getClassName())).getBeanDescriptor().getDisplayName()'
+                    nodeName: displayName
+↓qname [variables.RequestableVariable-1589289607174]: 
+↓application [core.TestCase]: 
+  ↓qname [variables.TestCaseVariable-1589378965586]: 
+    value: C8oStudio.MobileApplication.Application
+↓getpalette [core.TestCase]: 
+  ↓qname [variables.TestCaseVariable-1589291969590]: 
+    value: C8oStudio.GetPalette
+↓page [core.TestCase]: 
+  ↓qname [variables.TestCaseVariable-1589378998323]: 
+    value: C8oStudio.MobileApplication.Application.Layout
+↓project [core.TestCase]: 
+  ↓qname [variables.TestCaseVariable-1589291787020]: 
+    value: C8oStudio

@@ -23,12 +23,14 @@ import { PropertiesModule } from "../pages/Properties/properties.module";
 import { LogViewerModule }  from "../pages/LogViewer/logviewer.module";
 import { ProjectsModule }   from "../pages/Projects/projects.module";
 import { FlowViewerModule } from "../pages/FlowViewer/flowviewer.module";
+import { PaletteModule }    from "../pages/Palette/palette.module";
 
 import { CodeEditor }       from "../pages/CodeEditor/codeeditor";
 import { Properties }       from "../pages/Properties/properties";
 import { LogViewer }        from "../pages/LogViewer/logviewer";
 import { Projects }         from "../pages/Projects/projects";
 import { FlowViewer }       from "../pages/FlowViewer/flowviewer";
+import { Palette }          from "../pages/Palette/palette";
 
 
 /* Custom Golden Layout */
@@ -77,6 +79,7 @@ export function createTranslateLoader(http: HttpClient) {
     LogViewerModule,
     ProjectsModule,
     FlowViewerModule,
+    PaletteModule,
     
     BrowserAnimationsModule,
     HttpClientModule,
@@ -98,7 +101,8 @@ export function createTranslateLoader(http: HttpClient) {
     Properties,
     LogViewer,
     Projects,
-    FlowViewer
+    FlowViewer,
+    Palette
     /*=c8o_PagesDeclarations*/
   /*End_c8o_NgComponents*/],
   providers: [/*Begin_c8o_NgProviders*/

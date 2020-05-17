@@ -1,0 +1,108 @@
+segment: path-to-palette
+title: Title for Palette
+↓Subscribe_Handler [mobile.components.UIEventSubscriber-1589294263670]: 
+  topic: dboFocus
+  ↓GetPalette [mobile.components.UIDynamicAction-1589294263673]: 
+    beanData: '{"ionBean":"CallSequenceAction","requestable":"plain:C8oStudio.GetPalette"}'
+    ↓qname [mobile.components.UIControlVariable-1589294263676]: 
+      comment: new variable
+      varValue: 
+        - xmlizable: 
+          - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
+          - MobileSmartSourceType: script:out
+↓Header [mobile.components.UIDynamicElement-1589296498379]: 
+  beanData: '{"ionBean":"Header"}'
+  isEnabled: false
+  tagName: ion-header
+  ↓Label [mobile.components.UIDynamicElement-1589294006292]: 
+    beanData: '{"ionBean":"Label"}'
+    tagName: ion-label
+    ↓Text [mobile.components.UIText-1589296530756]: 
+      textValue: 
+        - xmlizable: 
+          - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
+          - MobileSmartSourceType: plain:search
+  ↓TextInput [mobile.components.UIDynamicElement-1589293954554]: 
+    beanData: '{"ionBean":"Input"}'
+    tagName: ion-input
+↓Content [mobile.components.UIDynamicElement-1589294543659]: 
+  beanData: '{"ionBean":"Content"}'
+  tagName: ion-content
+  ↓Grid [mobile.components.UIDynamicElement-1589294034878]: 
+    beanData: '{"ionBean":"Grid"}'
+    tagName: ion-grid
+    ↓GridRow [mobile.components.UIDynamicElement-1589294040221]: 
+      beanData: '{"ionBean":"GridRow"}'
+      tagName: ion-row
+      ↓eachBean [mobile.components.UIControlDirective-1589294466370]: 
+        directiveSource: 
+          - xmlizable: 
+            - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
+            - MobileSmartSourceType: source:{"filter":"Sequence","project":"C8oStudio","input":"listen(['C8oStudio.GetPalette'])?.beans"}
+        ↓GridCol [mobile.components.UIDynamicElement-1589294196461]: 
+          beanData: '{"ionBean":"GridCol"}'
+          tagName: ion-col
+          ↓Button [mobile.components.UIDynamicElement-1589294486473]: 
+            beanData: '{"ionBean":"Button"}'
+            isEnabled: false
+            tagName: button
+            ↓Text [mobile.components.UIText-1589294213965]: 
+              textValue: 
+                - xmlizable: 
+                  - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
+                  - MobileSmartSourceType: source:{"filter":"Iteration","project":"C8oStudio","input":"item1589294466370?.displayName"}
+          ↓CardContainer [mobile.components.UIDynamicElement-1589296323341]: 
+            beanData: '{"ionBean":"Card"}'
+            tagName: ion-card
+            ↓CardContent [mobile.components.UIDynamicElement-1589296328887]: 
+              beanData: '{"ionBean":"CardContent"}'
+              tagName: ion-card-content
+              ↓Tag [mobile.components.UIElement-1589296349151]: 
+                selfClose: true
+                tagName: img
+                ↓Attr [mobile.components.UIAttribute-1589296349154]: 
+                  attrName: src
+                  attrValue: 
+                    - xmlizable: 
+                      - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
+                      - MobileSmartSourceType: plain:{{ this.c8o.endpoint }}/.bin?__sequence=GetIcon&className={{ item1589294466370.className }}&large=true
+                ↓Attr1 [mobile.components.UIAttribute-1589310725332]: 
+                  attrName: draggable
+                  attrValue: 
+                    - xmlizable: 
+                      - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
+                      - MobileSmartSourceType: plain:false
+              ↓Text [mobile.components.UIText-1589296402954]: 
+                textValue: 
+                  - xmlizable: 
+                    - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
+                    - MobileSmartSourceType: source:{"filter":"Iteration","project":"C8oStudio","input":"item1589294466370?.displayName"}
+            ↓Attr [mobile.components.UIAttribute-1589307787206]: 
+              attrName: draggable
+              attrValue: 
+                - xmlizable: 
+                  - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
+                  - MobileSmartSourceType: plain:true
+            ↓Event [mobile.components.UIControlEvent-1589307855989]: 
+              attrName: (dragstart)
+              eventName: (dragstart)
+              ↓DragStart [mobile.components.UICustomAction-1589308407994]: 
+                actionValue: 
+                  - xmlizable: 
+                    - ↑classname: com.twinsoft.convertigo.beans.common.FormatedContent
+                    - com.twinsoft.convertigo.beans.common.FormatedContent: 
+                      →: |
+                        '		page.c8o.log.debug(''[MB] ''+ props.actionFunction +'': ''+ props.actionName);
+                        		console.log(props);
+                        		console.log(event);
+                        		console.log(event.srcElement.getAttribute(''data-classname''));
+                        		event.dataTransfer.setData(''application/json'', JSON.stringify({''from'':''Palette'', ''className'': event.srcElement.getAttribute(''data-classname'')}));
+                        		console.log(event.srcElement.getAttribute(''data-classname''));
+                        		resolve();
+                        '
+            ↓Attr1 [mobile.components.UIAttribute-1589308698329]: 
+              attrName: attr.data-classname
+              attrValue: 
+                - xmlizable: 
+                  - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
+                  - MobileSmartSourceType: source:{"filter":"Iteration","project":"C8oStudio","input":"item1589294466370?.className"}
