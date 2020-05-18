@@ -1,0 +1,14 @@
+version: 2
+jobs:
+  build:
+    docker:
+    - image: circleci/openjdk:11-jdk
+    steps:
+    - checkout
+    - run: |
+        sh gradlew --no-daemon --stacktrace --info deploy -Pconvertigo.deploy.server=$C8O_SERVER -Pconvertigo.deploy.user=$C8O_USER -Pconvertigo.deploy.password=$C8O_PASSWORD
+workflows:
+  version: 2
+  all:
+    jobs:
+    - build
