@@ -25,4 +25,4 @@
       comment: iOS platform
     ↓Application [mobile.components.ApplicationComponent]: 🗏 mobileApplication.yaml
   ↓Project_reference [references.ProjectSchemaReference]: 
-    projectName: lib_ExtendedComponents
+    projectName: lib_ExtendedComponents=https://github.com/convertigo/c8oprj-lib-extended-components.git:branch=master
