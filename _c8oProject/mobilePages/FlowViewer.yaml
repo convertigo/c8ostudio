@@ -113,7 +113,7 @@ scriptContent:
         	            let element = response["array"][i]
         	            let step = this.addStep({
                                 x: cellView.getBBox().topLeft().x + 10,
-                                y: cellView.getBBox().topLeft().y + 10 + verticalSpace * i              
+                                y: cellView.getBBox().topLeft().y + 10 + this.verticalSpace * i              
                             }, 
                             {
                                 width: 200,
