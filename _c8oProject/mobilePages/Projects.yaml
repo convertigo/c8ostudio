@@ -7,15 +7,7 @@ scriptContent:
         import { TreeModel, TreeNode, IActionHandler } from "angular-tree-component/dist/angular-tree-component";
         /*End_c8o_PageImport*/
         /*Begin_c8o_PageDeclaration*/
-        	nodes = [
-             {
-                 qname: ''root'',
-                 displayField: ''displayName'',
-                 hasChildren: true,
-                 displayName: ''Projects'',
-                 className: ''com.twinsoft.convertigo.beans.core.Project''
-               }
-             ];
+        	nodes = [];
         	options = {
         	    idField: ''qname'',
                 getChildren: (node:TreeNode) => {
@@ -82,7 +74,16 @@ scriptContent:
         		window[''c8o_c8o''] = this.c8o;
         		/*End_c8o_PageConstructor*/
         /*Begin_c8o_PageFunction*/
-        	refresh = (qname) => {
+        	ngAfterViewInit() {
+        	    window[''c8o_tree''] = this.tree;
+        	    this.c8o.callJson(''.GetChildren'', ''qname'', ''root'').then((response, parameters) => {
+                    this.nodes = response[''array''];
+                    this.tree.treeModel.update();
+                    return null;
+                });
+        	}
+        	
+        	refresh(qname) {
         	    var node:TreeNode = this.tree.treeModel.getNodeById(qname);
                 node.collapse();
                 node.data.hasChildren = true;

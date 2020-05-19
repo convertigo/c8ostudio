@@ -1,3 +1,7 @@
+↓MinusLevel [steps.SimpleStep-1589879185131]: 
+  expression: |
+    level = level - 1;
+    level = 0; // comment this and re-enable the 2 Then to enable level again
 ↓array [steps.XMLComplexStep-1588584638434]: 
   nodeName: array
   ↓type [steps.XMLAttributeStep-1588584843062]: 
@@ -19,12 +23,43 @@
           ↓displayName [steps.ElementStep-1588602676074]: 
             expression: item
             nodeName: displayName
-          ↓hasChildren [steps.XMLElementStep-1588585287606]: 
-            nodeName: hasChildren
-            nodeText: true
-            ↓type [steps.XMLAttributeStep-1588772288023]: 
-              nodeName: type
-              nodeText: boolean
+          ↓jIfThenElse [steps.IfThenElseStep-1589878866439]: 
+            condition: level > 0
+            ↓jThen [steps.ThenStep-1589878867895]: 
+              isEnabled: false
+              ↓chidren [steps.XMLComplexStep-1589878912553]: 
+                nodeName: children
+                ↓type [steps.XMLAttributeStep-1589878930213]: 
+                  nodeName: type
+                  nodeText: array
+                ↓Call_Sequence [steps.SequenceStep-1589878941664]: 
+                  sourceSequence: C8oStudio.GetChildren
+                  ↓qname [variables.StepVariable-1589878941666]: 
+                    sourceDefinition: 
+                      - xmlizable: 
+                        - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+                        - com.twinsoft.convertigo.beans.common.XMLVector: 
+                          - java.lang.String: 
+                            - ↑value: 1588584907760
+                          - java.lang.String: 
+                            - ↑value: ./text()
+                  ↓level [variables.StepVariable-1589878941668]: 
+                ↓Copy [steps.XMLCopyStep-1589879075885]: 
+                  sourceDefinition: 
+                    - xmlizable: 
+                      - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+                      - com.twinsoft.convertigo.beans.common.XMLVector: 
+                        - java.lang.String: 
+                          - ↑value: 1589878941664
+                        - java.lang.String: 
+                          - ↑value: ./document/array/dbo
+            ↓jElse [steps.ElseStep-1589878867897]: 
+              ↓hasChildren [steps.XMLElementStep-1588585287606]: 
+                nodeName: hasChildren
+                nodeText: true
+                ↓type [steps.XMLAttributeStep-1588772288023]: 
+                  nodeName: type
+                  nodeText: boolean
           ↓className [steps.XMLElementStep-1588662704001]: 
             nodeName: className
             nodeText: com.twinsoft.convertigo.beans.core.Project
@@ -42,12 +77,43 @@
           ↓displayName [steps.ElementStep-1588602697198]: 
             expression: item.getName()
             nodeName: displayName
-          ↓jElement [steps.ElementStep-1588771823044]: 
-            expression: '!item.getDatabaseObjectChildren().isEmpty()'
-            nodeName: hasChildren
-            ↓type [steps.XMLAttributeStep-1588772282600]: 
-              nodeName: type
-              nodeText: boolean
+          ↓jIfThenElse1 [steps.IfThenElseStep-1589878810899]: 
+            condition: level > 0
+            ↓jThen [steps.ThenStep-1589878812146]: 
+              isEnabled: false
+              ↓chidren [steps.XMLComplexStep-1589880151514]: 
+                nodeName: children
+                ↓type [steps.XMLAttributeStep-1589880151517]: 
+                  nodeName: type
+                  nodeText: array
+                ↓Call_Sequence [steps.SequenceStep-1589880151520]: 
+                  sourceSequence: C8oStudio.GetChildren
+                  ↓qname [variables.StepVariable-1589880151523]: 
+                    sourceDefinition: 
+                      - xmlizable: 
+                        - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+                        - com.twinsoft.convertigo.beans.common.XMLVector: 
+                          - java.lang.String: 
+                            - ↑value: 1588585483114
+                          - java.lang.String: 
+                            - ↑value: ./text()
+                  ↓level [variables.StepVariable-1589880151526]: 
+                ↓Copy [steps.XMLCopyStep-1589880151529]: 
+                  sourceDefinition: 
+                    - xmlizable: 
+                      - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+                      - com.twinsoft.convertigo.beans.common.XMLVector: 
+                        - java.lang.String: 
+                          - ↑value: 1589880151520
+                        - java.lang.String: 
+                          - ↑value: ./document/array/dbo
+            ↓jElse [steps.ElseStep-1589878812148]: 
+              ↓jElement [steps.ElementStep-1588771823044]: 
+                expression: '!item.getDatabaseObjectChildren().isEmpty()'
+                nodeName: hasChildren
+                ↓type [steps.XMLAttributeStep-1588772282600]: 
+                  nodeName: type
+                  nodeText: boolean
           ↓className [steps.ElementStep-1589384787514]: 
             expression: item.getClass().getName()
             nodeName: className
@@ -60,6 +126,10 @@
                 expression: item.getClass().getName()
                 nodeName: className
 ↓qname [variables.RequestableVariable-1588584420887]: 
+↓level [variables.RequestableVariable-1589878770804]: 
+  value: 1
 ↓root [core.TestCase]: 
   ↓qname [variables.TestCaseVariable-1588584927680]: 
     value: root
+  ↓level [variables.TestCaseVariable-1589878789439]: 
+    value: 2
