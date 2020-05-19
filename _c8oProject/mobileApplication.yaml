@@ -659,11 +659,14 @@ tplProjectName: C8oStudio
             background: color($colors, lighterdark, base);
             color: white;
             width: 150px;
-            height: 64px;
+            height: 50px;
+            display: flex;
+            align-items: center;
           }
           
           .page-palette .palette-item img {
-            width: 32px !important	
+            width: 32px !important;
+            margin: 10px
           }
           
           '

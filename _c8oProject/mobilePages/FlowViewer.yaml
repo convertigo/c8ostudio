@@ -14,6 +14,7 @@ scriptContent:
         	paper : joint.dia.Paper
         	scale : number = 10
         	dragStartPosition = null;
+        	verticalSpace = 100
         	/*End_c8o_PageDeclaration*/
         /*Begin_c8o_PageConstructor*/
         		/*End_c8o_PageConstructor*/
@@ -33,24 +34,43 @@ scriptContent:
         
         	addLink(source, dest) {
         	    var link = new joint.shapes.standard.Link();
-                link.source(source);
-                link.target(dest);
+                link.source(source, {
+                    anchor: {
+                        name: ''bottom''
+                    }
+                })
+                
+                link.target(dest, {
+                    anchor: {
+                        name: ''top''
+                    }
+                })
+                
                 link.attr(''line/stroke'', ''white'');
-                link.connector(''jumpover'', { size: 10 });	    
+                link.connector(''jumpover'', { size: 10 });	
                 link.addTo(this.graph);
         	}
         	
-        	addStep(position, size, text) {
+        	addStep(position, size, text:string, hasChildren:boolean, qname: string) {
                 let rect = new joint.shapes.basic.Rect( {
                     position: position,
                     size: size,
                     ports: {
                         groups: {
                             ''source'': {
-                                position: ''top'',
+                                position: ''right'',
                                 attrs: {
                                     ''.joint-port-body'' : {
                                         fill: ''orange'',
+                                        magnet: true
+                                    }
+                                }
+                            },
+                            ''dest'': {
+                                position: ''left'',
+                                attrs: {
+                                    ''.joint-port-body'' : {
+                                        fill: ''green'',
                                         magnet: true
                                     }
                                 }
@@ -59,21 +79,100 @@ scriptContent:
                         items: [{
                             group: ''source'',
                             args: {}, // extra arguments for the port layout function, see `layout.Port` section
+                        },
+                        {
+                            group: ''dest'',
+                            args: {}, // extra arguments for the port layout function, see `layout.Port` section
                         }]
                     },            
                     attrs: {
                         rect: {
-                            fill: ''blue''
+                            fill: hasChildren ? ''#222222'' : ''blue'',
+                            strokeDasharray: 2,
+                            strokeWidth: 2,
+                            stroke: hasChildren ? ''white'' : null 
                         },
                         text:
                         {
                             text: text,
                             fill: ''white''
                         }
-                    }
+                    },
+                    qname: qname
                 });
                 rect.addTo(this.graph);
                 return rect
+        	}
+        	
+        	getAndDisplayStepChilds(cellView: joint.dia.CellView) {
+        	    this.c8o.callJsonObject(".GetChildren", {
+        	        qname: cellView.model.attributes["qname"]
+        	    }).then((response, parameters) => {
+        	        let previous = null;
+        	        for (let i=0; i < response["array"].length; i++) {
+        	            let element = response["array"][i]
+        	            let step = this.addStep({
+                                x: cellView.getBBox().topLeft().x + 10,
+                                y: cellView.getBBox().topLeft().y + 10 + verticalSpace * i              
+                            }, 
+                            {
+                                width: 200,
+                                height: 50              
+                            }, 
+                            element.displayName,
+                            element.hasChildren,
+                            element.qname
+                        )
+                        
+                        cellView.model.embed(step)
+                        
+                        if (previous != null)
+                            this.addLink(previous, step)
+                        previous = step
+        
+                        /*
+                        if (element.hasChildren) {
+                            this.getAndDisplayStepChilds(step.findView(this.paper)) 
+                        }
+                        */
+        	        }
+        	        
+        	        /**
+        	         * Get the top most ancestor and ask it to resize itslef to fit all embeds 
+        	         */
+                    let ancestors = cellView.model["getAncestors"]()
+                    let resizeToFit = (ancestors.length == 0 ? cellView.model: ancestors[ancestors.length-1]) as joint.shapes.basic.Rect
+                    
+                    /**
+                     * Get the the bottom left position before resize
+                     */
+                    let bottomY = resizeToFit.getBBox().bottomLeft().y
+                    let bottomX = resizeToFit.getBBox().bottomLeft().x
+        
+                    /* Now Resize to fit all embedded */
+                    resizeToFit["fitEmbeds"]({
+                        deep: true,
+                        padding: 20
+                    })
+                    
+                    /* get the new bottom left position of the resized box, and compute deltas */ 
+                    let deltaY = resizeToFit.getBBox().bottomLeft().y - bottomY
+                    let deltaX = resizeToFit.getBBox().bottomLeft().x - bottomX
+                    
+                    /* Reposition resized Box by deltaX on the right */
+                    resizeToFit.translate(-deltaX, 0)
+        
+                    /* Now, walk all boxes and find only the ones that are lower than the non resized box and push them down by deltaY */ 
+                    for (let element of this.paper.model.getElements()) {
+                        if (element instanceof joint.shapes.basic.Rect) {
+                            /* Only for non embedded boxes */ 
+                            if (element.getParentCell() != resizeToFit)
+                                if (element.getBBox().topLeft().y > bottomY)
+                                    element.translate(0, deltaY)
+                        }
+                    }
+                    return null;
+        	    })
         	}
         	
         	ngAfterViewInit() {
@@ -91,7 +190,7 @@ scriptContent:
                         defaultLink: new joint.dia.Link({
                         attrs: {
                             ''.connection'' : {
-                                stroke: ''white'',
+                                stroke: ''orange'',
                                 strokeWidth: 2
                             }
                         }                
@@ -120,33 +219,98 @@ scriptContent:
                     this.c8o.log.debug("Mouse Up")
                     this.dragStartPosition = null
                 });
-        	    
                 
-                let rect = this.addStep({x: 30, y:30}, {height: 100, width: 200}, "hello")
-                let rect2 = rect.clone() as joint.shapes.basic.Rect
-                rect2.translate(150)
-        
-                let link = new joint.shapes.standard.Link()
-                link.source(rect);
-                link.target(rect2);
-                link.attr(''line/stroke'', ''#fe854f'');
-                link.router(''manhattan'');
-                link.connector(''rounded'');
+                this.paper.on(''cell:pointerclick'',  (cellView) => {
+                    this.c8o.log.debug("Step clicked !!!")
+                    this.getAndDisplayStepChilds(cellView)
+                })
                 
-                var link3 = new joint.shapes.standard.Link();
-                link3.source(rect);
-                link3.target(rect2);
-                link3.attr(''line/stroke'', ''white'');
-                link3.connector(''jumpover'', { size: 10 });
-                
-                
-                this.graph.addCells([rect2, link, link3]);
-        
         	}
         	/*End_c8o_PageFunction*/
         '
 segment: path-to-flowviewer
 title: Title for FlowViewer
+↓PageEvent [mobile.components.UIPageEvent-1588052803545]: 
+  ↓useJointJS [mobile.components.UICustomAction-1588052817033]: 
+    package_dependencies: 
+      - xmlizable: 
+        - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+        - com.twinsoft.convertigo.beans.common.XMLVector: 
+          - xmlizable: 
+            - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+            - com.twinsoft.convertigo.beans.common.XMLVector: 
+              - java.lang.String: 
+                - ↑value: jointjs
+              - java.lang.String: 
+                - ↑value: 3.1.1
+          - xmlizable: 
+            - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+            - com.twinsoft.convertigo.beans.common.XMLVector: 
+              - java.lang.String: 
+                - ↑value: '@types/lodash'
+              - java.lang.String: 
+                - ↑value: 3.10.1
+          - xmlizable: 
+            - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+            - com.twinsoft.convertigo.beans.common.XMLVector: 
+              - java.lang.String: 
+                - ↑value: '@types/jquery'
+              - java.lang.String: 
+                - ↑value: 3.3.36
+          - xmlizable: 
+            - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+            - com.twinsoft.convertigo.beans.common.XMLVector: 
+              - java.lang.String: 
+                - ↑value: '@types/backbone'
+              - java.lang.String: 
+                - ↑value: 1.4.1
+↓Subscribe_Handler [mobile.components.UIEventSubscriber-1588686865663]: 
+  topic: dboFocus
+  ↓CallSequence [mobile.components.UIDynamicAction-1588686924736]: 
+    beanData: '{"ionBean":"CallSequenceAction","requestable":"plain:C8oStudio.GetChildren"}'
+    ↓DisplayFlow [mobile.components.UICustomAction-1588687209815]: 
+      actionValue: 
+        - xmlizable: 
+          - ↑classname: com.twinsoft.convertigo.beans.common.FormatedContent
+          - com.twinsoft.convertigo.beans.common.FormatedContent: 
+            →: |
+              '            class walkTree {
+                              
+                          }
+              		    
+                  		this.graph.clear();
+                  		let previous = null
+                  		for (var i=0; i < vars.flow.length ; i++) {
+                  		    let step = this.addStep({
+                      		        x: 30,
+                      		        y: 30 + this.verticalSpace * i		        
+                      		    }, 
+                      		    {
+                                      width: 200,
+                                      height: 50              
+                                  }, 
+                                  vars.flow[i].displayName,
+                                  vars.flow[i].hasChildren,
+                                  vars.flow[i].qname
+                  		    )
+                  		    
+                  		    if (previous != null)
+                  		        this.addLink(previous, step)
+                  		    previous = step
+                  		}
+                  		resolve();
+              '
+      ↓flow [mobile.components.UIControlVariable-1588693303067]: 
+        varValue: 
+          - xmlizable: 
+            - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
+            - MobileSmartSourceType: source:{"filter":"Sequence","project":"C8oStudio","input":"listen(['C8oStudio.GetChildren'])?.array"}
+    ↓qname [mobile.components.UIControlVariable-1589811848532]: 
+      comment: new variable
+      varValue: 
+        - xmlizable: 
+          - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
+          - MobileSmartSourceType: script:out
 ↓Grid [mobile.components.UIDynamicElement-1588228737881]: 
   beanData: '{"ionBean":"Grid","Height":"plain:height:100%"}'
   tagName: ion-grid
@@ -193,79 +357,3 @@ title: Title for FlowViewer
             - xmlizable: 
               - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
               - MobileSmartSourceType: script:onGridSizeChanged()
-↓PageEvent [mobile.components.UIPageEvent-1588052803545]: 
-  ↓useJointJS [mobile.components.UICustomAction-1588052817033]: 
-    package_dependencies: 
-      - xmlizable: 
-        - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
-        - com.twinsoft.convertigo.beans.common.XMLVector: 
-          - xmlizable: 
-            - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
-            - com.twinsoft.convertigo.beans.common.XMLVector: 
-              - java.lang.String: 
-                - ↑value: jointjs
-              - java.lang.String: 
-                - ↑value: 3.1.1
-          - xmlizable: 
-            - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
-            - com.twinsoft.convertigo.beans.common.XMLVector: 
-              - java.lang.String: 
-                - ↑value: '@types/lodash'
-              - java.lang.String: 
-                - ↑value: 3.10.1
-          - xmlizable: 
-            - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
-            - com.twinsoft.convertigo.beans.common.XMLVector: 
-              - java.lang.String: 
-                - ↑value: '@types/jquery'
-              - java.lang.String: 
-                - ↑value: 3.3.36
-          - xmlizable: 
-            - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
-            - com.twinsoft.convertigo.beans.common.XMLVector: 
-              - java.lang.String: 
-                - ↑value: '@types/backbone'
-              - java.lang.String: 
-                - ↑value: 1.4.1
-↓Subscribe_Handler [mobile.components.UIEventSubscriber-1588686865663]: 
-  topic: dboFocus
-  ↓CallSequence [mobile.components.UIDynamicAction-1588686924736]: 
-    beanData: '{"ionBean":"CallSequenceAction","requestable":"plain:C8oStudio.GetChildren"}'
-    ↓name [mobile.components.UIControlVariable-1588686940942]: 
-      comment: new variable
-      varValue: 
-        - xmlizable: 
-          - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
-          - MobileSmartSourceType: script:out
-    ↓DisplayFlow [mobile.components.UICustomAction-1588687209815]: 
-      actionValue: 
-        - xmlizable: 
-          - ↑classname: com.twinsoft.convertigo.beans.common.FormatedContent
-          - com.twinsoft.convertigo.beans.common.FormatedContent: 
-            →: |
-              '		page.c8o.log.debug(''[MB] ''+ props.actionFunction +'': ''+ props.actionName);
-              		this.graph.clear();
-              		//this.paper.remove();
-              		let previous = null
-              		for (var i=0; i < vars.flow.length ; i++) {
-              		    let step = this.addStep({
-                  		        x: 30,
-                  		        y: 30 + 70 * i		        
-                  		    }, 
-                  		    {
-                                  width: 200,
-                                  height: 50              
-                              }, 
-                              vars.flow[i].displayName
-              		    )
-              		    if (previous != null)
-              		        this.addLink(previous, step)
-              		    previous = step;
-              		}
-              		resolve();
-              '
-      ↓flow [mobile.components.UIControlVariable-1588693303067]: 
-        varValue: 
-          - xmlizable: 
-            - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
-            - MobileSmartSourceType: source:{"filter":"Sequence","project":"C8oStudio","input":"listen(['C8oStudio.GetChildren'])?.array"}
