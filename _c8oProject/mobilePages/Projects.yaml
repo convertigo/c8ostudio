@@ -79,6 +79,10 @@ scriptContent:
         	    this.c8o.callJson(''.GetChildren'', ''qname'', ''root'').then((response, parameters) => {
                     this.nodes = response[''array''];
                     this.tree.treeModel.update();
+                    window.setTimeout(() => {
+                        this.tree.treeModel.expandAll();
+                        this.tree.treeModel.collapseAll();
+                    }, 1);
                     return null;
                 });
         	}
@@ -89,6 +93,11 @@ scriptContent:
                 node.data.hasChildren = true;
                 node.children = null;
                 node.expand();
+        	}
+        	
+        	prefetch(node:TreeNode) {
+        		node.expand();
+        		node.collapse();
         	}
         	/*End_c8o_PageFunction*/
         '
@@ -205,7 +214,7 @@ title: Title for Projects
         - xmlizable: 
           - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
           - MobileSmartSourceType: plain:
-  ↓Event [mobile.components.UIControlEvent-1588665835563]: 
+  ↓focus [mobile.components.UIControlEvent-1588665835563]: 
     attrName: (focus)
     eventName: (focus)
     ↓PublishEvent [mobile.components.UIDynamicAction-1588686512803]: 
@@ -215,3 +224,27 @@ title: Title for Projects
          "topic": "plain:dboFocus",
          "data": "script:$event.node.data.qname"
         }'
+  ↓toggleExpanded [mobile.components.UIControlEvent-1590396657512]: 
+    attrName: (toggleExpanded)
+    eventName: (toggleExpanded)
+    ↓prefetchChildren [mobile.components.UICustomAction-1590396700574]: 
+      actionValue: 
+        - xmlizable: 
+          - ↑classname: com.twinsoft.convertigo.beans.common.FormatedContent
+          - com.twinsoft.convertigo.beans.common.FormatedContent: 
+            →: |
+              '		page.c8o.log.debug(''[MB] ''+ props.actionFunction +'': ''+ props.actionName);
+              		if (event.node[''_noExpand''] || event.node.children == undefined) {
+              		} else {
+              			event.node.children.forEach((n) => {
+              				console.log(''event ex1: '' + n.data.qname + '' children: '' + n.children + '' exp:'' + n[''_noExpand'']);
+              				n[''_noExpand''] = true;
+              				n.expand();
+              				window.setTimeout(()=> {
+              					n.collapse();
+              					n[''_noExpand''] = false;
+              				},1);
+              			});
+              		}
+              		resolve();
+              '
