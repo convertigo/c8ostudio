@@ -3,7 +3,9 @@ responseExpiryDate: absolute,3600
 ↓BuildBase64Icon [steps.SimpleStep-1588603866382]: 
   expression: |
     'var stream;
-    if (className.startsWith(''mobileComponent:'')) {
+    if (className.equals("folder")) {
+    	stream = new java.io.FileInputStream(context.getProjectDirectory() + "/icons/folder.png");
+    } else if (className.startsWith(''mobileComponent:'')) {
     	var comp = com.twinsoft.convertigo.beans.mobile.components.dynamic.ComponentManager.getComponentByName(className.substring(16));
     	stream = comp.getClass().getResourceAsStream(comp.getImagePath());
     } else {

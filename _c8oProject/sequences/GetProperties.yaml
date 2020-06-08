@@ -1,3 +1,6 @@
+↓jIf [steps.IfStep-1591624279376]: 
+  condition: qname.endsWith(":")
+  ↓Return [steps.ReturnStep-1591624319442]: 
 ↓GetBean [steps.SimpleStep-1588664768964]: 
   expression: |
     var dbo = com.twinsoft.convertigo.engine.Engine.theApp.databaseObjectsManager.getDatabaseObjectByQName(qname);

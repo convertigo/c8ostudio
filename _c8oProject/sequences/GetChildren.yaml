@@ -2,6 +2,7 @@
   expression: |
     level = level - 1;
     level = 0; // comment this and re-enable the 2 Then to enable level again
+    handleFolders = handleFolders == "true";
 ↓array [steps.XMLComplexStep-1588584638434]: 
   nodeName: array
   ↓type [steps.XMLAttributeStep-1588584843062]: 
@@ -125,9 +126,60 @@
               ↓className [steps.ElementStep-1588605527472]: 
                 expression: item.getClass().getName()
                 nodeName: className
+          ↓jIfHandleFolders [steps.IfStep-1591608962293]: 
+            condition: handleFolders
+            ↓jElement [steps.ElementStep-1591609000330]: 
+              expression: item.getFolderType().displayName()
+              nodeName: folder
+↓jIfHandleFolders [steps.IfStep-1591610627996]: 
+  condition: handleFolders
+  ↓AddFolders [steps.SimpleStep-1591608423207]: 
+    expression: |
+      'var xpath = context.getXpathApi();
+      var lst = xpath.selectList(context.outputDocument, "/document/array/dbo/folder");
+      var i = lst.iterator();
+      while (i.hasNext()) {
+      	var nDbo = i.next();
+      	var dFld = nDbo.getTextContent();
+      	log.warn("dbo:" + dFld);
+      	log.warn("l  :" + dFld.length());
+      	if (dFld.length() > 0) {
+      		var nFld = xpath.selectNode(context.outputDocument, "/document/array/folder[displayName=''" + dFld + "'']/children");
+      		log.warn("fld:" + nFld);
+      		if (nFld == null) {
+      			nFld = dom.createElement("folder");
+      			nFld.setAttribute("type", "object");
+      			var field = dom.createElement("qname");
+      			nFld.appendChild(field);
+      			field.setTextContent(qname + "." + dFld + ":");
+      			field = dom.createElement("displayName");
+      			nFld.appendChild(field);
+      			field.setTextContent(dFld);
+      			field = dom.createElement("className");
+      			nFld.appendChild(field);
+      			field.setTextContent("folder");
+      			field = dom.createElement("children");
+      			nFld.appendChild(field);
+      			field.setAttribute("type", "array");
+      			xpath.selectNode(context.outputDocument, "/document/array").insertBefore(nFld, nDbo.getParentNode());
+      			nFld = field;
+      		}
+      		nFld.appendChild(nDbo.getParentNode());
+      	}
+      	nDbo.getParentNode().removeChild(nDbo);
+      }'
 ↓qname [variables.RequestableVariable-1588584420887]: 
 ↓level [variables.RequestableVariable-1589878770804]: 
   value: 1
+↓handleFolders [variables.RequestableVariable-1591608448791]: 
+  value: false
+↓C8oStudio [core.TestCase]: 
+  ↓qname [variables.TestCaseVariable-1591606715335]: 
+    value: C8oStudio
+  ↓level [variables.TestCaseVariable-1591606715337]: 
+    value: 1
+  ↓handleFolders [variables.TestCaseVariable-1591608487435]: 
+    value: true
 ↓root [core.TestCase]: 
   ↓qname [variables.TestCaseVariable-1588584927680]: 
     value: root
