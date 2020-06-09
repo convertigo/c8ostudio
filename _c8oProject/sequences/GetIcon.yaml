@@ -1,20 +1,36 @@
 clientCachable: true
-responseExpiryDate: absolute,3600
 ↓BuildBase64Icon [steps.SimpleStep-1588603866382]: 
   expression: |
-    'var stream;
-    if (className.equals("folder")) {
-    	stream = new java.io.FileInputStream(context.getProjectDirectory() + "/icons/folder.png");
-    } else if (className.startsWith(''mobileComponent:'')) {
-    	var comp = com.twinsoft.convertigo.beans.mobile.components.dynamic.ComponentManager.getComponentByName(className.substring(16));
-    	stream = comp.getClass().getResourceAsStream(comp.getImagePath());
-    } else {
-    	var bi = com.twinsoft.convertigo.engine.util.CachedIntrospector.getBeanInfo(java.lang.Class.forName(className));
-    	var iconType = large != null && large.equals("true") ? java.beans.BeanInfo.ICON_COLOR_32x32 : java.beans.BeanInfo.ICON_COLOR_16x16;
-    	stream = bi.getBeanDescriptor().getBeanClass().getResourceAsStream(com.twinsoft.convertigo.beans.core.MySimpleBeanInfo.getIconName(bi, iconType));	
-    }
+    'var etag = com.twinsoft.convertigo.engine.ProductVersion.fullProductVersion
+                + "_" + context.project.getVersion() + "_" + className + "_" + large;
+    etag = org.apache.commons.codec.digest.DigestUtils.sha1Hex(etag);
     
-    var base64 = org.apache.commons.codec.binary.Base64.encodeBase64String(org.apache.commons.io.IOUtils.toByteArray(stream));'
+    var changed = true;
+    var base64 = "";
+    
+    context.setResponseHeader("ETag", etag);
+    context.setResponseHeader("Cache-Control", "public,max-age=300,must-revalidate=true");
+    
+    if (context.httpServletRequest.getHeader("If-None-Match") == etag) {
+    	changed = false;
+    } else {
+    	var stream;
+    	if (className.equals("folder")) {
+    		stream = new java.io.FileInputStream(context.getProjectDirectory() + "/icons/folder.png");
+    	} else if (className.startsWith(''mobileComponent:'')) {
+    		var comp = com.twinsoft.convertigo.beans.mobile.components.dynamic.ComponentManager.getComponentByName(className.substring(16));
+    		stream = comp.getClass().getResourceAsStream(comp.getImagePath());
+    	} else {
+    		var bi = com.twinsoft.convertigo.engine.util.CachedIntrospector.getBeanInfo(java.lang.Class.forName(className));
+    		var iconType = large != null && large.equals("true") ? java.beans.BeanInfo.ICON_COLOR_32x32 : java.beans.BeanInfo.ICON_COLOR_16x16;
+    		stream = bi.getBeanDescriptor().getBeanClass().getResourceAsStream(com.twinsoft.convertigo.beans.core.MySimpleBeanInfo.getIconName(bi, iconType));	
+    	}
+    	
+    	base64 = org.apache.commons.codec.binary.Base64.encodeBase64String(org.apache.commons.io.IOUtils.toByteArray(stream));
+    	try {
+    		stream.close();
+    	} catch (e) {}
+    }'
 ↓attachment [steps.ElementStep-1588604263441]: 
   expression: base64
   nodeName: attachment
@@ -30,5 +46,15 @@ responseExpiryDate: absolute,3600
   ↓encoding [steps.XMLAttributeStep-1588604299187]: 
     nodeName: encoding
     nodeText: base64
+↓jIfNotChanged [steps.IfStep-1591712441340]: 
+  condition: '!changed'
+  ↓Set_response_status [steps.SetResponseStatusStep-1591712523448]: 
+    statusCode: 
+      - xmlizable: 
+        - ↑classname: com.twinsoft.convertigo.beans.steps.SmartType
+        - SmartType: 
+          - ↑mode: PLAIN
+          - →→: 304
+  ↓Return [steps.ReturnStep-1591712509532]: 
 ↓className [variables.RequestableVariable-1588603961951]: 
 ↓large [variables.RequestableVariable-1588604988555]: 

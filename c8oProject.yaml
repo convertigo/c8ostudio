@@ -13,6 +13,8 @@
   ↓NewDatabaseObject [sequences.GenericSequence]: 🗏 sequences/NewDatabaseObject.yaml
   ↓Save [sequences.GenericSequence]: 🗏 sequences/Save.yaml
   ↓SetProperty [sequences.GenericSequence]: 🗏 sequences/SetProperty.yaml
+  ↓Project_reference [references.ProjectSchemaReference]: 
+    projectName: lib_ExtendedComponents=https://github.com/convertigo/c8oprj-lib-extended-components.git:branch=master
   ↓MobileApplication [core.MobileApplication]: 
     applicationId: com.convertigo.webstudio
     applicationName: Convertigo Low Code Web Studio
@@ -24,5 +26,3 @@
     ↓iOS [mobileplatforms.IOs]: 
       comment: iOS platform
     ↓Application [mobile.components.ApplicationComponent]: 🗏 mobileApplication.yaml
-  ↓Project_reference [references.ProjectSchemaReference]: 
-    projectName: lib_ExtendedComponents=https://github.com/convertigo/c8oprj-lib-extended-components.git:branch=master
