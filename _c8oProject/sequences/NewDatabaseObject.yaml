@@ -10,6 +10,7 @@
     	newDbo = java.lang.Class.forName(className).getConstructor().newInstance();
     }
     try {
+    	newDbo.bNew = true;
     	dboTo.add(newDbo);
     	if (before != null && before != "") {
     		var dboBefore = com.twinsoft.convertigo.engine.Engine.theApp.databaseObjectsManager.getDatabaseObjectByQName(before);
