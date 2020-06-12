@@ -14,7 +14,8 @@ scriptContent:
         	paper : joint.dia.Paper
         	scale : number = 10
         	dragStartPosition = null;
-        	verticalSpace = 100
+        	verticalSpace = 140
+        	horizontalSpace = 140
         	/*End_c8o_PageDeclaration*/
         /*Begin_c8o_PageConstructor*/
         		/*End_c8o_PageConstructor*/
@@ -51,8 +52,62 @@ scriptContent:
                 link.addTo(this.graph);
         	}
         	
-        	addStep(position, size, text:string, hasChildren:boolean, qname: string) {
-                let rect = new joint.shapes.basic.Rect( {
+        	addStep(position, size, text:string, hasChildren:boolean, qname: string, className: string) {
+        	    
+        	    let childType = this.getChildType(className);
+        	    let rect;
+        	    
+        	    // custom diamond shape for logical nodes 
+        	    if(className.includes("If")) {
+        	        rect = new joint.shapes.basic.Path({
+        	            position: position,
+        	            size: { width: 70, height: 70 },
+        	            ports: {
+        	                groups: {
+        	                    ''source'': {
+        	                        position: ''right'',
+        	                        attrs: {
+        	                            ''.joint-port-body'' : {
+        	                                fill: ''orange'',
+        	                                magnet: true
+        	                            }
+        	                        }
+        	                    },
+        	                    ''dest'': {
+        	                        position: ''left'',
+        	                        attrs: {
+        	                            ''.joint-port-body'' : {
+        	                                fill: ''green'',
+        	                                magnet: true
+        	                            }
+        	                        }
+        	                    }
+        	                },
+        	                items: [{
+        	                    group: ''source'',
+        	                    args: {}, // extra arguments for the port layout function, see `layout.Port` section
+        	                },
+        	                {
+        	                    group: ''dest'',
+        	                    args: {}, // extra arguments for the port layout function, see `layout.Port` section
+        	                }]
+        	            },
+        	            attrs: {
+        	                path: { 
+        	                    d: ''M 30 0 L 60 30 30 60 0 30 z'', 
+        	                    fill: ''blue'' 
+        	                },
+        	                ''text'': { 
+        	                    text: text, 
+        	                    fill: ''white'' 
+        	               }
+        	            },
+        	            qname: qname
+        	         })
+        	    } else {
+        	       
+                rect = new joint.shapes.basic.Rect( {
+                    markup: ''<g class="rotatable"><g class="scalable"><rect class="rect"/></g><image/><text/></g>'',
                     position: position,
                     size: size,
                     ports: {
@@ -92,14 +147,27 @@ scriptContent:
                             strokeWidth: 2,
                             stroke: hasChildren ? ''white'' : null 
                         },
-                        text:
-                        {
+                        text: {
                             text: text,
                             fill: ''white''
+                          },
+        //                text:
+        //                {
+        //                    text: text,
+        //                    fill: ''white''
+        //                },
+                        image: {
+                            ''xlink:href'': this.c8o.endpoint + ''/.bin?__sequence=GetIcon&className='' + className,
+                            width: 16,
+                            height: 16
                         }
                     },
                     qname: qname
                 });
+        	    }
+                
+                this.c8o.log.debug("I AM CLASSNAME" + className);
+                this.c8o.log.debug("I AM QNAME : " + qname);
                 rect.addTo(this.graph);
                 return rect
         	}
@@ -109,26 +177,78 @@ scriptContent:
         	        qname: cellView.model.attributes["qname"]
         	    }).then((response, parameters) => {
         	        let previous = null;
+        	        let y = 0;
+        	        let x = 0;
+        	        
         	        for (let i=0; i < response["array"].length; i++) {
         	            let element = response["array"][i]
+        	            
+        	            let elementIndex = response["array"].findIndex(x => x.qname === element.qname)
+        	            
+        	            let nbElement = response["array"].length
+        //	            if(elementIndex == 1) {
+        //	                let x = 500
+        //	            } else {
+        //	                let x = 250
+        //	            }
+        	            
+        	            // calculate in case it is the first box we are opening
+        	            if(i == 0) {
+        	                if(previous == null && cellView.model.attributes[''qname''].includes("jIfThenElse.jElse") || cellView.model.attributes[''qname''].includes("jIfThenElse.jThen")) {
+                                y = cellView.model.attributes.position.y + this.verticalSpace
+                                x = cellView.model.attributes.position.x
+                            } else {
+                                y = cellView.model.attributes.position.y + this.verticalSpace
+                                x = cellView.model.attributes.position.x + this.horizontalSpace
+                            }
+        	            } else if(previous != null){
+        	                if(element.qname.includes("jIfThenElse.jThen")) {
+        	                    y = cellView.model.attributes.position.y
+        	                    x = cellView.model.attributes.position.x + this.horizontalSpace
+        	                } else if (element.qname.includes("jIfThenElse.jElse")) {
+        	                    y = cellView.model.attributes.position.y + this.verticalSpace
+        	                    x = cellView.model.attributes.position.x
+        	                } else if (cellView.model.attributes[''qname''].includes("jIfThenElse.jElse") || cellView.model.attributes[''qname''].includes("jIfThenElse.jThen")) {
+        	                    y = cellView.model.attributes.position.y + (this.verticalSpace * i)
+        	                    x = cellView.model.attributes.position.x
+        	                } else {
+        	                    y = previous.attributes.position.y + (this.verticalSpace * i)
+        	                    x = previous.attributes.position.x
+        	                }
+        	            } else {
+        	            }
+        	            
+        	            
         	            let step = this.addStep({
-                                x: cellView.getBBox().topLeft().x + 10,
-                                y: cellView.getBBox().topLeft().y + 10 + this.verticalSpace * i              
+        //                        x: cellView.getBBox().topLeft().x + x,
+        //                        y: cellView.getBBox().topLeft().y      
+        	                      x: x,
+        	                      y: y
                             }, 
                             {
-                                width: 200,
-                                height: 50              
+                                width: 70,
+                                height: 70              
                             }, 
                             element.displayName,
                             element.hasChildren,
-                            element.qname
+                            element.qname,
+                            element.className
                         )
                         
-                        cellView.model.embed(step)
+                        // cellView.model.embed(step)
                         
-                        if (previous != null)
+                        if(i == 0)
+                            this.addLink(cellView.model, step)
+                        
+                        if (previous != null && !element.qname.includes("jIfThenElse.jElse")) 
                             this.addLink(previous, step)
+                            
+                        if (element.qname.includes("jIfThenElse.jElse"))
+                            this.addLink(cellView.model, step)
+                        
                         previous = step
+                        
+                        
         
                         /*
                         if (element.hasChildren) {
@@ -137,42 +257,52 @@ scriptContent:
                         */
         	        }
         	        
-        	        /**
-        	         * Get the top most ancestor and ask it to resize itslef to fit all embeds 
-        	         */
-                    let ancestors = cellView.model["getAncestors"]()
-                    let resizeToFit = (ancestors.length == 0 ? cellView.model: ancestors[ancestors.length-1]) as joint.shapes.basic.Rect
-                    
-                    /**
-                     * Get the the bottom left position before resize
-                     */
-                    let bottomY = resizeToFit.getBBox().bottomLeft().y
-                    let bottomX = resizeToFit.getBBox().bottomLeft().x
-        
-                    /* Now Resize to fit all embedded */
-                    resizeToFit["fitEmbeds"]({
-                        deep: true,
-                        padding: 20
-                    })
-                    
-                    /* get the new bottom left position of the resized box, and compute deltas */ 
-                    let deltaY = resizeToFit.getBBox().bottomLeft().y - bottomY
-                    let deltaX = resizeToFit.getBBox().bottomLeft().x - bottomX
-                    
-                    /* Reposition resized Box by deltaX on the right */
-                    resizeToFit.translate(-deltaX, 0)
-        
-                    /* Now, walk all boxes and find only the ones that are lower than the non resized box and push them down by deltaY */ 
-                    for (let element of this.paper.model.getElements()) {
-                        if (element instanceof joint.shapes.basic.Rect) {
-                            /* Only for non embedded boxes */ 
-                            if (element.getParentCell() != resizeToFit)
-                                if (element.getBBox().topLeft().y > bottomY)
-                                    element.translate(0, deltaY)
-                        }
-                    }
+        //	        /**
+        //	         * Get the top most ancestor and ask it to resize itslef to fit all embeds 
+        //	         */
+        //            let ancestors = cellView.model["getAncestors"]()
+        //            let resizeToFit = (ancestors.length == 0 ? cellView.model: ancestors[ancestors.length-1]) as joint.shapes.basic.Rect
+        //            
+        //            /**
+        //             * Get the the bottom left position before resize
+        //             */
+        //            let bottomY = resizeToFit.getBBox().bottomLeft().y
+        //            let bottomX = resizeToFit.getBBox().bottomLeft().x
+        //
+        //            /* Now Resize to fit all embedded */
+        //            resizeToFit["fitEmbeds"]({
+        //                deep: true,
+        //                padding: 20
+        //            })
+        //            
+        //            /* get the new bottom left position of the resized box, and compute deltas */ 
+        //            let deltaY = resizeToFit.getBBox().bottomLeft().y - bottomY
+        //            let deltaX = resizeToFit.getBBox().bottomLeft().x - bottomX
+        //            
+        //            /* Reposition resized Box by deltaX on the right */
+        //            resizeToFit.translate(-deltaX, 0)
+        //
+        //            /* Now, walk all boxes and find only the ones that are lower than the non resized box and push them down by deltaY */ 
+        //            for (let element of this.paper.model.getElements()) {
+        //                if (element instanceof joint.shapes.basic.Rect) {
+        //                    /* Only for non embedded boxes */ 
+        //                    if (element.getParentCell() != resizeToFit)
+        //                        if (element.getBBox().topLeft().y > bottomY)
+        //                            element.translate(0, deltaY)
+        //                }
+        //            }
                     return null;
         	    })
+        	}
+        	
+        	getChildType(className: string) {
+        	    if(className.includes(''variables'')) {
+        	        return ''variables'';
+        	    } else if (className.includes(''steps'')) {
+        	        return ''steps'';
+        	    } else {
+        	        return '''';
+        	    }
         	}
         	
         	ngAfterViewInit() {
@@ -222,6 +352,17 @@ scriptContent:
                 
                 this.paper.on(''cell:pointerclick'',  (cellView) => {
                     this.c8o.log.debug("Step clicked !!!")
+        //            cellView.model.attributes.attrs[''.label''].refY = -80
+        //            let parents = cellView.model.getAncestors();
+        //            
+        //            this.c8o.log.debug("I AM LENGTH : " + parents.length)
+        //            if(parents.length !== 0) {
+        //                for(let i = 0; i < parents.length ; i++) {
+        //                    let id = parents[i].id;
+        //                    let cell = this.graph.getCell(id);
+        //                    cell.attributes.attrs[''.label''].refY = -80 * (i + 1.5);
+        //                }
+        //            }
                     this.getAndDisplayStepChilds(cellView)
                 })
                 
@@ -286,12 +427,13 @@ title: Title for FlowViewer
                       		        y: 30 + this.verticalSpace * i		        
                       		    }, 
                       		    {
-                                      width: 200,
-                                      height: 50              
+                                      width: 70,
+                                      height: 70              
                                   }, 
                                   vars.flow[i].displayName,
                                   vars.flow[i].hasChildren,
-                                  vars.flow[i].qname
+                                  vars.flow[i].qname,
+                                  vars.flow[i].className
                   		    )
                   		    
                   		    if (previous != null)

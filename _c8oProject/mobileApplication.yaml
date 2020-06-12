@@ -688,3 +688,12 @@ tplProjectName: C8oStudio
           ion-row {
           	border: solid 1px green
           }'
+↓customJoint [mobile.components.UIStyle-1591619009633]: 
+  styleContent: 
+    - xmlizable: 
+      - ↑classname: com.twinsoft.convertigo.beans.common.FormatedContent
+      - com.twinsoft.convertigo.beans.common.FormatedContent: 
+        →: |
+          '.rect .label {
+          	padding-top: 1000px !important;
+          }'
