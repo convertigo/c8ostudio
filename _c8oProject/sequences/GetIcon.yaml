@@ -18,7 +18,7 @@ clientCachable: true
     	if (className.equals("folder")) {
     		stream = new java.io.FileInputStream(context.getProjectDirectory() + "/icons/folder.png");
     	} else if (className.startsWith(''mobileComponent:'')) {
-    		var comp = com.twinsoft.convertigo.beans.mobile.components.dynamic.ComponentManager.getComponentByName(className.substring(16));
+    		var comp = com.twinsoft.convertigo.beans.ngx.components.dynamic.ComponentManager.getComponentByName(className.substring(16));
     		stream = comp.getClass().getResourceAsStream(comp.getImagePath());
     	} else {
     		var bi = com.twinsoft.convertigo.engine.util.CachedIntrospector.getBeanInfo(java.lang.Class.forName(className));

@@ -37,31 +37,31 @@
     attrName: '[(ngModel)]'
     attrValue: 
       - xmlizable: 
-        - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
+        - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
         - MobileSmartSourceType: script:params1587900690141.code
   ↓Attr3 [mobile.components.UIAttribute-1587900690196]: 
     attrName: '[options]'
     attrValue: 
       - xmlizable: 
-        - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
+        - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
         - MobileSmartSourceType: script:params1587900690141.options
   ↓Attr1 [mobile.components.UIAttribute-1587900690199]: 
     attrName: style
     attrValue: 
       - xmlizable: 
-        - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
+        - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
         - MobileSmartSourceType: 'plain:height: 100%'
   ↓Attr4 [mobile.components.UIAttribute-1588002793861]: 
     attrName: (onInit)
     attrValue: 
       - xmlizable: 
-        - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
+        - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
         - MobileSmartSourceType: script:onInit($event)
   ↓Attr2 [mobile.components.UIAttribute-1587900690202]: 
     attrName: class
     attrValue: 
       - xmlizable: 
-        - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
+        - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
         - MobileSmartSourceType: plain:monaco-code-editor
 ↓code [mobile.components.UICompVariable-1587900690205]: 
 ↓options [mobile.components.UICompVariable-1587900690208]: 

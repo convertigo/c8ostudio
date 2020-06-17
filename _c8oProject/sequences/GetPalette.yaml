@@ -16,7 +16,7 @@
     condition: dbo instanceof com.twinsoft.convertigo.beans.core.MobileComponent
     ↓jThen [steps.ThenStep-1589379426675]: 
       ↓jIf [steps.IfStep-1589385406499]: 
-        condition: dbo instanceof com.twinsoft.convertigo.beans.mobile.components.ApplicationComponent
+        condition: dbo instanceof com.twinsoft.convertigo.beans.ngx.components.ApplicationComponent
         ↓bean [steps.XMLComplexStep-1589385390303]: 
           nodeName: bean
           ↓tpe [steps.XMLAttributeStep-1589385390306]: 
@@ -24,7 +24,7 @@
             nodeText: object
           ↓Element [steps.XMLElementStep-1589385509602]: 
             nodeName: className
-            nodeText: com.twinsoft.convertigo.beans.mobile.components.PageComponent
+            nodeText: com.twinsoft.convertigo.beans.ngx.components.PageComponent
           ↓Element1 [steps.XMLElementStep-1589385569295]: 
             nodeName: group
             nodeText: Page
@@ -32,7 +32,7 @@
             nodeName: displayName
             nodeText: Page
       ↓jIterator [steps.SimpleIteratorStep-1589377524280]: 
-        expression: com.twinsoft.convertigo.beans.mobile.components.dynamic.ComponentManager.getComponents()
+        expression: com.twinsoft.convertigo.beans.ngx.components.dynamic.ComponentManager.getComponents()
         ↓jIf [steps.IfStep-1589379523471]: 
           condition: item.isAllowedIn(dbo)
           ↓bean [steps.XMLComplexStep-1589377620200]: 

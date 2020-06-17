@@ -54,25 +54,25 @@ title: Title for Properties
         
       varValue: 
         - xmlizable: 
-          - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
+          - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
           - MobileSmartSourceType: script:false
     ↓class [mobile.components.UIControlVariable-1587906856730]: 
       comment: 'boolean: true (default) or false'
       varValue: 
         - xmlizable: 
-          - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
+          - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
           - MobileSmartSourceType: script:'ag-theme-balham-dark'
     ↓columnDefs [mobile.components.UIControlVariable-1587911681148]: 
       comment: 'Array of columnDef {headerName: ''headerName'', field: ''fieldName''} objects'
       varValue: 
         - xmlizable: 
-          - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
+          - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
           - MobileSmartSourceType: script:columnDefs
     ↓rowData [mobile.components.UIControlVariable-1587911681151]: 
       comment: 'Array of row { fieldName1: ''value1'', fieldName2: ''value2'', fieldName3: true, ...} objects'
       varValue: 
         - xmlizable: 
-          - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
+          - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
           - MobileSmartSourceType: script:[]
 ↓Subscribe_Handler [mobile.components.UIEventSubscriber-1588686583524]: 
   topic: dboFocus
@@ -82,7 +82,7 @@ title: Title for Properties
       comment: new variable
       varValue: 
         - xmlizable: 
-          - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
+          - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
           - MobileSmartSourceType: script:out
     ↓setRowData [mobile.components.UICustomAction-1588682569649]: 
       actionValue: 

@@ -40,10 +40,10 @@ title: First page
   ↓code [mobile.components.UIControlVariable-1587804757932]: 
     varValue: 
       - xmlizable: 
-        - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
+        - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
         - MobileSmartSourceType: script:code
   ↓options [mobile.components.UIControlVariable-1587804757934]: 
     varValue: 
       - xmlizable: 
-        - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
+        - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
         - MobileSmartSourceType: script:codeOptions

@@ -8,7 +8,7 @@ title: Title for Palette
       comment: new variable
       varValue: 
         - xmlizable: 
-          - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
+          - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
           - MobileSmartSourceType: script:out
 ↓Header [mobile.components.UIDynamicElement-1589296498379]: 
   beanData: '{"ionBean":"Header"}'
@@ -20,7 +20,7 @@ title: Title for Palette
     ↓Text [mobile.components.UIText-1589296530756]: 
       textValue: 
         - xmlizable: 
-          - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
+          - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
           - MobileSmartSourceType: plain:search
   ↓TextInput [mobile.components.UIDynamicElement-1589293954554]: 
     beanData: '{"ionBean":"Input"}'
@@ -37,7 +37,7 @@ title: Title for Palette
       ↓eachBean [mobile.components.UIControlDirective-1589294466370]: 
         directiveSource: 
           - xmlizable: 
-            - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
+            - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
             - MobileSmartSourceType: source:{"filter":"Sequence","project":"C8oStudio","input":"listen(['C8oStudio.GetPalette'])?.beans"}
         ↓GridCol [mobile.components.UIDynamicElement-1589294196461]: 
           beanData: '{"ionBean":"GridCol"}'
@@ -49,7 +49,7 @@ title: Title for Palette
             ↓Text [mobile.components.UIText-1589294213965]: 
               textValue: 
                 - xmlizable: 
-                  - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
+                  - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
                   - MobileSmartSourceType: source:{"filter":"Iteration","project":"C8oStudio","input":"item1589294466370?.displayName"}
           ↓CardContainer [mobile.components.UIDynamicElement-1589296323341]: 
             beanData: '{"ionBean":"Card"}'
@@ -65,13 +65,13 @@ title: Title for Palette
               attrName: draggable
               attrValue: 
                 - xmlizable: 
-                  - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
+                  - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
                   - MobileSmartSourceType: plain:true
             ↓Attr1 [mobile.components.UIAttribute-1589308698329]: 
               attrName: attr.data-classname
               attrValue: 
                 - xmlizable: 
-                  - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
+                  - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
                   - MobileSmartSourceType: source:{"filter":"Iteration","project":"C8oStudio","input":"item1589294466370?.className"}
             ↓Event [mobile.components.UIControlEvent-1589307855989]: 
               attrName: (dragstart)
@@ -94,7 +94,7 @@ title: Title for Palette
               attrName: class
               attrValue: 
                 - xmlizable: 
-                  - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
+                  - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
                   - MobileSmartSourceType: plain:palette-item
             ↓Image [mobile.components.UIDynamicElement-1589698349369]: 
               beanData: '{"ionBean":"Image"}'
@@ -104,13 +104,13 @@ title: Title for Palette
                 attrName: src
                 attrValue: 
                   - xmlizable: 
-                    - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
+                    - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
                     - MobileSmartSourceType: plain:{{ this.c8o.endpoint }}/.bin?__sequence=GetIcon&className={{ item1589294466370.className }}&large=true
               ↓Attr1 [mobile.components.UIAttribute-1589310725332]: 
                 attrName: draggable
                 attrValue: 
                   - xmlizable: 
-                    - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
+                    - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
                     - MobileSmartSourceType: plain:false
               ↓SetWidth [mobile.components.UIStyle-1589699684073]: 
                 styleContent: 
@@ -123,11 +123,11 @@ title: Title for Palette
             ↓Text [mobile.components.UIText-1589296402954]: 
               textValue: 
                 - xmlizable: 
-                  - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
+                  - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
                   - MobileSmartSourceType: source:{"filter":"Iteration","project":"C8oStudio","input":"item1589294466370?.displayName"}
   ↓Attr [mobile.components.UIAttribute-1589699592601]: 
     attrName: class
     attrValue: 
       - xmlizable: 
-        - ↑classname: com.twinsoft.convertigo.beans.mobile.components.MobileSmartSourceType
+        - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
         - MobileSmartSourceType: plain:page-palette

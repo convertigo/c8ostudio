@@ -4,8 +4,8 @@
     var dboTo = com.twinsoft.convertigo.engine.Engine.theApp.databaseObjectsManager.getDatabaseObjectByQName(to);
     var newDbo;
     if (className.startsWith(''mobileComponent:'')) {
-    	var comp = com.twinsoft.convertigo.beans.mobile.components.dynamic.ComponentManager.getComponentByName(className.substring(16));
-    	newDbo = com.twinsoft.convertigo.beans.mobile.components.dynamic.ComponentManager.createBean(comp);
+    	var comp = com.twinsoft.convertigo.beans.ngx.components.dynamic.ComponentManager.getComponentByName(className.substring(16));
+    	newDbo = com.twinsoft.convertigo.beans.ngx.components.dynamic.ComponentManager.createBean(comp);
     } else {
     	newDbo = java.lang.Class.forName(className).getConstructor().newInstance();
     }
