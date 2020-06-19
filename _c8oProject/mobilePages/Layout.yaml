@@ -130,9 +130,9 @@ scriptContent:
         '
 segment: path-to-layout
 title: Title for Layout
-↓PageEvent [mobile.components.UIPageEvent-1587822608688]: 
+↓PageEvent [ngx.components.UIPageEvent-1587822608688]: 
   viewEvent: onWillEnter
-  ↓initGoldenLayout [mobile.components.UICustomAction-1587828410077]: 
+  ↓initGoldenLayout [ngx.components.UICustomAction-1587828410077]: 
     actionValue: 
       - xmlizable: 
         - ↑classname: com.twinsoft.convertigo.beans.common.FormatedContent

@@ -38,12 +38,12 @@ scriptContent:
         '
 segment: path-to-properties
 title: Title for Properties
-↓Content [mobile.components.UIDynamicElement-1588672350774]: 
+↓Content [ngx.components.UIDynamicElement-1588672350774]: 
   beanData: '{"ionBean":"Content"}'
   tagName: ion-content
-  ↓UseSharedComponent [mobile.components.UIUseShared-1587905533172]: 
+  ↓UseSharedComponent [ngx.components.UIUseShared-1587905533172]: 
     sharedcomponent: lib_ExtendedComponents.MobileApplication.Application.agGrid
-    ↓pagination [mobile.components.UIControlVariable-1587906670722]: 
+    ↓pagination [ngx.components.UIControlVariable-1587906670722]: 
       comment: |
         On of the themes defined here :
         
@@ -56,35 +56,35 @@ title: Title for Properties
         - xmlizable: 
           - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
           - MobileSmartSourceType: script:false
-    ↓class [mobile.components.UIControlVariable-1587906856730]: 
+    ↓class [ngx.components.UIControlVariable-1587906856730]: 
       comment: 'boolean: true (default) or false'
       varValue: 
         - xmlizable: 
           - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
           - MobileSmartSourceType: script:'ag-theme-balham-dark'
-    ↓columnDefs [mobile.components.UIControlVariable-1587911681148]: 
+    ↓columnDefs [ngx.components.UIControlVariable-1587911681148]: 
       comment: 'Array of columnDef {headerName: ''headerName'', field: ''fieldName''} objects'
       varValue: 
         - xmlizable: 
           - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
           - MobileSmartSourceType: script:columnDefs
-    ↓rowData [mobile.components.UIControlVariable-1587911681151]: 
+    ↓rowData [ngx.components.UIControlVariable-1587911681151]: 
       comment: 'Array of row { fieldName1: ''value1'', fieldName2: ''value2'', fieldName3: true, ...} objects'
       varValue: 
         - xmlizable: 
           - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
           - MobileSmartSourceType: script:[]
-↓Subscribe_Handler [mobile.components.UIEventSubscriber-1588686583524]: 
+↓Subscribe_Handler [ngx.components.UIEventSubscriber-1588686583524]: 
   topic: dboFocus
-  ↓GetProperties [mobile.components.UIDynamicAction-1588678288274]: 
+  ↓GetProperties [ngx.components.UIDynamicAction-1588678288274]: 
     beanData: '{"ionBean":"CallSequenceAction","requestable":"plain:C8oStudio.GetProperties"}'
-    ↓qname [mobile.components.UIControlVariable-1588678288277]: 
+    ↓qname [ngx.components.UIControlVariable-1588678288277]: 
       comment: new variable
       varValue: 
         - xmlizable: 
           - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
           - MobileSmartSourceType: script:out
-    ↓setRowData [mobile.components.UICustomAction-1588682569649]: 
+    ↓setRowData [ngx.components.UICustomAction-1588682569649]: 
       actionValue: 
         - xmlizable: 
           - ↑classname: com.twinsoft.convertigo.beans.common.FormatedContent

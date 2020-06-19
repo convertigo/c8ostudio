@@ -42,9 +42,9 @@ scriptContent:
         '
 segment: path-to-logviewer
 title: Title for LogViewer
-↓UseSharedComponent [mobile.components.UIUseShared-1587906236844]: 
+↓UseSharedComponent [ngx.components.UIUseShared-1587906236844]: 
   sharedcomponent: lib_ExtendedComponents.MobileApplication.Application.agGrid
-  ↓pagination [mobile.components.UIControlVariable-1587907310009]: 
+  ↓pagination [ngx.components.UIControlVariable-1587907310009]: 
     comment: |
       On of the themes defined here :
       
@@ -57,19 +57,19 @@ title: Title for LogViewer
       - xmlizable: 
         - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
         - MobileSmartSourceType: script:false
-  ↓class [mobile.components.UIControlVariable-1587907310012]: 
+  ↓class [ngx.components.UIControlVariable-1587907310012]: 
     comment: 'boolean: true (default) or false'
     varValue: 
       - xmlizable: 
         - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
         - MobileSmartSourceType: script:'ag-theme-balham-dark'
-  ↓columnDefs [mobile.components.UIControlVariable-1587907713899]: 
+  ↓columnDefs [ngx.components.UIControlVariable-1587907713899]: 
     comment: 'Array of columnDef {headerName: ''headerName'', field: ''fieldName''} objects'
     varValue: 
       - xmlizable: 
         - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
         - MobileSmartSourceType: script:columnDefs
-  ↓rowData [mobile.components.UIControlVariable-1587907713901]: 
+  ↓rowData [ngx.components.UIControlVariable-1587907713901]: 
     comment: 'Array of row { fieldName1: ''value1'', fieldName2: ''value2'', fieldName3: true, ...} objects'
     varValue: 
       - xmlizable: 

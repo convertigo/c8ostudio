@@ -371,8 +371,8 @@ scriptContent:
         '
 segment: path-to-flowviewer
 title: Title for FlowViewer
-↓PageEvent [mobile.components.UIPageEvent-1588052803545]: 
-  ↓useJointJS [mobile.components.UICustomAction-1588052817033]: 
+↓PageEvent [ngx.components.UIPageEvent-1588052803545]: 
+  ↓useJointJS [ngx.components.UICustomAction-1588052817033]: 
     package_dependencies: 
       - xmlizable: 
         - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
@@ -405,11 +405,11 @@ title: Title for FlowViewer
                 - ↑value: '@types/backbone'
               - java.lang.String: 
                 - ↑value: 1.4.1
-↓Subscribe_Handler [mobile.components.UIEventSubscriber-1588686865663]: 
+↓Subscribe_Handler [ngx.components.UIEventSubscriber-1588686865663]: 
   topic: dboFocus
-  ↓CallSequence [mobile.components.UIDynamicAction-1588686924736]: 
+  ↓CallSequence [ngx.components.UIDynamicAction-1588686924736]: 
     beanData: '{"ionBean":"CallSequenceAction","requestable":"plain:C8oStudio.GetChildren"}'
-    ↓DisplayFlow [mobile.components.UICustomAction-1588687209815]: 
+    ↓DisplayFlow [ngx.components.UICustomAction-1588687209815]: 
       actionValue: 
         - xmlizable: 
           - ↑classname: com.twinsoft.convertigo.beans.common.FormatedContent
@@ -442,43 +442,43 @@ title: Title for FlowViewer
                   		}
                   		resolve();
               '
-      ↓flow [mobile.components.UIControlVariable-1588693303067]: 
+      ↓flow [ngx.components.UIControlVariable-1588693303067]: 
         varValue: 
           - xmlizable: 
             - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
             - MobileSmartSourceType: source:{"filter":"Sequence","project":"C8oStudio","input":"listen(['C8oStudio.GetChildren'])?.array"}
-    ↓qname [mobile.components.UIControlVariable-1589811848532]: 
+    ↓qname [ngx.components.UIControlVariable-1589811848532]: 
       comment: new variable
       varValue: 
         - xmlizable: 
           - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
           - MobileSmartSourceType: script:out
-↓Grid [mobile.components.UIDynamicElement-1588228737881]: 
+↓Grid [ngx.components.UIDynamicElement-1588228737881]: 
   beanData: '{"ionBean":"Grid","Height":"plain:height:100%"}'
   tagName: ion-grid
-  ↓GridRow [mobile.components.UIDynamicElement-1588228741415]: 
+  ↓GridRow [ngx.components.UIDynamicElement-1588228741415]: 
     beanData: '{"ionBean":"GridRow","Height":"plain:height:100%"}'
     tagName: ion-row
-    ↓GridCol [mobile.components.UIDynamicElement-1588228746957]: 
+    ↓GridCol [ngx.components.UIDynamicElement-1588228746957]: 
       beanData: '{"ionBean":"GridCol"}'
       tagName: ion-col
-      ↓Div [mobile.components.UIDynamicElement-1588137806849]: 
+      ↓Div [ngx.components.UIDynamicElement-1588137806849]: 
         beanData: '{"ionBean":"DivTag"}'
         identifier: flowID
         tagName: div
-        ↓Attr [mobile.components.UIAttribute-1588238054179]: 
+        ↓Attr [ngx.components.UIAttribute-1588238054179]: 
           attrName: (document:mousemove)
           attrValue: 
             - xmlizable: 
               - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
               - MobileSmartSourceType: plain:onMouseMove($event)
-  ↓GridRow1 [mobile.components.UIDynamicElement-1588228813856]: 
+  ↓GridRow1 [ngx.components.UIDynamicElement-1588228813856]: 
     beanData: '{"ionBean":"GridRow","Height":"plain:height:50px"}'
     tagName: ion-row
-    ↓GridCol [mobile.components.UIDynamicElement-1588228819248]: 
+    ↓GridCol [ngx.components.UIDynamicElement-1588228819248]: 
       beanData: '{"ionBean":"GridCol"}'
       tagName: ion-col
-      ↓RangeSlider [mobile.components.UIDynamicElement-1588159080969]: 
+      ↓RangeSlider [ngx.components.UIDynamicElement-1588159080969]: 
         beanData: |
           '{
            "ionBean": "Range",
@@ -487,13 +487,13 @@ title: Title for FlowViewer
            "Snaps": "plain:true"
           }'
         tagName: ion-range
-        ↓Attr [mobile.components.UIAttribute-1588159106785]: 
+        ↓Attr [ngx.components.UIAttribute-1588159106785]: 
           attrName: '[(ngModel)]'
           attrValue: 
             - xmlizable: 
               - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
               - MobileSmartSourceType: script:scale
-        ↓Attr1 [mobile.components.UIAttribute-1588159608396]: 
+        ↓Attr1 [ngx.components.UIAttribute-1588159608396]: 
           attrName: (ngModelChange)
           attrValue: 
             - xmlizable: 

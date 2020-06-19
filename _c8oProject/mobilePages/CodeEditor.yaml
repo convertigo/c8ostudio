@@ -35,14 +35,14 @@ scriptContent:
         '
 segment: path-to-codeeditor
 title: First page
-↓UseSharedComponent [mobile.components.UIUseShared-1587804391837]: 
+↓UseSharedComponent [ngx.components.UIUseShared-1587804391837]: 
   sharedcomponent: C8oStudio.MobileApplication.Application.CodeEditor
-  ↓code [mobile.components.UIControlVariable-1587804757932]: 
+  ↓code [ngx.components.UIControlVariable-1587804757932]: 
     varValue: 
       - xmlizable: 
         - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
         - MobileSmartSourceType: script:code
-  ↓options [mobile.components.UIControlVariable-1587804757934]: 
+  ↓options [ngx.components.UIControlVariable-1587804757934]: 
     varValue: 
       - xmlizable: 
         - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType

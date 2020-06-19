@@ -1,4 +1,4 @@
-↑convertigo: 7.7.0.m006
+↑convertigo: 7.9.0.m006
 ↓C8oStudio [core.Project]: 
   comment: Convertigo Mobile builder Project
   corsOrigin: =Origin
@@ -14,7 +14,7 @@
   ↓Save [sequences.GenericSequence]: 🗏 sequences/Save.yaml
   ↓SetProperty [sequences.GenericSequence]: 🗏 sequences/SetProperty.yaml
   ↓Project_reference [references.ProjectSchemaReference]: 
-    projectName: lib_ExtendedComponents=https://github.com/convertigo/c8oprj-lib-extended-components.git:branch=master
+    projectName: lib_ExtendedComponents=https://github.com/convertigo/c8oprj-lib-extended-components.git:branch=ionic5
   ↓MobileApplication [core.MobileApplication]: 
     applicationId: com.convertigo.webstudio
     applicationName: Convertigo Low Code Web Studio
@@ -25,4 +25,4 @@
       comment: Android platform
     ↓iOS [mobileplatforms.IOs]: 
       comment: iOS platform
-    ↓Application [mobile.components.ApplicationComponent]: 🗏 mobileApplication.yaml
+    ↓Application [ngx.components.ApplicationComponent]: 🗏 mobileApplication.yaml
