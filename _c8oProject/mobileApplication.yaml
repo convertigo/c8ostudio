@@ -42,86 +42,237 @@ tplProjectName: C8oStudio
       - com.twinsoft.convertigo.beans.common.FormatedContent: 
         →: |
           '// Ionic Variables and Theming. For more info, please see:
-          // http://ionicframework.com/docs/v2/theming/ 
-          $font-path: "../assets/fonts";
+          // http://ionicframework.com/docs/theming/
           
-          @import "ionic.globals";
+          /** Ionic CSS Variables **/
+          :root {
+            /** primary **/
+            --ion-color-primary: #3880ff;
+            --ion-color-primary-rgb: 56, 128, 255;
+            --ion-color-primary-contrast: #ffffff;
+            --ion-color-primary-contrast-rgb: 255, 255, 255;
+            --ion-color-primary-shade: #3171e0;
+            --ion-color-primary-tint: #4c8dff;
+          
+            /** secondary **/
+            --ion-color-secondary: #3dc2ff;
+            --ion-color-secondary-rgb: 61, 194, 255;
+            --ion-color-secondary-contrast: #ffffff;
+            --ion-color-secondary-contrast-rgb: 255, 255, 255;
+            --ion-color-secondary-shade: #36abe0;
+            --ion-color-secondary-tint: #50c8ff;
+          
+            /** tertiary **/
+            --ion-color-tertiary: #5260ff;
+            --ion-color-tertiary-rgb: 82, 96, 255;
+            --ion-color-tertiary-contrast: #ffffff;
+            --ion-color-tertiary-contrast-rgb: 255, 255, 255;
+            --ion-color-tertiary-shade: #4854e0;
+            --ion-color-tertiary-tint: #6370ff;
+          
+            /** success **/
+            --ion-color-success: #2dd36f;
+            --ion-color-success-rgb: 45, 211, 111;
+            --ion-color-success-contrast: #ffffff;
+            --ion-color-success-contrast-rgb: 255, 255, 255;
+            --ion-color-success-shade: #28ba62;
+            --ion-color-success-tint: #42d77d;
+          
+            /** warning **/
+            --ion-color-warning: #ffc409;
+            --ion-color-warning-rgb: 255, 196, 9;
+            --ion-color-warning-contrast: #000000;
+            --ion-color-warning-contrast-rgb: 0, 0, 0;
+            --ion-color-warning-shade: #e0ac08;
+            --ion-color-warning-tint: #ffca22;
+          
+            /** danger **/
+            --ion-color-danger: #eb445a;
+            --ion-color-danger-rgb: 235, 68, 90;
+            --ion-color-danger-contrast: #ffffff;
+            --ion-color-danger-contrast-rgb: 255, 255, 255;
+            --ion-color-danger-shade: #cf3c4f;
+            --ion-color-danger-tint: #ed576b;
+          
+            /** dark **/
+            --ion-color-dark: #222428;
+            --ion-color-dark-rgb: 34, 36, 40;
+            --ion-color-dark-contrast: #ffffff;
+            --ion-color-dark-contrast-rgb: 255, 255, 255;
+            --ion-color-dark-shade: #1e2023;
+            --ion-color-dark-tint: #383a3e;
+          
+            /** medium **/
+            --ion-color-medium: #92949c;
+            --ion-color-medium-rgb: 146, 148, 156;
+            --ion-color-medium-contrast: #ffffff;
+            --ion-color-medium-contrast-rgb: 255, 255, 255;
+            --ion-color-medium-shade: #808289;
+            --ion-color-medium-tint: #9d9fa6;
+          
+            /** light **/
+            --ion-color-light: #f4f5f8;
+            --ion-color-light-rgb: 244, 245, 248;
+            --ion-color-light-contrast: #000000;
+            --ion-color-light-contrast-rgb: 0, 0, 0;
+            --ion-color-light-shade: #d7d8da;
+            --ion-color-light-tint: #f5f6f9;
+          }
+          
+          @media (prefers-color-scheme: dark) {
+            /*
+             * Dark Colors
+             * -------------------------------------------
+             */
+          
+            body {
+              --ion-color-primary: #428cff;
+              --ion-color-primary-rgb: 66,140,255;
+              --ion-color-primary-contrast: #ffffff;
+              --ion-color-primary-contrast-rgb: 255,255,255;
+              --ion-color-primary-shade: #3a7be0;
+              --ion-color-primary-tint: #5598ff;
+          
+              --ion-color-secondary: #50c8ff;
+              --ion-color-secondary-rgb: 80,200,255;
+              --ion-color-secondary-contrast: #ffffff;
+              --ion-color-secondary-contrast-rgb: 255,255,255;
+              --ion-color-secondary-shade: #46b0e0;
+              --ion-color-secondary-tint: #62ceff;
+          
+              --ion-color-tertiary: #6a64ff;
+              --ion-color-tertiary-rgb: 106,100,255;
+              --ion-color-tertiary-contrast: #ffffff;
+              --ion-color-tertiary-contrast-rgb: 255,255,255;
+              --ion-color-tertiary-shade: #5d58e0;
+              --ion-color-tertiary-tint: #7974ff;
+          
+              --ion-color-success: #2fdf75;
+              --ion-color-success-rgb: 47,223,117;
+              --ion-color-success-contrast: #000000;
+              --ion-color-success-contrast-rgb: 0,0,0;
+              --ion-color-success-shade: #29c467;
+              --ion-color-success-tint: #44e283;
+          
+              --ion-color-warning: #ffd534;
+              --ion-color-warning-rgb: 255,213,52;
+              --ion-color-warning-contrast: #000000;
+              --ion-color-warning-contrast-rgb: 0,0,0;
+              --ion-color-warning-shade: #e0bb2e;
+              --ion-color-warning-tint: #ffd948;
+          
+              --ion-color-danger: #ff4961;
+              --ion-color-danger-rgb: 255,73,97;
+              --ion-color-danger-contrast: #ffffff;
+              --ion-color-danger-contrast-rgb: 255,255,255;
+              --ion-color-danger-shade: #e04055;
+              --ion-color-danger-tint: #ff5b71;
+          
+              --ion-color-dark: #f4f5f8;
+              --ion-color-dark-rgb: 244,245,248;
+              --ion-color-dark-contrast: #000000;
+              --ion-color-dark-contrast-rgb: 0,0,0;
+              --ion-color-dark-shade: #d7d8da;
+              --ion-color-dark-tint: #f5f6f9;
+          
+              --ion-color-medium: #989aa2;
+              --ion-color-medium-rgb: 152,154,162;
+              --ion-color-medium-contrast: #000000;
+              --ion-color-medium-contrast-rgb: 0,0,0;
+              --ion-color-medium-shade: #86888f;
+              --ion-color-medium-tint: #a2a4ab;
+          
+              --ion-color-light: #222428;
+              --ion-color-light-rgb: 34,36,40;
+              --ion-color-light-contrast: #ffffff;
+              --ion-color-light-contrast-rgb: 255,255,255;
+              --ion-color-light-shade: #1e2023;
+              --ion-color-light-tint: #383a3e;
+            }
+          
+            /*
+             * iOS Dark Theme
+             * -------------------------------------------
+             */
+          
+            .ios body {
+              --ion-background-color: #000000;
+              --ion-background-color-rgb: 0,0,0;
+          
+              --ion-text-color: #ffffff;
+              --ion-text-color-rgb: 255,255,255;
+          
+              --ion-color-step-50: #0d0d0d;
+              --ion-color-step-100: #1a1a1a;
+              --ion-color-step-150: #262626;
+              --ion-color-step-200: #333333;
+              --ion-color-step-250: #404040;
+              --ion-color-step-300: #4d4d4d;
+              --ion-color-step-350: #595959;
+              --ion-color-step-400: #666666;
+              --ion-color-step-450: #737373;
+              --ion-color-step-500: #808080;
+              --ion-color-step-550: #8c8c8c;
+              --ion-color-step-600: #999999;
+              --ion-color-step-650: #a6a6a6;
+              --ion-color-step-700: #b3b3b3;
+              --ion-color-step-750: #bfbfbf;
+              --ion-color-step-800: #cccccc;
+              --ion-color-step-850: #d9d9d9;
+              --ion-color-step-900: #e6e6e6;
+              --ion-color-step-950: #f2f2f2;
+          
+              --ion-toolbar-background: #0d0d0d;
+          
+              --ion-item-background: #000000;
+            }
           
           
-          // Shared Variables
-          // --------------------------------------------------
-          // To customize the look and feel of this app, you can override
-          // the Sass variables found in Ionic''s source scss files.
-          // To view all the possible Ionic variables, see:
-          // http://ionicframework.com/docs/v2/theming/overriding-ionic-variables/
+            /*
+             * Material Design Dark Theme
+             * -------------------------------------------
+             */
           
+            .md body {
+              --ion-background-color: #121212;
+              --ion-background-color-rgb: 18,18,18;
           
+              --ion-text-color: #ffffff;
+              --ion-text-color-rgb: 255,255,255;
           
+              --ion-border-color: #222222;
           
-          // Named Color Variables
-          // --------------------------------------------------
-          // Named colors makes it easy to reuse colors on various components.
-          // It''s highly recommended to change the default colors
-          // to match your app''s branding. Ionic uses a Sass map of
-          // colors so you can add, rename and remove colors as needed.
-          // The "primary" color is the only required color in the map.
+              --ion-color-step-50: #1e1e1e;
+              --ion-color-step-100: #2a2a2a;
+              --ion-color-step-150: #363636;
+              --ion-color-step-200: #414141;
+              --ion-color-step-250: #4d4d4d;
+              --ion-color-step-300: #595959;
+              --ion-color-step-350: #656565;
+              --ion-color-step-400: #717171;
+              --ion-color-step-450: #7d7d7d;
+              --ion-color-step-500: #898989;
+              --ion-color-step-550: #949494;
+              --ion-color-step-600: #a0a0a0;
+              --ion-color-step-650: #acacac;
+              --ion-color-step-700: #b8b8b8;
+              --ion-color-step-750: #c4c4c4;
+              --ion-color-step-800: #d0d0d0;
+              --ion-color-step-850: #dbdbdb;
+              --ion-color-step-900: #e7e7e7;
+              --ion-color-step-950: #f3f3f3;
           
-          $colors: (
-                  primary:     #387ef5,
-                  secondary:   #32db64,
-                  danger:      #f53d3d,
-                  light:       #f4f4f4,
-                  dark:        #222,
-                  lighterdark: #333
-          );
+              --ion-item-background: #1e1e1e;
           
+              --ion-toolbar-background: #1f1f1f;
           
-          // App iOS Variables
-          // --------------------------------------------------
-          // iOS only Sass variables can go here
+              --ion-tab-bar-background: #1f1f1f;
+            }
           
-          
-          
-          
-          // App Material Design Variables
-          // --------------------------------------------------
-          // Material Design only Sass variables can go here
-          
-          
-          
-          
-          // App Windows Variables
-          // --------------------------------------------------
-          // Windows only Sass variables can go here
-          
-          
-          
-          
-          // App Theme
-          // --------------------------------------------------
-          // Ionic apps can have different themes applied, which can
-          // then be future customized. This import comes last
-          // so that the above variables are used and Ionic''s
-          // default are overridden.
-          
-          @import "ionic.theme.default";
-          @import "../../node_modules/ag-grid-community/dist/styles/ag-grid.scss";
-          @import "../../node_modules/ag-grid-community/dist/styles/ag-theme-balham-dark/sass/ag-theme-balham-dark.scss";
-          
-          // Ionicons
-          // --------------------------------------------------
-          // The premium icon font for Ionic. For more info, please see:
-          // http://ionicframework.com/docs/v2/ionicons/
-          
-          @import "ionic.ionicons";
-          
-          
-          // Fonts
-          // --------------------------------------------------
-          
-          @import "roboto";
-          @import "noto-sans";
-          '
+            ion-title.title-large {
+              --color: white;
+            }
+          }'
 ↓IonicStyles [ngx.components.UIStyle-1491635462437]: 
   comment: You can add some global application styles here
   styleContent: 
@@ -135,7 +286,7 @@ tplProjectName: C8oStudio
           	 		background-color: your color; 
           	 		background-image: url(some background image);
           	*/
-          	background-color: color($colors, ''dark'')
+          	background-color: var(--ion-color-dark)
           }
           
           .toolbar-background {
@@ -154,10 +305,13 @@ tplProjectName: C8oStudio
       - ↑classname: com.twinsoft.convertigo.beans.common.FormatedContent
       - com.twinsoft.convertigo.beans.common.FormatedContent: 
         →: |
-          /* All GoldenLayout styles goes there goes there */
-          .lm_root{position:relative}.lm_row>.lm_item{float:left}.lm_content{overflow:hidden;position:relative}.lm_dragging,.lm_dragging *{cursor:move !important;user-select:none}.lm_maximised{position:absolute;top:0;left:0;z-index:40}.lm_maximise_placeholder{display:none}.lm_splitter{position:relative;z-index:20}.lm_splitter:hover,.lm_splitter.lm_dragging{background:orange}.lm_splitter.lm_vertical .lm_drag_handle{width:100%;position:absolute;cursor:ns-resize}.lm_splitter.lm_horizontal{float:left;height:100%}.lm_splitter.lm_horizontal .lm_drag_handle{height:100%;position:absolute;cursor:ew-resize}.lm_header{overflow:visible;position:relative;z-index:1}.lm_header [class^=lm_]{box-sizing:content-box !important}.lm_header .lm_controls{position:absolute;right:3px}.lm_header .lm_controls>li{cursor:pointer;float:left;width:18px;height:18px;text-align:center}.lm_header ul{margin:0;padding:0;list-style-type:none}.lm_header .lm_tabs{position:absolute}.lm_header .lm_tab{cursor:pointer;float:left;height:14px;margin-top:1px;padding:0 10px 5px;padding-right:25px;position:relative}.lm_header .lm_tab i{width:2px;height:19px;position:absolute}.lm_header .lm_tab i.lm_left{top:0;left:-2px}.lm_header .lm_tab i.lm_right{top:0;right:-2px}.lm_header .lm_tab .lm_title{display:inline-block;overflow:hidden;text-overflow:ellipsis}.lm_header .lm_tab .lm_close_tab{width:14px;height:14px;position:absolute;top:0;right:0;text-align:center}.lm_stack.lm_left .lm_header,.lm_stack.lm_right .lm_header{height:100%}.lm_dragProxy.lm_left .lm_header,.lm_dragProxy.lm_right .lm_header,.lm_stack.lm_left .lm_header,.lm_stack.lm_right .lm_header{width:20px;float:left;vertical-align:top}.lm_dragProxy.lm_left .lm_header .lm_tabs,.lm_dragProxy.lm_right .lm_header .lm_tabs,.lm_stack.lm_left .lm_header .lm_tabs,.lm_stack.lm_right .lm_header .lm_tabs{transform-origin:left top;top:0;width:1000px}.lm_dragProxy.lm_left .lm_header .lm_controls,.lm_dragProxy.lm_right .lm_header .lm_controls,.lm_stack.lm_left .lm_header .lm_controls,.lm_stack.lm_right .lm_header .lm_controls{bottom:0}.lm_dragProxy.lm_left .lm_items,.lm_dragProxy.lm_right .lm_items,.lm_stack.lm_left .lm_items,.lm_stack.lm_right .lm_items{float:left}.lm_dragProxy.lm_left .lm_header .lm_tabs,.lm_stack.lm_left .lm_header .lm_tabs{transform:rotate(-90deg) scaleX(-1);left:0}.lm_dragProxy.lm_left .lm_header .lm_tabs .lm_tab,.lm_stack.lm_left .lm_header .lm_tabs .lm_tab{transform:scaleX(-1);margin-top:1px}.lm_dragProxy.lm_left .lm_header .lm_tabdropdown_list,.lm_stack.lm_left .lm_header .lm_tabdropdown_list{top:initial;right:initial;left:20px}.lm_dragProxy.lm_right .lm_content{float:left}.lm_dragProxy.lm_right .lm_header .lm_tabs,.lm_stack.lm_right .lm_header .lm_tabs{transform:rotate(90deg) scaleX(1);left:100%;margin-left:0}.lm_dragProxy.lm_right .lm_header .lm_controls,.lm_stack.lm_right .lm_header .lm_controls{left:3px}.lm_dragProxy.lm_right .lm_header .lm_tabdropdown_list,.lm_stack.lm_right .lm_header .lm_tabdropdown_list{top:initial;right:20px}.lm_dragProxy.lm_bottom .lm_header .lm_tab,.lm_stack.lm_bottom .lm_header .lm_tab{margin-top:0;border-top:none}.lm_dragProxy.lm_bottom .lm_header .lm_controls,.lm_stack.lm_bottom .lm_header .lm_controls{top:3px}.lm_dragProxy.lm_bottom .lm_header .lm_tabdropdown_list,.lm_stack.lm_bottom .lm_header .lm_tabdropdown_list{top:initial;bottom:20px}.lm_drop_tab_placeholder{float:left;width:100px;height:10px;visibility:hidden}.lm_header .lm_controls .lm_tabdropdown:before{content:'';width:0;height:0;vertical-align:middle;display:inline-block;border-top:5px dashed;border-right:5px solid transparent;border-left:5px solid transparent;color:white}.lm_header .lm_tabdropdown_list{position:absolute;top:20px;right:0;z-index:5;overflow:hidden}.lm_header .lm_tabdropdown_list .lm_tab{clear:both;padding-right:10px;margin:0}.lm_header .lm_tabdropdown_list .lm_tab .lm_title{width:100px}.lm_header .lm_tabdropdown_list .lm_close_tab{display:none !important}.lm_dragProxy{position:absolute;top:0;left:0;z-index:30}.lm_dragProxy .lm_header{background:transparent}.lm_dragProxy .lm_content{border-top:none;overflow:hidden}.lm_dropTargetIndicator{display:none;position:absolute;z-index:20}.lm_dropTargetIndicator .lm_inner{width:100%;height:100%;position:relative;top:0;left:0}.lm_transition_indicator{display:none;width:20px;height:20px;position:absolute;top:0;left:0;z-index:20}.lm_popin{width:20px;height:20px;position:absolute;bottom:0;right:0;z-index:9999}.lm_popin>*{width:100%;height:100%;position:absolute;top:0;left:0}.lm_popin>.lm_bg{z-index:10}.lm_popin>.lm_icon{z-index:20}/*# sourceMappingURL=goldenlayout-base.css.map */
-          .lm_goldenlayout{background:#000000}.lm_content{background:#222222}.lm_dragProxy .lm_content{box-shadow:2px 2px 4px rgba(0,0,0,0.9)}.lm_dropTargetIndicator{box-shadow:inset 0 0 30px #000000;outline:1px dashed #cccccc;transition:all 200ms ease}.lm_dropTargetIndicator .lm_inner{background:#000000;opacity:.2}.lm_splitter{background:#000000;opacity:.001;transition:opacity 200ms ease}.lm_splitter:hover,.lm_splitter.lm_dragging{background:#444444;opacity:1}.lm_header{height:20px;user-select:none}.lm_header.lm_selectable{cursor:pointer}.lm_header .lm_tab{font-family:Arial,sans-serif;font-size:12px;color:#999999;background:#111111;box-shadow:2px -2px 2px rgba(0,0,0,0.3);margin-right:2px;padding-bottom:2px;padding-top:2px}.lm_header .lm_tab .lm_close_tab{width:11px;height:11px;background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAcAAAAHCAYAAADEUlfTAAAATElEQVR4nG3OwQ0DMQwDwZGRBtR/j1YJzMc5+IDoR+yCVO29g+pu981MFgqZmRdAfU7+CYWcbF11LwALjpBL0N0qybNx/RPU+gOeiS/+XCRwDlTgkQAAAABJRU5ErkJggg==);background-position:center center;background-repeat:no-repeat;top:4px;right:6px;opacity:.4}.lm_header .lm_tab .lm_close_tab:hover{opacity:1}.lm_header .lm_tab.lm_active{border-bottom:none;box-shadow:0 -2px 2px #000000;padding-bottom:3px}.lm_header .lm_tab.lm_active .lm_close_tab{opacity:1}.lm_dragProxy.lm_bottom .lm_header .lm_tab,.lm_stack.lm_bottom .lm_header .lm_tab{box-shadow:2px 2px 2px rgba(0,0,0,0.3)}.lm_dragProxy.lm_bottom .lm_header .lm_tab.lm_active,.lm_stack.lm_bottom .lm_header .lm_tab.lm_active{box-shadow:0 2px 2px #000000}.lm_selected .lm_header{background-color:#452500}.lm_tab:hover,.lm_tab.lm_active{background:#222222;color:#dddddd}.lm_header .lm_controls .lm_tabdropdown:before{color:#ffffff}.lm_controls>li{position:relative;background-position:center center;background-repeat:no-repeat;opacity:.4;transition:opacity 300ms ease}.lm_controls>li:hover{opacity:1}.lm_controls .lm_popout{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAPklEQVR4nI2Q0QoAIAwCNfr/X7aXCpGN8snBdgejJOzckpkxs9jR6K6T5JpU0nWl5pSXTk7qwh8SnNT+CAAWCgkKFpuSWsUAAAAASUVORK5CYII=)}.lm_controls .lm_maximise{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAKElEQVR4nGP8////fwYCgImQAgYGBgYWKM2IR81/okwajIpgvsMbVgAwgQYRVakEKQAAAABJRU5ErkJggg==)}.lm_controls .lm_close{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAQUlEQVR4nHXOQQ4AMAgCQeT/f6aXpsGK3jSTuCVJAAr7iBdoAwCKd0nwfaAdHbYERw5b44+E8JoBjEYGMBq5gAYP3usUDu2IvoUAAAAASUVORK5CYII=)}.lm_maximised .lm_header{background-color:#000000}.lm_maximised .lm_controls .lm_maximise{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAJ0lEQVR4nGP8//8/AzGAiShVI1YhCwMDA8OsWbPwBmZaWhoj0SYCAN1lBxMAX4n0AAAAAElFTkSuQmCC)}.lm_transition_indicator{background-color:#000000;border:1px dashed #555555}.lm_popin{cursor:pointer}.lm_popin .lm_bg{background:#ffffff;opacity:.3}.lm_popin .lm_icon{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA0AAAAJCAYAAADpeqZqAAAAWklEQVR4nJWOyw3AIAxDHcQC7L8jbwT3AlJBfNp3SiI7dtRaLSlKKeoA1oEsKSQZCEluexw8Tm3ohk+E7bnOUHUGcNh+HwbBygw4AZ7FN/Lt84p0l+yTflV8AKQyLdcCRJi/AAAAAElFTkSuQmCC);background-position:center center;background-repeat:no-repeat;border-left:1px solid #eeeeee;border-top:1px solid #eeeeee;opacity:.7}.lm_popin:hover .lm_icon{opacity:1}/*# sourceMappingURL=goldenlayout-dark-theme.css.map */
+          '/* All GoldenLayout styles goes there goes there */
+          @import "../../node_modules/ag-grid-community/dist/styles/ag-grid.scss";
+          @import "../../node_modules/ag-grid-community/dist/styles/ag-theme-balham/sass/ag-theme-balham.scss";
           
+          .lm_root{position:relative}.lm_row>.lm_item{float:left}.lm_content{overflow:hidden;position:relative}.lm_dragging,.lm_dragging *{cursor:move !important;user-select:none}.lm_maximised{position:absolute;top:0;left:0;z-index:40}.lm_maximise_placeholder{display:none}.lm_splitter{position:relative;z-index:20}.lm_splitter:hover,.lm_splitter.lm_dragging{background:orange}.lm_splitter.lm_vertical .lm_drag_handle{width:100%;position:absolute;cursor:ns-resize}.lm_splitter.lm_horizontal{float:left;height:100%}.lm_splitter.lm_horizontal .lm_drag_handle{height:100%;position:absolute;cursor:ew-resize}.lm_header{overflow:visible;position:relative;z-index:1}.lm_header [class^=lm_]{box-sizing:content-box !important}.lm_header .lm_controls{position:absolute;right:3px}.lm_header .lm_controls>li{cursor:pointer;float:left;width:18px;height:18px;text-align:center}.lm_header ul{margin:0;padding:0;list-style-type:none}.lm_header .lm_tabs{position:absolute}.lm_header .lm_tab{cursor:pointer;float:left;height:14px;margin-top:1px;padding:0 10px 5px;padding-right:25px;position:relative}.lm_header .lm_tab i{width:2px;height:19px;position:absolute}.lm_header .lm_tab i.lm_left{top:0;left:-2px}.lm_header .lm_tab i.lm_right{top:0;right:-2px}.lm_header .lm_tab .lm_title{display:inline-block;overflow:hidden;text-overflow:ellipsis}.lm_header .lm_tab .lm_close_tab{width:14px;height:14px;position:absolute;top:0;right:0;text-align:center}.lm_stack.lm_left .lm_header,.lm_stack.lm_right .lm_header{height:100%}.lm_dragProxy.lm_left .lm_header,.lm_dragProxy.lm_right .lm_header,.lm_stack.lm_left .lm_header,.lm_stack.lm_right .lm_header{width:20px;float:left;vertical-align:top}.lm_dragProxy.lm_left .lm_header .lm_tabs,.lm_dragProxy.lm_right .lm_header .lm_tabs,.lm_stack.lm_left .lm_header .lm_tabs,.lm_stack.lm_right .lm_header .lm_tabs{transform-origin:left top;top:0;width:1000px}.lm_dragProxy.lm_left .lm_header .lm_controls,.lm_dragProxy.lm_right .lm_header .lm_controls,.lm_stack.lm_left .lm_header .lm_controls,.lm_stack.lm_right .lm_header .lm_controls{bottom:0}.lm_dragProxy.lm_left .lm_items,.lm_dragProxy.lm_right .lm_items,.lm_stack.lm_left .lm_items,.lm_stack.lm_right .lm_items{float:left}.lm_dragProxy.lm_left .lm_header .lm_tabs,.lm_stack.lm_left .lm_header .lm_tabs{transform:rotate(-90deg) scaleX(-1);left:0}.lm_dragProxy.lm_left .lm_header .lm_tabs .lm_tab,.lm_stack.lm_left .lm_header .lm_tabs .lm_tab{transform:scaleX(-1);margin-top:1px}.lm_dragProxy.lm_left .lm_header .lm_tabdropdown_list,.lm_stack.lm_left .lm_header .lm_tabdropdown_list{top:initial;right:initial;left:20px}.lm_dragProxy.lm_right .lm_content{float:left}.lm_dragProxy.lm_right .lm_header .lm_tabs,.lm_stack.lm_right .lm_header .lm_tabs{transform:rotate(90deg) scaleX(1);left:100%;margin-left:0}.lm_dragProxy.lm_right .lm_header .lm_controls,.lm_stack.lm_right .lm_header .lm_controls{left:3px}.lm_dragProxy.lm_right .lm_header .lm_tabdropdown_list,.lm_stack.lm_right .lm_header .lm_tabdropdown_list{top:initial;right:20px}.lm_dragProxy.lm_bottom .lm_header .lm_tab,.lm_stack.lm_bottom .lm_header .lm_tab{margin-top:0;border-top:none}.lm_dragProxy.lm_bottom .lm_header .lm_controls,.lm_stack.lm_bottom .lm_header .lm_controls{top:3px}.lm_dragProxy.lm_bottom .lm_header .lm_tabdropdown_list,.lm_stack.lm_bottom .lm_header .lm_tabdropdown_list{top:initial;bottom:20px}.lm_drop_tab_placeholder{float:left;width:100px;height:10px;visibility:hidden}.lm_header .lm_controls .lm_tabdropdown:before{content:'''';width:0;height:0;vertical-align:middle;display:inline-block;border-top:5px dashed;border-right:5px solid transparent;border-left:5px solid transparent;color:white}.lm_header .lm_tabdropdown_list{position:absolute;top:20px;right:0;z-index:5;overflow:hidden}.lm_header .lm_tabdropdown_list .lm_tab{clear:both;padding-right:10px;margin:0}.lm_header .lm_tabdropdown_list .lm_tab .lm_title{width:100px}.lm_header .lm_tabdropdown_list .lm_close_tab{display:none !important}.lm_dragProxy{position:absolute;top:0;left:0;z-index:30}.lm_dragProxy .lm_header{background:transparent}.lm_dragProxy .lm_content{border-top:none;overflow:hidden}.lm_dropTargetIndicator{display:none;position:absolute;z-index:20}.lm_dropTargetIndicator .lm_inner{width:100%;height:100%;position:relative;top:0;left:0}.lm_transition_indicator{display:none;width:20px;height:20px;position:absolute;top:0;left:0;z-index:20}.lm_popin{width:20px;height:20px;position:absolute;bottom:0;right:0;z-index:9999}.lm_popin>*{width:100%;height:100%;position:absolute;top:0;left:0}.lm_popin>.lm_bg{z-index:10}.lm_popin>.lm_icon{z-index:20}/*# sourceMappingURL=goldenlayout-base.css.map */
+          .lm_goldenlayout{background:#000000}.lm_content{background:#222222}.lm_dragProxy .lm_content{box-shadow:2px 2px 4px rgba(0,0,0,0.9)}.lm_dropTargetIndicator{box-shadow:inset 0 0 30px #000000;outline:1px dashed #cccccc;transition:all 200ms ease}.lm_dropTargetIndicator .lm_inner{background:#000000;opacity:.2}.lm_splitter{background:#000000;opacity:.001;transition:opacity 200ms ease}.lm_splitter:hover,.lm_splitter.lm_dragging{background:#444444;opacity:1}.lm_header{height:20px;user-select:none}.lm_header.lm_selectable{cursor:pointer}.lm_header .lm_tab{font-family:Arial,sans-serif;font-size:12px;color:#999999;background:#111111;box-shadow:2px -2px 2px rgba(0,0,0,0.3);margin-right:2px;padding-bottom:2px;padding-top:2px}.lm_header .lm_tab .lm_close_tab{width:11px;height:11px;background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAcAAAAHCAYAAADEUlfTAAAATElEQVR4nG3OwQ0DMQwDwZGRBtR/j1YJzMc5+IDoR+yCVO29g+pu981MFgqZmRdAfU7+CYWcbF11LwALjpBL0N0qybNx/RPU+gOeiS/+XCRwDlTgkQAAAABJRU5ErkJggg==);background-position:center center;background-repeat:no-repeat;top:4px;right:6px;opacity:.4}.lm_header .lm_tab .lm_close_tab:hover{opacity:1}.lm_header .lm_tab.lm_active{border-bottom:none;box-shadow:0 -2px 2px #000000;padding-bottom:3px}.lm_header .lm_tab.lm_active .lm_close_tab{opacity:1}.lm_dragProxy.lm_bottom .lm_header .lm_tab,.lm_stack.lm_bottom .lm_header .lm_tab{box-shadow:2px 2px 2px rgba(0,0,0,0.3)}.lm_dragProxy.lm_bottom .lm_header .lm_tab.lm_active,.lm_stack.lm_bottom .lm_header .lm_tab.lm_active{box-shadow:0 2px 2px #000000}.lm_selected .lm_header{background-color:#452500}.lm_tab:hover,.lm_tab.lm_active{background:#222222;color:#dddddd}.lm_header .lm_controls .lm_tabdropdown:before{color:#ffffff}.lm_controls>li{position:relative;background-position:center center;background-repeat:no-repeat;opacity:.4;transition:opacity 300ms ease}.lm_controls>li:hover{opacity:1}.lm_controls .lm_popout{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAPklEQVR4nI2Q0QoAIAwCNfr/X7aXCpGN8snBdgejJOzckpkxs9jR6K6T5JpU0nWl5pSXTk7qwh8SnNT+CAAWCgkKFpuSWsUAAAAASUVORK5CYII=)}.lm_controls .lm_maximise{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAKElEQVR4nGP8////fwYCgImQAgYGBgYWKM2IR81/okwajIpgvsMbVgAwgQYRVakEKQAAAABJRU5ErkJggg==)}.lm_controls .lm_close{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAQUlEQVR4nHXOQQ4AMAgCQeT/f6aXpsGK3jSTuCVJAAr7iBdoAwCKd0nwfaAdHbYERw5b44+E8JoBjEYGMBq5gAYP3usUDu2IvoUAAAAASUVORK5CYII=)}.lm_maximised .lm_header{background-color:#000000}.lm_maximised .lm_controls .lm_maximise{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAJ0lEQVR4nGP8//8/AzGAiShVI1YhCwMDA8OsWbPwBmZaWhoj0SYCAN1lBxMAX4n0AAAAAElFTkSuQmCC)}.lm_transition_indicator{background-color:#000000;border:1px dashed #555555}.lm_popin{cursor:pointer}.lm_popin .lm_bg{background:#ffffff;opacity:.3}.lm_popin .lm_icon{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA0AAAAJCAYAAADpeqZqAAAAWklEQVR4nJWOyw3AIAxDHcQC7L8jbwT3AlJBfNp3SiI7dtRaLSlKKeoA1oEsKSQZCEluexw8Tm3ohk+E7bnOUHUGcNh+HwbBygw4AZ7FN/Lt84p0l+yTflV8AKQyLdcCRJi/AAAAAElFTkSuQmCC);background-position:center center;background-repeat:no-repeat;border-left:1px solid #eeeeee;border-top:1px solid #eeeeee;opacity:.7}.lm_popin:hover .lm_icon{opacity:1}/*# sourceMappingURL=goldenlayout-dark-theme.css.map */
+          '
 ↓AngularTreeStyle [ngx.components.UIStyle-1587969303224]: 
   styleContent: 
     - xmlizable: 
@@ -176,7 +330,7 @@ tplProjectName: C8oStudio
           }
           /* tslint:disable */
           .toggle-children {
-            background-image: url(''../assets/svg/caret-forward-outline.svg'');
+            background-image: url(''/assets/svg/caret-forward-outline.svg'');
             filter: invert(100%);
             height: 10px;
             width: 10px;
@@ -656,7 +810,7 @@ tplProjectName: C8oStudio
         →: |
           '.page-palette .palette-item {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;	
-            background: color($colors, lighterdark, base);
+            background: var(--ion-color-dark);
             color: white;
             width: 150px;
             height: 50px;

@@ -2,7 +2,7 @@ import { NgModule, ErrorHandler } 							from '@angular/core';
 import { HttpClient, HttpClientModule, HTTP_INTERCEPTORS } 	from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule }   				from '@angular/forms';
 import { BrowserModule } 									from '@angular/platform-browser';
-//import { BrowserAnimationsModule }                          from '@angular/platform-browser/animations';
+import { BrowserAnimationsModule }                          from '@angular/platform-browser/animations';
 import { RouteReuseStrategy } 								from '@angular/router';
 
 import { TranslateModule, TranslateLoader } 				from '@ngx-translate/core';
@@ -19,20 +19,19 @@ import { ActionBeans }                                      from './services/act
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 
-import { CodeEditorModule } from "../pages/CodeEditor/codeeditor.module";
-import { PropertiesModule } from "../pages/Properties/properties.module";
-import { LogViewerModule }  from "../pages/LogViewer/logviewer.module";
-import { ProjectsModule }   from "../pages/Projects/projects.module";
-import { FlowViewerModule } from "../pages/FlowViewer/flowviewer.module";
-import { PaletteModule }    from "../pages/Palette/palette.module";
+import { CodeEditorModule } from "../app/pages/codeeditor/codeeditor.module";
+import { PropertiesModule } from "../app/pages/properties/properties.module";
+import { LogViewerModule }  from "../app/pages/logviewer/logviewer.module";
+import { ProjectsModule }   from "../app/pages/projects/projects.module";
+import { FlowViewerModule } from "../app/pages/flowviewer/flowviewer.module";
+import { PaletteModule }    from "../app/pages/palette/palette.module";
 
-import { CodeEditor }       from "../pages/CodeEditor/codeeditor";
-import { Properties }       from "../pages/Properties/properties";
-import { LogViewer }        from "../pages/LogViewer/logviewer";
-import { Projects }         from "../pages/Projects/projects";
-import { FlowViewer }       from "../pages/FlowViewer/flowviewer";
-import { Palette }          from "../pages/Palette/palette";
-
+import { CodeEditor }       from "../app/pages/codeeditor/codeeditor";
+import { Properties }       from "../app/pages/properties/properties";
+import { LogViewer }        from "../app/pages/logviewer/logviewer";
+import { Projects }         from "../app/pages/projects/projects";
+import { FlowViewer }       from "../app/pages/flowviewer/flowviewer";
+import { Palette }          from "../app/pages/palette/palette";
 
 /* Custom Golden Layout */
 /*
@@ -61,7 +60,6 @@ export function createTranslateLoader(http: HttpClient) {
 
 @NgModule({
   declarations: [AppComponent],
-  entryComponents: [],
   imports: [
     BrowserModule,
 
@@ -72,7 +70,7 @@ export function createTranslateLoader(http: HttpClient) {
     FlowViewerModule,
     PaletteModule,
 
-    //BrowserAnimationsModule,
+    BrowserAnimationsModule,
     HttpClientModule,
 	FormsModule,
 	ReactiveFormsModule,
@@ -86,6 +84,16 @@ export function createTranslateLoader(http: HttpClient) {
 	IonicModule.forRoot(), 
 	AppRoutingModule
   ],
+  entryComponents: [/*Begin_c8o_NgComponents*/
+    AppComponent,
+    CodeEditor,
+    Properties,
+    LogViewer,
+    Projects,
+    FlowViewer,
+    Palette
+    /*=c8o_PagesDeclarations*/
+  /*End_c8o_NgComponents*/],
   providers: [
     StatusBar,
     SplashScreen,

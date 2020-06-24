@@ -5,12 +5,12 @@ scriptContent:
     - com.twinsoft.convertigo.beans.common.FormatedContent: 
       →: |
         '/*Begin_c8o_PageImport*/
-        import { CodeEditor }                                                   from ''../CodeEditor/codeeditor''
-        import { Properties }                                                   from ''../Properties/properties''
-        import { LogViewer  }                                                   from ''../LogViewer/logviewer''
-        import { Projects   }                                                   from ''../Projects/projects''
-        import { FlowViewer }                                                   from ''../FlowViewer/flowviewer''
-        import { Palette    }                                                   from ''../Palette/palette''
+        import { CodeEditor }                                                   from ''../codeeditor/codeeditor''
+        import { Properties }                                                   from ''../properties/properties''
+        import { LogViewer  }                                                   from ''../logviewer/logviewer''
+        import { Projects   }                                                   from ''../projects/projects''
+        import { FlowViewer }                                                   from ''../flowviewer/flowviewer''
+        import { Palette    }                                                   from ''../palette/palette''
         
         import { ApplicationRef }                                               from ''@angular/core''
         /*End_c8o_PageImport*/
