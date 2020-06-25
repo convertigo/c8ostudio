@@ -235,7 +235,7 @@ title: Title for Projects1
         '{
          "ionBean": "PublishEventAction",
          "topic": "plain:dboFocus",
-         "data": "script:$event.node.data.qname"
+         "data": "script:out.node.data.qname"
         }'
   ↓toggleExpanded [ngx.components.UIControlEvent-1593004414132]: 
     attrName: (toggleExpanded)
