@@ -215,6 +215,7 @@ title: Title for Projects1
     ↓span [ngx.components.UIElement-1593004414114]: 
       tagName: span
       ↓Text [ngx.components.UIText-1593004414117]: 
+        i18n: false
         textValue: 
           - xmlizable: 
             - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType

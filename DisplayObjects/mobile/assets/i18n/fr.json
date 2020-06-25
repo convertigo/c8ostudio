@@ -1,0 +1,12 @@
+{
+ "My_Menu": "Mon menu",
+ "First_page": "Première page",
+ "Title_for_Layout": "Titre pour la mise en page",
+ "Title_for_Properties": "Titre des propriétés",
+ "Title_for_LogViewer": "Titre pour LogViewer",
+ "Title_for_FlowViewer": "Titre pour FlowViewer",
+ "Title_for_Palette": "Titre pour la palette",
+ "search": "chercher",
+ "Title_for_Projects1": "Titre des projets1",
+ "___node_data_displayName___": "{{node.data.displayName}}"
+}
