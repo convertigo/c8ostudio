@@ -228,8 +228,8 @@ title: Title for Projects1
           - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
           - MobileSmartSourceType: plain:
   ↓focus [ngx.components.UIControlEvent-1593004414126]: 
-    attrName: (focus)
-    eventName: (focus)
+    attrName: (blur)
+    eventName: (blur)
     ↓PublishEvent [ngx.components.UIDynamicAction-1593004414129]: 
       beanData: |
         '{

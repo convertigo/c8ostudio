@@ -26,7 +26,7 @@ title: Title for Palette
     beanData: '{"ionBean":"Input","Debounce":"plain:0"}'
     tagName: ion-input
 ↓Content [ngx.components.UIDynamicElement-1589294543659]: 
-  beanData: '{"ionBean":"Content"}'
+  beanData: '{"ionBean":"Content","Padding":"plain:ion-no-padding"}'
   tagName: ion-content
   ↓Grid [ngx.components.UIDynamicElement-1589294034878]: 
     beanData: '{"ionBean":"Grid"}'

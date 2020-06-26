@@ -32,7 +32,7 @@
     "@ngx-translate/core": "12.1.2",
     "@ngx-translate/http-loader": "4.0.0",
     "c8osdkangular": "3.0.9",
-    "c8ocaf": "2.0.0-beta3",
+    "c8ocaf": "2.0.0-beta4",
 	"ngx-golden-layout": "0.0.12",
     "golden-layout":"1.5.9"
   },

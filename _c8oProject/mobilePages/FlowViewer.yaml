@@ -406,6 +406,7 @@ title: Title for FlowViewer
               - java.lang.String: 
                 - ↑value: 1.4.1
 ↓Subscribe_Handler [ngx.components.UIEventSubscriber-1588686865663]: 
+  isEnabled: false
   topic: dboFocus
   ↓CallSequence [ngx.components.UIDynamicAction-1588686924736]: 
     beanData: '{"ionBean":"CallSequenceAction","requestable":"plain:C8oStudio.GetChildren"}'
