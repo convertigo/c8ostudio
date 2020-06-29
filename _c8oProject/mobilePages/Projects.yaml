@@ -173,6 +173,29 @@ title: Title for Projects1
                 		this.refresh(this.tree.treeModel.getFocusedNode().data.qname);
                 		resolve();
                 '
+↓Subscribe_Handler [ngx.components.UIEventSubscriber-1593440013446]: 
+  topic: propertyChanged
+  ↓Log [ngx.components.UIDynamicAction-1593441465602]: 
+    beanData: '{"ionBean":"LogAction","message":"script:window.JSON.stringify(out)"}'
+  ↓IfNameChanged [ngx.components.UIDynamicAction-1593440190242]: 
+    beanData: '{"ionBean":"IfAction","condition":"script:out.name == ''name''"}'
+    ↓CustomAction [ngx.components.UICustomAction-1593441920620]: 
+      actionValue: 
+        - xmlizable: 
+          - ↑classname: com.twinsoft.convertigo.beans.common.FormatedContent
+          - com.twinsoft.convertigo.beans.common.FormatedContent: 
+            →: |
+              '		page.c8o.log.debug(''[MB] ''+ props.actionFunction +'': ''+ props.actionName);
+              		page.c8o.log.debug(''[MB] event: '' + window.JSON.stringify(event));
+              		this.refresh(event.qname.substring(0, event.qname.lastIndexOf(''.'')));
+              		window.setTimeout(() => {
+              			var node:TreeNode = this.tree.treeModel.getNodeById(event.qname);
+              			node.parent.expand();
+              			resolve();
+              		}, 200);
+              '
+    ↓Toast [ngx.components.UIDynamicAction-1593440262536]: 
+      beanData: '{"ionBean":"ToastAction","message":"plain:name changed"}'
 ↓Tag [ngx.components.UIElement-1593004414090]: 
   identifier: tree
   tagName: tree-root

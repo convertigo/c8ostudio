@@ -13,7 +13,7 @@
     		var dboBefore = com.twinsoft.convertigo.engine.Engine.theApp.databaseObjectsManager.getDatabaseObjectByQName(before);
     		dboTo.insertAtOrder(dboFrom, dboBefore.priority);
     	}
-    	qname = dboFrom.getQName();
+    	qname = dboFrom.getFullQName();
     	success = true;
     } catch (e) {
     	log.error("" + e);

@@ -73,7 +73,7 @@
             nodeName: type
             nodeText: object
           ↓qname [steps.ElementStep-1588585483114]: 
-            expression: item.getQName()
+            expression: item.getFullQName()
             nodeName: qname
           ↓displayName [steps.ElementStep-1588602697198]: 
             expression: item.getName()

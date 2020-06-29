@@ -23,6 +23,12 @@ scriptContent:
                           if (!response[''success'']) {
                               onFail();
                           }
+                          if (parameters[''qname''] != response[''qname'']) {
+        	                  parameters[''old-qname''] = parameters[''qname''];
+                              parameters[''qname''] = response[''qname''];
+                          }
+                          parameters[''qname''] = response[''qname''];
+                          this.events.publish(''propertyChanged'', parameters);
                           return null;
                       }).fail((response) => {
                           onFail();

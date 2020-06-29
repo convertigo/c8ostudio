@@ -37,6 +37,7 @@
     	}
     }
     writer.invoke(dbo, value);
+    qname = dbo.getFullQName();
     success = true;'
 ↓status [steps.ElementStep-1588782170444]: 
   expression: success
@@ -44,6 +45,9 @@
   ↓type [steps.XMLAttributeStep-1588782170447]: 
     nodeName: type
     nodeText: boolean
+↓qname [steps.ElementStep-1593442880370]: 
+  expression: qname
+  nodeName: qname
 ↓qname [variables.RequestableVariable-1588781501998]: 
 ↓value [variables.RequestableVariable-1588781511648]: 
 ↓name [variables.RequestableVariable-1588781540460]: 
