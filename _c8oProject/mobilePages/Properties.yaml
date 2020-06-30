@@ -45,7 +45,12 @@ scriptContent:
 segment: path-to-properties
 title: Title for Properties
 ↓Content [ngx.components.UIDynamicElement-1588672350774]: 
-  beanData: '{"ionBean":"Content","Padding":"plain:ion-no-padding"}'
+  beanData: |
+    '{
+     "ionBean": "Content",
+     "IonColor": "plain:dark",
+     "Padding": "plain:ion-no-padding"
+    }'
   tagName: ion-content
   ↓UseSharedComponent [ngx.components.UIUseShared-1587905533172]: 
     sharedcomponent: lib_ExtendedComponents.MobileApplication.Application.agGrid
