@@ -1,0 +1,103 @@
+↓Call_Sequence [steps.SequenceStep-1593594400892]: 
+  sourceSequence: C8oStudio.GetPalette
+  ↓qname [variables.StepVariable-1593594400894]: 
+↓Complex [steps.XMLComplexStep-1593594427177]: 
+  nodeName: categories
+  ↓Attribute [steps.XMLAttributeStep-1593594439296]: 
+    nodeName: type
+    nodeText: array
+  ↓InitCurrentCategory [steps.SimpleStep-1593597099033]: 
+    expression: |
+      jCurrentCategory = "";
+      
+  ↓Iterator [steps.IteratorStep-1593594463424]: 
+    sourceDefinition: 
+      - xmlizable: 
+        - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+        - com.twinsoft.convertigo.beans.common.XMLVector: 
+          - java.lang.String: 
+            - ↑value: 1593594400892
+          - java.lang.String: 
+            - ↑value: ./document/beans/bean
+    ↓jSimpleSource1 [steps.SimpleSourceStep-1593596849645]: 
+      sourceDefinition: 
+        - xmlizable: 
+          - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+          - com.twinsoft.convertigo.beans.common.XMLVector: 
+            - java.lang.String: 
+              - ↑value: 1593594463424
+            - java.lang.String: 
+              - ↑value: ./beansCategory/text()
+      variableName: jNewCategory
+    ↓jIf [steps.IfStep-1593596882673]: 
+      condition: jNewCategory != jCurrentCategory
+      ↓jSimpleSource [steps.SimpleSourceStep-1593595471048]: 
+        sourceDefinition: 
+          - xmlizable: 
+            - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+            - com.twinsoft.convertigo.beans.common.XMLVector: 
+              - java.lang.String: 
+                - ↑value: 1593594463424
+              - java.lang.String: 
+                - ↑value: ./beansCategory/text()
+        variableName: jCurrentCategory
+      ↓Complex1 [steps.XMLComplexStep-1593595191007]: 
+        nodeName: category
+        ↓Element [steps.XMLElementStep-1593594559137]: 
+          nodeName: name
+          sourceDefinition: 
+            - xmlizable: 
+              - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+              - com.twinsoft.convertigo.beans.common.XMLVector: 
+                - java.lang.String: 
+                  - ↑value: 1593594463424
+                - java.lang.String: 
+                  - ↑value: ./beansCategory/text()
+        ↓Complex [steps.XMLComplexStep-1593595244584]: 
+          nodeName: beans
+          ↓Attribute [steps.XMLAttributeStep-1593595255732]: 
+            nodeName: type
+            nodeText: array
+          ↓Iterator [steps.IteratorStep-1593594997216]: 
+            sourceDefinition: 
+              - xmlizable: 
+                - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+                - com.twinsoft.convertigo.beans.common.XMLVector: 
+                  - java.lang.String: 
+                    - ↑value: 1593594400892
+                  - java.lang.String: 
+                    - ↑value: ./document/beans/bean
+            ↓jSimpleSource1 [steps.SimpleSourceStep-1593596000071]: 
+              sourceDefinition: 
+                - xmlizable: 
+                  - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+                  - com.twinsoft.convertigo.beans.common.XMLVector: 
+                    - java.lang.String: 
+                      - ↑value: 1593594997216
+                    - java.lang.String: 
+                      - ↑value: ./beansCategory/text()
+              variableName: jBeanCategory
+            ↓jIf [steps.IfStep-1593596044609]: 
+              condition: jCurrentCategory == jBeanCategory
+              ↓Copy [steps.XMLCopyStep-1593595024481]: 
+                sourceDefinition: 
+                  - xmlizable: 
+                    - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+                    - com.twinsoft.convertigo.beans.common.XMLVector: 
+                      - java.lang.String: 
+                        - ↑value: 1593594997216
+                      - java.lang.String: 
+                        - ↑value: .
+↓qname [variables.RequestableVariable-1593594860601]: 
+↓application [core.TestCase]: 
+  ↓qname [variables.TestCaseVariable-1593594866687]: 
+    value: C8oStudio.MobileApplication.Application
+↓getpalette [core.TestCase]: 
+  ↓qname [variables.TestCaseVariable-1593594866691]: 
+    value: C8oStudio.GetPalette
+↓page [core.TestCase]: 
+  ↓qname [variables.TestCaseVariable-1593594866695]: 
+    value: C8oStudio.MobileApplication.Application.Layout
+↓project [core.TestCase]: 
+  ↓qname [variables.TestCaseVariable-1593594866699]: 
+    value: C8oStudio
