@@ -16,6 +16,9 @@ scriptContent:
         	dragStartPosition = null;
         	verticalSpace = 140
         	horizontalSpace = 140
+        	
+        	strStep = ''com.twinsoft.convertigo.beans.steps.''
+        	cdinalStepsList = [''IfThenElseStep'', ''ThenStep'', ''ElseStep'']
         	/*End_c8o_PageDeclaration*/
         /*Begin_c8o_PageConstructor*/
         		/*End_c8o_PageConstructor*/
@@ -52,7 +55,7 @@ scriptContent:
                 link.addTo(this.graph);
         	}
         	
-        	addStep(position, size, text:string, hasChildren:boolean, qname: string, className: string) {
+        	addStep(position, size, text:string, hasChildren:boolean, qname: string, className: string, isStarting: boolean) {
         	    
         	    let childType = this.getChildType(className);
         	    let rect;
@@ -102,7 +105,9 @@ scriptContent:
         	                    fill: ''white'' 
         	               }
         	            },
-        	            qname: qname
+        	            qname: qname,
+        	            className: className,
+        	            isStarting: isStarting
         	         })
         	    } else {
         	       
@@ -149,7 +154,9 @@ scriptContent:
                         },
                         text: {
                             text: text,
-                            fill: ''white''
+                            fill: ''white'',
+                            ref:''rect'',
+                            refY: ''.7''
                           },
         //                text:
         //                {
@@ -157,17 +164,20 @@ scriptContent:
         //                    fill: ''white''
         //                },
                         image: {
-                            ''xlink:href'': this.c8o.endpoint + ''/.bin?__sequence=GetIcon&className='' + className,
-                            width: 16,
-                            height: 16
+                            ''xlink:href'': this.c8o.endpoint + ''/.bin?__sequence=GetIcon&className='' + className + ''&large=true'',
+                            width: 32,
+                            height: 32,
+                            ref: ''rect'',
+                            refY: ''0.27'',
+                            refX: ''0.27''
                         }
                     },
-                    qname: qname
+                    qname: qname,
+                    className: className,
+                    isStarting: isStarting
                 });
         	    }
                 
-                this.c8o.log.debug("I AM CLASSNAME" + className);
-                this.c8o.log.debug("I AM QNAME : " + qname);
                 rect.addTo(this.graph);
                 return rect
         	}
@@ -179,13 +189,15 @@ scriptContent:
         	        let previous = null;
         	        let y = 0;
         	        let x = 0;
+        			let col = 1;
         	        
+        			let parent = cellView
+        	        let ancestor = parent.model.getAncestors()
         	        for (let i=0; i < response["array"].length; i++) {
         	            let element = response["array"][i]
         	            
-        	            let elementIndex = response["array"].findIndex(x => x.qname === element.qname)
-        	            
-        	            let nbElement = response["array"].length
+        	            let stepClassName = element.className.substring(this.strStep.length)
+        	            let parentClassName = parent.model.attributes[''className''].substring(this.strStep.length)
         //	            if(elementIndex == 1) {
         //	                let x = 500
         //	            } else {
@@ -194,29 +206,95 @@ scriptContent:
         	            
         	            // calculate in case it is the first box we are opening
         	            if(i == 0) {
-        	                if(previous == null && cellView.model.attributes[''qname''].includes("jIfThenElse.jElse") || cellView.model.attributes[''qname''].includes("jIfThenElse.jThen")) {
-                                y = cellView.model.attributes.position.y + this.verticalSpace
-                                x = cellView.model.attributes.position.x
+        	                if(previous == null && parentClassName == "IfThenElseStep" && stepClassName == "ThenStep") {
+        	                    y = parent.model.attributes.position.y + this.verticalSpace
+                                x = parent.model.attributes.position.x + this.horizontalSpace
+        	                } else if (previous == null && parentClassName == "IfThenElseStep" && stepClassName == "ElseStep") {
+        	                    y = parent.model.attributes.position.y + this.verticalSpace
+                                x = parent.model.attributes.position.x
+        	                } else if(previous == null && parentClassName == "ElseStep" || parentClassName == "ThenStep") {
+                                y = parent.model.attributes.position.y + this.verticalSpace
+                                x = parent.model.attributes.position.x
+                            } else if(parentClassName == "SimpleIteratorStep") {
+                                y = parent.model.attributes.position.y + this.verticalSpace
+                                x = parent.model.attributes.position.x
+                            } else if(parent.model.attributes[''isStarting''] == true){
+                                y = parent.model.attributes.position.y + this.verticalSpace
+                                x = parent.model.attributes.position.x + this.horizontalSpace
                             } else {
-                                y = cellView.model.attributes.position.y + this.verticalSpace
-                                x = cellView.model.attributes.position.x + this.horizontalSpace
+                                y = parent.model.attributes.position.y + this.verticalSpace
+                                x = parent.model.attributes.position.x
                             }
         	            } else if(previous != null){
-        	                if(element.qname.includes("jIfThenElse.jThen")) {
-        	                    y = cellView.model.attributes.position.y
-        	                    x = cellView.model.attributes.position.x + this.horizontalSpace
-        	                } else if (element.qname.includes("jIfThenElse.jElse")) {
-        	                    y = cellView.model.attributes.position.y + this.verticalSpace
-        	                    x = cellView.model.attributes.position.x
-        	                } else if (cellView.model.attributes[''qname''].includes("jIfThenElse.jElse") || cellView.model.attributes[''qname''].includes("jIfThenElse.jThen")) {
-        	                    y = cellView.model.attributes.position.y + (this.verticalSpace * i)
-        	                    x = cellView.model.attributes.position.x
+        	                // positioning Then box
+        	                if(stepClassName == "ThenStep") {
+        	                    y = parent.model.attributes.position.y
+        	                    x = parent.model.attributes.position.x + this.horizontalSpace
+        	                    
+        	                // positioning Else box
+        	                } else if (stepClassName == "ElseStep") {
+        	                    y = parent.model.attributes.position.y + this.verticalSpace
+        	                    x = parent.model.attributes.position.x
+        	                    
+        	                    // positioning Then''s or Else''s children compared to their parent 
+        	                } else if (parentClassName == "ElseStep" || parentClassName == "ThenStep") {
+        	                    y = parent.model.attributes.position.y + this.verticalSpace
+        	                    x = parent.model.attributes.position.x
         	                } else {
-        	                    y = previous.attributes.position.y + (this.verticalSpace * i)
+        	                    y = previous.attributes.position.y + this.verticalSpace
         	                    x = previous.attributes.position.x
         	                }
         	            } else {
         	            }
+        
+        				// if a cell is already on points we move it vertically
+                        if (this.graph.findModelsFromPoint({ x: x, y: y }).length > 0) {
+                            let elementToMove = this.graph.findModelsFromPoint({ x: x, y: y })
+                            elementToMove[0].set(''position'', {x: x, y: y + this.verticalSpace})
+                        }
+        
+        				// if a box is opened and a new branch created, we move down vertically cells from the main branch
+        				// condition checks if there is any cell on left of the current cell
+                        if(this.graph.findModelsFromPoint({x: x - this.horizontalSpace, y: y }).length > 0){
+        	
+        					// if there is, incrementing col
+        					col = col +1;
+        					
+        					// previous col
+        					if(this.graph.findModelsFromPoint({x: x - (this.horizontalSpace * col), y: y})) {
+        						// getting the element to move
+        						let elementToMove = this.graph.findModelsFromPoint({ x: x - (this.horizontalSpace * col), y: y})
+        						if(elementToMove.length > 0)
+        							elementToMove[0].set(''position'', {x: x - (this.horizontalSpace * col), y: y + this.verticalSpace})
+        					}
+        					
+        					// 2 col before 
+        					if(this.graph.findModelsFromPoint({x: x - (this.horizontalSpace * (col + 1)), y: y})) {
+        						// getting the element to move
+        						let elementToMove = this.graph.findModelsFromPoint({ x: x - (this.horizontalSpace * (col + 1)), y: y})
+        						if(elementToMove.length > 0)
+        							elementToMove[0].set(''position'', {x: x - (this.horizontalSpace * (col + 1)), y: y + this.verticalSpace})
+        					}
+        					
+        					
+                            
+                            // getting element to move
+                            let elementToMove = this.graph.findModelsFromPoint({ x: x - this.horizontalSpace, y: y})
+                            elementToMove[0].set(''position'', {x: x - this.horizontalSpace, y: y + this.verticalSpace })
+                            
+                            // getting its successors
+                            let successors = this.graph.getSuccessors(elementToMove[0]);
+                            
+                            for(var j = 0; j < successors.length; j++) {
+                                // if it''s the first successor no need to move it more than the vertical space
+                                if(j == 0) {
+                                    successors[j].set(''position'', {x: successors[j].attributes.position.x, y : elementToMove[0].attributes.position.y + this.verticalSpace})
+                                } else {
+                                    successors[j].set(''position'', {x: successors[j].attributes.position.x, y : elementToMove[0].attributes.position.y + this.verticalSpace * (j +1)})
+                                }
+                                
+                            }
+                        }
         	            
         	            
         	            let step = this.addStep({
@@ -232,7 +310,8 @@ scriptContent:
                             element.displayName,
                             element.hasChildren,
                             element.qname,
-                            element.className
+                            element.className,
+                            false
                         )
                         
                         // cellView.model.embed(step)
@@ -240,10 +319,10 @@ scriptContent:
                         if(i == 0)
                             this.addLink(cellView.model, step)
                         
-                        if (previous != null && !element.qname.includes("jIfThenElse.jElse")) 
+                        if (previous != null && stepClassName != "ElseStep") 
                             this.addLink(previous, step)
                             
-                        if (element.qname.includes("jIfThenElse.jElse"))
+                        if (stepClassName == "ElseStep")
                             this.addLink(cellView.model, step)
                         
                         previous = step
@@ -293,6 +372,9 @@ scriptContent:
         //            }
                     return null;
         	    })
+        .fail((error:any)=>{
+        	console.log(error);
+        })
         	}
         	
         	getChildType(className: string) {
@@ -397,7 +479,7 @@ title: Title for FlowViewer
               - java.lang.String: 
                 - ↑value: '@types/jquery'
               - java.lang.String: 
-                - ↑value: 3.3.36
+                - ↑value: 3.4.1
           - xmlizable: 
             - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
             - com.twinsoft.convertigo.beans.common.XMLVector: 
@@ -406,7 +488,6 @@ title: Title for FlowViewer
               - java.lang.String: 
                 - ↑value: 1.4.1
 ↓Subscribe_Handler [ngx.components.UIEventSubscriber-1588686865663]: 
-  isEnabled: false
   topic: dboFocus
   ↓CallSequence [ngx.components.UIDynamicAction-1588686924736]: 
     beanData: '{"ionBean":"CallSequenceAction","requestable":"plain:C8oStudio.GetChildren"}'
@@ -434,7 +515,8 @@ title: Title for FlowViewer
                                   vars.flow[i].displayName,
                                   vars.flow[i].hasChildren,
                                   vars.flow[i].qname,
-                                  vars.flow[i].className
+                                  vars.flow[i].className,
+              					true
                   		    )
                   		    
                   		    if (previous != null)
@@ -458,7 +540,7 @@ title: Title for FlowViewer
   beanData: '{"ionBean":"Grid","Height":"plain:height:100%"}'
   tagName: ion-grid
   ↓GridRow [ngx.components.UIDynamicElement-1588228741415]: 
-    beanData: '{"ionBean":"GridRow","Height":"plain:height:100%"}'
+    beanData: '{"ionBean":"GridRow","Height":"plain:1200px"}'
     tagName: ion-row
     ↓GridCol [ngx.components.UIDynamicElement-1588228746957]: 
       beanData: '{"ionBean":"GridCol"}'
