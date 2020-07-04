@@ -40,6 +40,37 @@ scriptContent:
         /*Begin_c8o_PageConstructor*/
         		/*End_c8o_PageConstructor*/
         /*Begin_c8o_PageFunction*/
+        	ngAfterViewInit() {
+        		// style the Scroll bars in shadow DOM... 
+        	    setTimeout(() => {
+        			 let content = this.PropertiesPanel.el
+        			 const styles = document.createElement(''style'');
+        			  
+        			 styles.textContent = `
+        			    ::-webkit-scrollbar {
+        			      width: 5px;
+        			    }
+        			
+        			    /* Track */
+        			    ::-webkit-scrollbar-track {
+        			      box-shadow: inset 0 0 5px grey; 
+        			      border-radius: 5px;
+        			    }
+        			
+        			    /* Handle */
+        			    ::-webkit-scrollbar-thumb {
+        			      background: #2d3436; 
+        			      border-radius: 5px;
+        			    }
+        			
+        			    /* Handle on hover */
+        			    ::-webkit-scrollbar-thumb:hover {
+        			      background: #b30000; 
+        			    }
+        			 `;
+        			 content.shadowRoot.appendChild(styles);
+        		}, 250);
+        	}
         	/*End_c8o_PageFunction*/
         '
 segment: path-to-properties
@@ -51,6 +82,7 @@ title: Title for Properties
      "IonColor": "plain:dark",
      "Padding": "plain:ion-no-padding"
     }'
+  identifier: PropertiesPanel
   tagName: ion-content
   ↓UseSharedComponent [ngx.components.UIUseShared-1587905533172]: 
     sharedcomponent: lib_ExtendedComponents.MobileApplication.Application.agGrid
