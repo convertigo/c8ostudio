@@ -202,7 +202,7 @@ title: Title for Palette
                 beanData: '{"ionBean":"FormatLayout","ContentPadding":"plain:ion-no-padding"}'
                 selfClose: false
       ↓GridCol1 [ngx.components.UIDynamicElement-1593964968792]: 
-        beanData: '{"ionBean":"GridCol"}'
+        beanData: '{"ionBean":"GridCol","Size":"plain:4"}'
         tagName: ion-col
         ↓CardContainer [ngx.components.UIDynamicElement-1593965225548]: 
           beanData: '{"ionBean":"Card","IonColor":"plain:dark"}'
@@ -210,6 +210,42 @@ title: Title for Palette
           ↓CardContent [ngx.components.UIDynamicElement-1593965235628]: 
             beanData: '{"ionBean":"CardContent"}'
             tagName: ion-card-content
+            ↓Text [ngx.components.UIText-1593967358915]: 
+              i18n: false
+              textValue: 
+                - xmlizable: 
+                  - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+                  - MobileSmartSourceType: |
+                      'plain:Text
+                      
+                      Defines a Text component.
+                      
+                      This component acts as a standard HTML Text node which is mostly the inner content of an HTML element.
+                      
+                      The Text component is the base component to display text.
+                      
+                      You can add a Text component to any other component, for example to a Button or an HTML component such as P or H1. If you add several Text to the same component, they will be concatenated.
+                      
+                      Text components have a Text value property. As any other property, its value can be set from:
+                      • A Static expression : click the TX button in the property editor, and enter a static expression: Welcome!, 2018, true
+                      • A TypeScript expression : click the TS button in the property editor, and enter a typescript expression: ''some text'', this.options.titleText
+                      • A Source expression : click the SC button in the property editor, and select the source by clicking the ... button
+                      
+                      
+                      
+                      
+                      For more information: HTML Elements, Ionic Components
+                      
+                      Properties:
+                      
+                      Comment
+                      Describes the object comment to include in the documentation report. This property generally contains an explanation about the object.
+                      I18n translate
+                      Defines whether the text should be translated (for TX mode only)
+                      Is active
+                      Defines whether the component is active.
+                      Text value
+                      Defines the text to be displayed'
         ↓NoPadding [ngx.components.UIDynamicAttr-1593965581548]: 
           beanData: '{"ionBean":"FormatLayout","ContentPadding":"plain:ion-no-padding"}'
           selfClose: false
