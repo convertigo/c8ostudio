@@ -76,113 +76,140 @@ title: Title for Palette
     }'
   identifier: PalettePanel
   tagName: ion-content
-  ↓Grid [ngx.components.UIDynamicElement-1589294034878]: 
-    beanData: '{"ionBean":"Grid"}'
-    tagName: ion-grid
-    ↓GridRow [ngx.components.UIDynamicElement-1589294040221]: 
-      beanData: '{"ionBean":"GridRow"}'
-      tagName: ion-row
-      ↓eachBean [ngx.components.UIControlDirective-1589294466370]: 
-        directiveSource: 
-          - xmlizable: 
-            - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
-            - MobileSmartSourceType: source:{"filter":"Sequence","project":"C8oStudio","input":"listen(['C8oStudio.GetPalette'])?.beans","model":{"data":[{"sequence":"C8oStudio.GetCategorizedPalette","marker":""}],"path":"?.categories","prefix":"","suffix":"","custom":"","useCustom":false}}
-        ↓GridCol1 [ngx.components.UIDynamicElement-1593589032103]: 
-          beanData: '{"ionBean":"GridCol","Size":"plain:12"}'
-          tagName: ion-col
-          ↓Heading [ngx.components.UIDynamicTag-1593589065552]: 
-            beanData: '{"ionBean":"Heading"}'
-            tagName: h1
-            ↓Text [ngx.components.UIText-1593589073543]: 
-              i18n: false
-              textValue: 
-                - xmlizable: 
-                  - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
-                  - MobileSmartSourceType: source:{"filter":"Iteration","project":"C8oStudio","input":"","model":{"data":[{"priority":1589294466370}],"path":"?.category?.name","prefix":"","suffix":"","custom":"","useCustom":false}}
-        ↓Directive [ngx.components.UIControlDirective-1593607087206]: 
-          directiveSource: 
-            - xmlizable: 
-              - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
-              - MobileSmartSourceType: source:{"filter":"Iteration","project":"C8oStudio","input":"","model":{"data":[{"priority":1589294466370}],"path":"?.category?.beans","prefix":"","suffix":"","custom":"","useCustom":false}}
-          ↓Directive [ngx.components.UIControlDirective-1593878112265]: 
-            directiveName: If
-            directiveSource: 
-              - xmlizable: 
-                - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
-                - MobileSmartSourceType: source:{"filter":"Iteration","project":"C8oStudio","input":"","model":{"data":[{"priority":1593607087206},{"priority":1589294466370}],"path":"?.displayName","prefix":"","suffix":"","custom":"this['filter'] == undefined || this['filter']?.length == 0 || item1593607087206?.displayName.toLowerCase().indexOf(this['filter']?.toLowerCase()) != -1","useCustom":true}}
-            ↓GridCol [ngx.components.UIDynamicElement-1589294196461]: 
-              beanData: '{"ionBean":"GridCol"}'
-              tagName: ion-col
-              ↓Div [ngx.components.UIDynamicElement-1589779436965]: 
-                beanData: '{"ionBean":"DivTag"}'
-                tagName: div
-                ↓Attr [ngx.components.UIAttribute-1589307787206]: 
-                  attrName: draggable
-                  attrValue: 
-                    - xmlizable: 
-                      - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
-                      - MobileSmartSourceType: plain:true
-                ↓Attr1 [ngx.components.UIAttribute-1589308698329]: 
-                  attrName: attr.data-classname
-                  attrValue: 
-                    - xmlizable: 
-                      - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
-                      - MobileSmartSourceType: source:{"filter":"Iteration","project":"C8oStudio","input":"item1589294466370?.className"}
-                ↓Event [ngx.components.UIControlEvent-1589307855989]: 
-                  attrName: (dragstart)
-                  eventName: (dragstart)
-                  ↓DragStart [ngx.components.UICustomAction-1589308407994]: 
-                    actionValue: 
-                      - xmlizable: 
-                        - ↑classname: com.twinsoft.convertigo.beans.common.FormatedContent
-                        - com.twinsoft.convertigo.beans.common.FormatedContent: 
-                          →: |
-                            '		page.c8o.log.debug(''[MB] ''+ props.actionFunction +'': ''+ props.actionName);
-                            		console.log(props);
-                            		console.log(event);
-                            		console.log(event.srcElement.getAttribute(''data-classname''));
-                            		event.dataTransfer.setData(''application/json'', JSON.stringify({''from'':''Palette'', ''className'': event.srcElement.getAttribute(''data-classname'')}));
-                            		console.log(event.srcElement.getAttribute(''data-classname''));
-                            		resolve();
-                            '
-                ↓Attr2 [ngx.components.UIAttribute-1589779554332]: 
-                  attrName: class
-                  attrValue: 
-                    - xmlizable: 
-                      - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
-                      - MobileSmartSourceType: plain:palette-item
-                ↓Image [ngx.components.UIDynamicElement-1589698349369]: 
-                  beanData: '{"ionBean":"Image"}'
-                  selfClose: true
-                  tagName: img
-                  ↓Attr [ngx.components.UIAttribute-1589296349154]: 
-                    attrName: src
-                    attrValue: 
-                      - xmlizable: 
-                        - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
-                        - MobileSmartSourceType: plain:{{ this.c8o.endpoint }}/.bin?__sequence=GetIcon&className={{ item1593607087206.className }}&large=true
-                  ↓Attr1 [ngx.components.UIAttribute-1589310725332]: 
-                    attrName: draggable
-                    attrValue: 
-                      - xmlizable: 
-                        - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
-                        - MobileSmartSourceType: plain:false
-                  ↓SetWidth [ngx.components.UIStyle-1589699684073]: 
-                    styleContent: 
-                      - xmlizable: 
-                        - ↑classname: com.twinsoft.convertigo.beans.common.FormatedContent
-                        - com.twinsoft.convertigo.beans.common.FormatedContent: 
-                          →: |
-                            '	width: 32px !important;
-                            '
-                ↓Text [ngx.components.UIText-1589296402954]: 
-                  textValue: 
-                    - xmlizable: 
-                      - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
-                      - MobileSmartSourceType: source:{"filter":"Iteration","project":"C8oStudio","input":"","model":{"data":[{"priority":1593607087206},{"priority":1589294466370}],"path":"?.displayName","prefix":"","suffix":"","custom":"","useCustom":false}}
   ↓Attr [ngx.components.UIAttribute-1589699592601]: 
     attrName: class
     attrValue: 
       - xmlizable: 
         - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
         - MobileSmartSourceType: plain:page-palette
+  ↓Grid [ngx.components.UIDynamicElement-1593964937738]: 
+    beanData: '{"ionBean":"Grid"}'
+    tagName: ion-grid
+    ↓GridRow [ngx.components.UIDynamicElement-1593964945646]: 
+      beanData: '{"ionBean":"GridRow"}'
+      tagName: ion-row
+      ↓GridCol [ngx.components.UIDynamicElement-1593964961202]: 
+        beanData: '{"ionBean":"GridCol","Size":"plain:8"}'
+        tagName: ion-col
+        ↓eachBean [ngx.components.UIControlDirective-1589294466370]: 
+          directiveSource: 
+            - xmlizable: 
+              - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+              - MobileSmartSourceType: source:{"filter":"Sequence","project":"C8oStudio","input":"listen(['C8oStudio.GetPalette'])?.beans","model":{"data":[{"sequence":"C8oStudio.GetCategorizedPalette","marker":""}],"path":"?.categories","prefix":"","suffix":"","custom":"","useCustom":false}}
+          ↓CardContainer [ngx.components.UIDynamicElement-1593963851769]: 
+            beanData: '{"ionBean":"Card","IonColor":"plain:dark"}'
+            tagName: ion-card
+            ↓CardTitle [ngx.components.UIDynamicElement-1593963865433]: 
+              beanData: '{"ionBean":"CardTitle","IonColor":"plain:medium"}'
+              tagName: ion-card-title
+              ↓Text [ngx.components.UIText-1593589073543]: 
+                i18n: false
+                textValue: 
+                  - xmlizable: 
+                    - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+                    - MobileSmartSourceType: source:{"filter":"Iteration","project":"C8oStudio","input":"","model":{"data":[{"priority":1589294466370}],"path":"?.category?.name","prefix":"","suffix":"","custom":"","useCustom":false}}
+            ↓CardContent [ngx.components.UIDynamicElement-1593963879290]: 
+              beanData: '{"ionBean":"CardContent"}'
+              tagName: ion-card-content
+              ↓Grid [ngx.components.UIDynamicElement-1593963973977]: 
+                beanData: '{"ionBean":"Grid"}'
+                tagName: ion-grid
+                ↓GridRow [ngx.components.UIDynamicElement-1593963982844]: 
+                  beanData: '{"ionBean":"GridRow"}'
+                  tagName: ion-row
+                  ↓Directive [ngx.components.UIControlDirective-1593607087206]: 
+                    directiveSource: 
+                      - xmlizable: 
+                        - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+                        - MobileSmartSourceType: source:{"filter":"Iteration","project":"C8oStudio","input":"","model":{"data":[{"priority":1589294466370}],"path":"?.category?.beans","prefix":"","suffix":"","custom":"","useCustom":false}}
+                    ↓Directive [ngx.components.UIControlDirective-1593878112265]: 
+                      directiveName: If
+                      directiveSource: 
+                        - xmlizable: 
+                          - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+                          - MobileSmartSourceType: source:{"filter":"Iteration","project":"C8oStudio","input":"","model":{"data":[{"priority":1593607087206},{"priority":1589294466370}],"path":"?.displayName","prefix":"","suffix":"","custom":"this['filter'] == undefined || this['filter']?.length == 0 || item1593607087206?.displayName.toLowerCase().indexOf(this['filter']?.toLowerCase()) != -1","useCustom":true}}
+                      ↓GridCol [ngx.components.UIDynamicElement-1589294196461]: 
+                        beanData: '{"ionBean":"GridCol"}'
+                        tagName: ion-col
+                        ↓Div [ngx.components.UIDynamicElement-1589779436965]: 
+                          beanData: '{"ionBean":"DivTag"}'
+                          tagName: div
+                          ↓Attr [ngx.components.UIAttribute-1589307787206]: 
+                            attrName: draggable
+                            attrValue: 
+                              - xmlizable: 
+                                - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+                                - MobileSmartSourceType: plain:true
+                          ↓Attr1 [ngx.components.UIAttribute-1589308698329]: 
+                            attrName: attr.data-classname
+                            attrValue: 
+                              - xmlizable: 
+                                - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+                                - MobileSmartSourceType: source:{"filter":"Iteration","project":"C8oStudio","input":"item1589294466370?.className"}
+                          ↓Event [ngx.components.UIControlEvent-1589307855989]: 
+                            attrName: (dragstart)
+                            eventName: (dragstart)
+                            ↓DragStart [ngx.components.UICustomAction-1589308407994]: 
+                              actionValue: 
+                                - xmlizable: 
+                                  - ↑classname: com.twinsoft.convertigo.beans.common.FormatedContent
+                                  - com.twinsoft.convertigo.beans.common.FormatedContent: 
+                                    →: |
+                                      '		page.c8o.log.debug(''[MB] ''+ props.actionFunction +'': ''+ props.actionName);
+                                      		console.log(props);
+                                      		console.log(event);
+                                      		console.log(event.srcElement.getAttribute(''data-classname''));
+                                      		event.dataTransfer.setData(''application/json'', JSON.stringify({''from'':''Palette'', ''className'': event.srcElement.getAttribute(''data-classname'')}));
+                                      		console.log(event.srcElement.getAttribute(''data-classname''));
+                                      		resolve();
+                                      '
+                          ↓Attr2 [ngx.components.UIAttribute-1589779554332]: 
+                            attrName: class
+                            attrValue: 
+                              - xmlizable: 
+                                - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+                                - MobileSmartSourceType: plain:palette-item
+                          ↓Image [ngx.components.UIDynamicElement-1589698349369]: 
+                            beanData: '{"ionBean":"Image"}'
+                            selfClose: true
+                            tagName: img
+                            ↓Attr [ngx.components.UIAttribute-1589296349154]: 
+                              attrName: src
+                              attrValue: 
+                                - xmlizable: 
+                                  - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+                                  - MobileSmartSourceType: plain:{{ this.c8o.endpoint }}/.bin?__sequence=GetIcon&className={{ item1593607087206.className }}&large=true
+                            ↓Attr1 [ngx.components.UIAttribute-1589310725332]: 
+                              attrName: draggable
+                              attrValue: 
+                                - xmlizable: 
+                                  - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+                                  - MobileSmartSourceType: plain:false
+                            ↓SetWidth [ngx.components.UIStyle-1589699684073]: 
+                              styleContent: 
+                                - xmlizable: 
+                                  - ↑classname: com.twinsoft.convertigo.beans.common.FormatedContent
+                                  - com.twinsoft.convertigo.beans.common.FormatedContent: 
+                                    →: |
+                                      '	width: 32px !important;
+                                      '
+                          ↓Text [ngx.components.UIText-1589296402954]: 
+                            textValue: 
+                              - xmlizable: 
+                                - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+                                - MobileSmartSourceType: source:{"filter":"Iteration","project":"C8oStudio","input":"","model":{"data":[{"priority":1593607087206},{"priority":1589294466370}],"path":"?.displayName","prefix":"","suffix":"","custom":"","useCustom":false}}
+              ↓NoPadding [ngx.components.UIDynamicAttr-1593964381544]: 
+                beanData: '{"ionBean":"FormatLayout","ContentPadding":"plain:ion-no-padding"}'
+                selfClose: false
+      ↓GridCol1 [ngx.components.UIDynamicElement-1593964968792]: 
+        beanData: '{"ionBean":"GridCol"}'
+        tagName: ion-col
+        ↓CardContainer [ngx.components.UIDynamicElement-1593965225548]: 
+          beanData: '{"ionBean":"Card","IonColor":"plain:dark"}'
+          tagName: ion-card
+          ↓CardContent [ngx.components.UIDynamicElement-1593965235628]: 
+            beanData: '{"ionBean":"CardContent"}'
+            tagName: ion-card-content
+        ↓NoPadding [ngx.components.UIDynamicAttr-1593965581548]: 
+          beanData: '{"ionBean":"FormatLayout","ContentPadding":"plain:ion-no-padding"}'
+          selfClose: false
