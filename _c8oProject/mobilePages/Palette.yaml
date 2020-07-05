@@ -58,17 +58,15 @@ title: Title for Palette
 ↓Header [ngx.components.UIDynamicElement-1589296498379]: 
   beanData: '{"ionBean":"Header"}'
   tagName: ion-header
-  ↓Label [ngx.components.UIDynamicElement-1589294006292]: 
-    beanData: '{"ionBean":"Label"}'
-    tagName: ion-label
-    ↓Text [ngx.components.UIText-1589296530756]: 
-      textValue: 
+  ↓SearchBar [ngx.components.UIDynamicElement-1593877939730]: 
+    beanData: '{"ionBean":"Searchbar","IonColor":"plain:medium"}'
+    tagName: ion-searchbar
+    ↓Attr [ngx.components.UIAttribute-1593878455266]: 
+      attrName: '[(ngModel)]'
+      attrValue: 
         - xmlizable: 
           - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
-          - MobileSmartSourceType: plain:search
-  ↓TextInput [ngx.components.UIDynamicElement-1589293954554]: 
-    beanData: '{"ionBean":"Input","Debounce":"plain:0"}'
-    tagName: ion-input
+          - MobileSmartSourceType: script:this['filter']
 ↓Content [ngx.components.UIDynamicElement-1589294543659]: 
   beanData: |
     '{
@@ -106,76 +104,82 @@ title: Title for Palette
             - xmlizable: 
               - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
               - MobileSmartSourceType: source:{"filter":"Iteration","project":"C8oStudio","input":"","model":{"data":[{"priority":1589294466370}],"path":"?.category?.beans","prefix":"","suffix":"","custom":"","useCustom":false}}
-          ↓GridCol [ngx.components.UIDynamicElement-1589294196461]: 
-            beanData: '{"ionBean":"GridCol"}'
-            tagName: ion-col
-            ↓Div [ngx.components.UIDynamicElement-1589779436965]: 
-              beanData: '{"ionBean":"DivTag"}'
-              tagName: div
-              ↓Attr [ngx.components.UIAttribute-1589307787206]: 
-                attrName: draggable
-                attrValue: 
-                  - xmlizable: 
-                    - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
-                    - MobileSmartSourceType: plain:true
-              ↓Attr1 [ngx.components.UIAttribute-1589308698329]: 
-                attrName: attr.data-classname
-                attrValue: 
-                  - xmlizable: 
-                    - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
-                    - MobileSmartSourceType: source:{"filter":"Iteration","project":"C8oStudio","input":"item1589294466370?.className"}
-              ↓Event [ngx.components.UIControlEvent-1589307855989]: 
-                attrName: (dragstart)
-                eventName: (dragstart)
-                ↓DragStart [ngx.components.UICustomAction-1589308407994]: 
-                  actionValue: 
-                    - xmlizable: 
-                      - ↑classname: com.twinsoft.convertigo.beans.common.FormatedContent
-                      - com.twinsoft.convertigo.beans.common.FormatedContent: 
-                        →: |
-                          '		page.c8o.log.debug(''[MB] ''+ props.actionFunction +'': ''+ props.actionName);
-                          		console.log(props);
-                          		console.log(event);
-                          		console.log(event.srcElement.getAttribute(''data-classname''));
-                          		event.dataTransfer.setData(''application/json'', JSON.stringify({''from'':''Palette'', ''className'': event.srcElement.getAttribute(''data-classname'')}));
-                          		console.log(event.srcElement.getAttribute(''data-classname''));
-                          		resolve();
-                          '
-              ↓Attr2 [ngx.components.UIAttribute-1589779554332]: 
-                attrName: class
-                attrValue: 
-                  - xmlizable: 
-                    - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
-                    - MobileSmartSourceType: plain:palette-item
-              ↓Image [ngx.components.UIDynamicElement-1589698349369]: 
-                beanData: '{"ionBean":"Image"}'
-                selfClose: true
-                tagName: img
-                ↓Attr [ngx.components.UIAttribute-1589296349154]: 
-                  attrName: src
-                  attrValue: 
-                    - xmlizable: 
-                      - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
-                      - MobileSmartSourceType: plain:{{ this.c8o.endpoint }}/.bin?__sequence=GetIcon&className={{ item1593607087206.className }}&large=true
-                ↓Attr1 [ngx.components.UIAttribute-1589310725332]: 
+          ↓Directive [ngx.components.UIControlDirective-1593878112265]: 
+            directiveName: If
+            directiveSource: 
+              - xmlizable: 
+                - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+                - MobileSmartSourceType: source:{"filter":"Iteration","project":"C8oStudio","input":"","model":{"data":[{"priority":1593607087206},{"priority":1589294466370}],"path":"?.displayName","prefix":"","suffix":"","custom":"this['filter'] == undefined || this['filter']?.length == 0 || item1593607087206?.displayName.toLowerCase().indexOf(this['filter']?.toLowerCase()) != -1","useCustom":true}}
+            ↓GridCol [ngx.components.UIDynamicElement-1589294196461]: 
+              beanData: '{"ionBean":"GridCol"}'
+              tagName: ion-col
+              ↓Div [ngx.components.UIDynamicElement-1589779436965]: 
+                beanData: '{"ionBean":"DivTag"}'
+                tagName: div
+                ↓Attr [ngx.components.UIAttribute-1589307787206]: 
                   attrName: draggable
                   attrValue: 
                     - xmlizable: 
                       - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
-                      - MobileSmartSourceType: plain:false
-                ↓SetWidth [ngx.components.UIStyle-1589699684073]: 
-                  styleContent: 
+                      - MobileSmartSourceType: plain:true
+                ↓Attr1 [ngx.components.UIAttribute-1589308698329]: 
+                  attrName: attr.data-classname
+                  attrValue: 
                     - xmlizable: 
-                      - ↑classname: com.twinsoft.convertigo.beans.common.FormatedContent
-                      - com.twinsoft.convertigo.beans.common.FormatedContent: 
-                        →: |
-                          '	width: 32px !important;
-                          '
-              ↓Text [ngx.components.UIText-1589296402954]: 
-                textValue: 
-                  - xmlizable: 
-                    - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
-                    - MobileSmartSourceType: source:{"filter":"Iteration","project":"C8oStudio","input":"","model":{"data":[{"priority":1593607087206},{"priority":1589294466370}],"path":"?.displayName","prefix":"","suffix":"","custom":"","useCustom":false}}
+                      - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+                      - MobileSmartSourceType: source:{"filter":"Iteration","project":"C8oStudio","input":"item1589294466370?.className"}
+                ↓Event [ngx.components.UIControlEvent-1589307855989]: 
+                  attrName: (dragstart)
+                  eventName: (dragstart)
+                  ↓DragStart [ngx.components.UICustomAction-1589308407994]: 
+                    actionValue: 
+                      - xmlizable: 
+                        - ↑classname: com.twinsoft.convertigo.beans.common.FormatedContent
+                        - com.twinsoft.convertigo.beans.common.FormatedContent: 
+                          →: |
+                            '		page.c8o.log.debug(''[MB] ''+ props.actionFunction +'': ''+ props.actionName);
+                            		console.log(props);
+                            		console.log(event);
+                            		console.log(event.srcElement.getAttribute(''data-classname''));
+                            		event.dataTransfer.setData(''application/json'', JSON.stringify({''from'':''Palette'', ''className'': event.srcElement.getAttribute(''data-classname'')}));
+                            		console.log(event.srcElement.getAttribute(''data-classname''));
+                            		resolve();
+                            '
+                ↓Attr2 [ngx.components.UIAttribute-1589779554332]: 
+                  attrName: class
+                  attrValue: 
+                    - xmlizable: 
+                      - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+                      - MobileSmartSourceType: plain:palette-item
+                ↓Image [ngx.components.UIDynamicElement-1589698349369]: 
+                  beanData: '{"ionBean":"Image"}'
+                  selfClose: true
+                  tagName: img
+                  ↓Attr [ngx.components.UIAttribute-1589296349154]: 
+                    attrName: src
+                    attrValue: 
+                      - xmlizable: 
+                        - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+                        - MobileSmartSourceType: plain:{{ this.c8o.endpoint }}/.bin?__sequence=GetIcon&className={{ item1593607087206.className }}&large=true
+                  ↓Attr1 [ngx.components.UIAttribute-1589310725332]: 
+                    attrName: draggable
+                    attrValue: 
+                      - xmlizable: 
+                        - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+                        - MobileSmartSourceType: plain:false
+                  ↓SetWidth [ngx.components.UIStyle-1589699684073]: 
+                    styleContent: 
+                      - xmlizable: 
+                        - ↑classname: com.twinsoft.convertigo.beans.common.FormatedContent
+                        - com.twinsoft.convertigo.beans.common.FormatedContent: 
+                          →: |
+                            '	width: 32px !important;
+                            '
+                ↓Text [ngx.components.UIText-1589296402954]: 
+                  textValue: 
+                    - xmlizable: 
+                      - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+                      - MobileSmartSourceType: source:{"filter":"Iteration","project":"C8oStudio","input":"","model":{"data":[{"priority":1593607087206},{"priority":1589294466370}],"path":"?.displayName","prefix":"","suffix":"","custom":"","useCustom":false}}
   ↓Attr [ngx.components.UIAttribute-1589699592601]: 
     attrName: class
     attrValue: 
