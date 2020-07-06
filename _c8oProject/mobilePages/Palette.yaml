@@ -198,6 +198,14 @@ title: Title for Palette
                               - xmlizable: 
                                 - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
                                 - MobileSmartSourceType: source:{"filter":"Iteration","project":"C8oStudio","input":"","model":{"data":[{"priority":1593607087206},{"priority":1589294466370}],"path":"?.displayName","prefix":"","suffix":"","custom":"","useCustom":false}}
+                          ↓Event1 [ngx.components.UIControlEvent-1594022594681]: 
+                            ↓SetGlobal [ngx.components.UIDynamicAction-1594022641889]: 
+                              beanData: |
+                                '{
+                                 "ionBean": "SetGlobalAction",
+                                 "Property": "plain:selectedPaletteItem",
+                                 "Value": "source:{\"filter\":\"Iteration\",\"project\":\"C8oStudio\",\"input\":\"\",\"model\":{\"data\":[{\"priority\":1593607087206},{\"priority\":1589294466370}],\"path\":\"\",\"prefix\":\"\",\"suffix\":\"\",\"custom\":\"\",\"useCustom\":false}}"
+                                }'
               ↓NoPadding [ngx.components.UIDynamicAttr-1593964381544]: 
                 beanData: '{"ionBean":"FormatLayout","ContentPadding":"plain:ion-no-padding"}'
                 selfClose: false
@@ -207,45 +215,24 @@ title: Title for Palette
         ↓CardContainer [ngx.components.UIDynamicElement-1593965225548]: 
           beanData: '{"ionBean":"Card","IonColor":"plain:dark"}'
           tagName: ion-card
+          ↓CardTitle [ngx.components.UIDynamicElement-1594022731976]: 
+            beanData: '{"ionBean":"CardTitle"}'
+            tagName: ion-card-title
+            ↓Attr [ngx.components.UIAttribute-1594022995561]: 
+              attrName: '[innerHTML]'
+              attrValue: 
+                - xmlizable: 
+                  - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+                  - MobileSmartSourceType: source:{"filter":"Global","project":"C8oStudio","input":"","model":{"data":[{"sharedObject":"router.sharedObject"}],"path":"?.selectedPaletteItem","prefix":"","suffix":"?.description","custom":"","useCustom":false}}
           ↓CardContent [ngx.components.UIDynamicElement-1593965235628]: 
             beanData: '{"ionBean":"CardContent"}'
             tagName: ion-card-content
-            ↓Text [ngx.components.UIText-1593967358915]: 
-              i18n: false
-              textValue: 
+            ↓Attr [ngx.components.UIAttribute-1594023083726]: 
+              attrName: '[innerHTML]'
+              attrValue: 
                 - xmlizable: 
                   - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
-                  - MobileSmartSourceType: |
-                      'plain:Text
-                      
-                      Defines a Text component.
-                      
-                      This component acts as a standard HTML Text node which is mostly the inner content of an HTML element.
-                      
-                      The Text component is the base component to display text.
-                      
-                      You can add a Text component to any other component, for example to a Button or an HTML component such as P or H1. If you add several Text to the same component, they will be concatenated.
-                      
-                      Text components have a Text value property. As any other property, its value can be set from:
-                      • A Static expression : click the TX button in the property editor, and enter a static expression: Welcome!, 2018, true
-                      • A TypeScript expression : click the TS button in the property editor, and enter a typescript expression: ''some text'', this.options.titleText
-                      • A Source expression : click the SC button in the property editor, and select the source by clicking the ... button
-                      
-                      
-                      
-                      
-                      For more information: HTML Elements, Ionic Components
-                      
-                      Properties:
-                      
-                      Comment
-                      Describes the object comment to include in the documentation report. This property generally contains an explanation about the object.
-                      I18n translate
-                      Defines whether the text should be translated (for TX mode only)
-                      Is active
-                      Defines whether the component is active.
-                      Text value
-                      Defines the text to be displayed'
+                  - MobileSmartSourceType: source:{"filter":"Global","project":"C8oStudio","input":"","model":{"data":[{"sharedObject":"router.sharedObject"}],"path":"?.selectedPaletteItem","prefix":"","suffix":"?.longDescription","custom":"","useCustom":false}}
         ↓NoPadding [ngx.components.UIDynamicAttr-1593965581548]: 
           beanData: '{"ionBean":"FormatLayout","ContentPadding":"plain:ion-no-padding"}'
           selfClose: false

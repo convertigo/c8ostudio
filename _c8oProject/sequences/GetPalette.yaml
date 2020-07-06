@@ -31,6 +31,12 @@
           ↓Element2 [steps.XMLElementStep-1589385581311]: 
             nodeName: displayName
             nodeText: Page
+          ↓image1 [steps.ElementStep-1593966649532]: 
+            expression: item.getDescription()
+            nodeName: description
+          ↓image11 [steps.ElementStep-1593966649535]: 
+            expression: item.getPropertiesDescription()
+            nodeName: propertiesDescription
       ↓jIterator [steps.SimpleIteratorStep-1589377524280]: 
         expression: com.twinsoft.convertigo.beans.ngx.components.dynamic.ComponentManager.getComponents()
         ↓jIf [steps.IfStep-1589379523471]: 
@@ -52,6 +58,12 @@
             ↓image [steps.ElementStep-1589380507259]: 
               expression: item.getImagePath()
               nodeName: image
+            ↓image1 [steps.ElementStep-1593966398344]: 
+              expression: item.getDescription()
+              nodeName: description
+            ↓image11 [steps.ElementStep-1593966441402]: 
+              expression: item.getPropertiesDescription()
+              nodeName: propertiesDescription
     ↓jElse [steps.ElseStep-1589379426677]: 
       ↓group [steps.SimpleIteratorStep-1589292228992]: 
         expression: manager.getGroups()
@@ -83,6 +95,12 @@
                   ↓displayName [steps.ElementStep-1589294855960]: 
                     expression: '"" + com.twinsoft.convertigo.engine.util.CachedIntrospector.getBeanInfo(dbo.getClass().forName(bean.getClassName())).getBeanDescriptor().getDisplayName()'
                     nodeName: displayName
+                  ↓displayName1 [steps.ElementStep-1594017573719]: 
+                    expression: '"" + com.twinsoft.convertigo.engine.util.CachedIntrospector.getBeanInfo(dbo.getClass().forName(bean.getClassName())).getBeanDescriptor().getShortDescription().split(''\\|'')[0]'
+                    nodeName: description
+                  ↓displayName11 [steps.ElementStep-1594022298346]: 
+                    expression: '"" + com.twinsoft.convertigo.engine.util.CachedIntrospector.getBeanInfo(dbo.getClass().forName(bean.getClassName())).getBeanDescriptor().getShortDescription().split(''\\|'')[1]'
+                    nodeName: longDescription
 ↓qname [variables.RequestableVariable-1589289607174]: 
 ↓application [core.TestCase]: 
   ↓qname [variables.TestCaseVariable-1589378965586]: 
