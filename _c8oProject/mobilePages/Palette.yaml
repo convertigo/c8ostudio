@@ -145,7 +145,7 @@ title: Title for Palette
                             attrValue: 
                               - xmlizable: 
                                 - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
-                                - MobileSmartSourceType: source:{"filter":"Iteration","project":"C8oStudio","input":"item1589294466370?.className"}
+                                - MobileSmartSourceType: source:{"filter":"Iteration","project":"C8oStudio","input":"item1589294466370?.className","model":{"data":[{"priority":1593607087206},{"priority":1589294466370}],"path":"?.className","prefix":"","suffix":"","custom":"","useCustom":false}}
                           ↓Event [ngx.components.UIControlEvent-1589307855989]: 
                             attrName: (dragstart)
                             eventName: (dragstart)
