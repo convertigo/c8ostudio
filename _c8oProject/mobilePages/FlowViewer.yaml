@@ -14,6 +14,7 @@ scriptContent:
         	paper : joint.dia.Paper
         	scale : number = 10
         	dragStartPosition = null;
+        	isHorizontal = true;
         	verticalSpace = 140
         	horizontalSpace = 140
         	
@@ -36,28 +37,37 @@ scriptContent:
         	    }
             }
         
-        	addLink(source, dest) {
+        	addLink(source, dest, isHorizontal, label) {
         	    var link = new joint.shapes.standard.Link();
                 link.source(source, {
                     anchor: {
-                        name: ''bottom''
+                        name: (isHorizontal) ? ''center'' : ''bottom''
                     }
                 })
                 
                 link.target(dest, {
                     anchor: {
-                        name: ''top''
+                        name: (isHorizontal) ? ''center'' : ''top''
                     }
                 })
+        
+        		if(isHorizontal) {
+        			link.appendLabel({
+        				attrs : {
+        					text: {
+        						text: label
+        					}
+        				}
+        			})
+        		}
                 
                 link.attr(''line/stroke'', ''white'');
                 link.connector(''jumpover'', { size: 10 });	
                 link.addTo(this.graph);
         	}
         	
-        	addStep(position, size, text:string, hasChildren:boolean, qname: string, className: string, isStarting: boolean) {
+        	addStep(position, size, text:string, hasChildren:boolean, qname: string, className: string, isStarting: boolean, isHidden: boolean) {
         	    
-        	    let childType = this.getChildType(className);
         	    let rect;
         	    
         	    // custom diamond shape for logical nodes 
@@ -109,6 +119,10 @@ scriptContent:
         	            className: className,
         	            isStarting: isStarting
         	         })
+        
+        			if(isHidden)
+        				rect.attr(''./display'', ''none'')
+        				
         	    } else {
         	       
                 rect = new joint.shapes.basic.Rect( {
@@ -177,6 +191,9 @@ scriptContent:
                     isStarting: isStarting
                 });
         	    }
+        
+        			if(isHidden)
+        				rect.attr(''./display'', ''none'')
                 
                 rect.addTo(this.graph);
                 return rect
@@ -190,9 +207,12 @@ scriptContent:
         	        let y = 0;
         	        let x = 0;
         			let col = 1;
+        			let row = 1;
         	        
         			let parent = cellView
-        	        let ancestor = parent.model.getAncestors()
+        			
+        			let cells = this.graph.getCells();
+        //	        let ancestor = parent.model.getAncestors()
         	        for (let i=0; i < response["array"].length; i++) {
         	            let element = response["array"][i]
         	            
@@ -204,97 +224,99 @@ scriptContent:
         //	                let x = 250
         //	            }
         	            
-        	            // calculate in case it is the first box we are opening
-        	            if(i == 0) {
-        	                if(previous == null && parentClassName == "IfThenElseStep" && stepClassName == "ThenStep") {
-        	                    y = parent.model.attributes.position.y + this.verticalSpace
-                                x = parent.model.attributes.position.x + this.horizontalSpace
-        	                } else if (previous == null && parentClassName == "IfThenElseStep" && stepClassName == "ElseStep") {
-        	                    y = parent.model.attributes.position.y + this.verticalSpace
-                                x = parent.model.attributes.position.x
-        	                } else if(previous == null && parentClassName == "ElseStep" || parentClassName == "ThenStep") {
-                                y = parent.model.attributes.position.y + this.verticalSpace
-                                x = parent.model.attributes.position.x
-                            } else if(parentClassName == "SimpleIteratorStep") {
-                                y = parent.model.attributes.position.y + this.verticalSpace
-                                x = parent.model.attributes.position.x
-                            } else if(parent.model.attributes[''isStarting''] == true){
-                                y = parent.model.attributes.position.y + this.verticalSpace
-                                x = parent.model.attributes.position.x + this.horizontalSpace
-                            } else {
-                                y = parent.model.attributes.position.y + this.verticalSpace
-                                x = parent.model.attributes.position.x
-                            }
-        	            } else if(previous != null){
-        	                // positioning Then box
-        	                if(stepClassName == "ThenStep") {
-        	                    y = parent.model.attributes.position.y
-        	                    x = parent.model.attributes.position.x + this.horizontalSpace
-        	                    
-        	                // positioning Else box
-        	                } else if (stepClassName == "ElseStep") {
-        	                    y = parent.model.attributes.position.y + this.verticalSpace
-        	                    x = parent.model.attributes.position.x
-        	                    
-        	                    // positioning Then''s or Else''s children compared to their parent 
-        	                } else if (parentClassName == "ElseStep" || parentClassName == "ThenStep") {
-        	                    y = parent.model.attributes.position.y + this.verticalSpace
-        	                    x = parent.model.attributes.position.x
-        	                } else {
-        	                    y = previous.attributes.position.y + this.verticalSpace
-        	                    x = previous.attributes.position.x
-        	                }
-        	            } else {
-        	            }
-        
-        				// if a cell is already on points we move it vertically
-                        if (this.graph.findModelsFromPoint({ x: x, y: y }).length > 0) {
-                            let elementToMove = this.graph.findModelsFromPoint({ x: x, y: y })
-                            elementToMove[0].set(''position'', {x: x, y: y + this.verticalSpace})
-                        }
-        
-        				// if a box is opened and a new branch created, we move down vertically cells from the main branch
-        				// condition checks if there is any cell on left of the current cell
-                        if(this.graph.findModelsFromPoint({x: x - this.horizontalSpace, y: y }).length > 0){
+        				if(!this.isHorizontal) {
+        		            // calculate in case it is the first box we are opening
+        		            if(i == 0) {
+        		                if(previous == null && parentClassName == "IfThenElseStep" && stepClassName == "ThenStep") {
+        		                    y = parent.model.attributes.position.y + this.verticalSpace
+        	                        x = parent.model.attributes.position.x + this.horizontalSpace
+        		                } else if (previous == null && parentClassName == "IfThenElseStep" && stepClassName == "ElseStep") {
+        		                    y = parent.model.attributes.position.y + this.verticalSpace
+        	                        x = parent.model.attributes.position.x
+        		                } else if(previous == null && parentClassName == "ElseStep" || parentClassName == "ThenStep") {
+        	                        y = parent.model.attributes.position.y + this.verticalSpace
+        	                        x = parent.model.attributes.position.x
+        	                    } else if(parentClassName == "SimpleIteratorStep") {
+        	                        y = parent.model.attributes.position.y + this.verticalSpace
+        	                        x = parent.model.attributes.position.x
+        	                    } else if(parent.model.attributes[''isStarting''] == true){
+        	                        y = parent.model.attributes.position.y + this.verticalSpace
+        	                        x = parent.model.attributes.position.x + this.horizontalSpace
+        	                    } else {
+        	                        y = parent.model.attributes.position.y + this.verticalSpace
+        	                        x = parent.model.attributes.position.x
+        	                    }
+        		            } else if(previous != null){
+        		                // positioning Then box
+        		                if(stepClassName == "ThenStep") {
+        		                    y = parent.model.attributes.position.y
+        		                    x = parent.model.attributes.position.x + this.horizontalSpace
+        		                    
+        		                // positioning Else box
+        		                } else if (stepClassName == "ElseStep") {
+        		                    y = parent.model.attributes.position.y + this.verticalSpace
+        		                    x = parent.model.attributes.position.x
+        		                    
+        		                    // positioning Then''s or Else''s children compared to their parent 
+        		                } else if (parentClassName == "ElseStep" || parentClassName == "ThenStep") {
+        		                    y = parent.model.attributes.position.y + this.verticalSpace
+        		                    x = parent.model.attributes.position.x
+        		                } else {
+        		                    y = previous.attributes.position.y + this.verticalSpace
+        		                    x = previous.attributes.position.x
+        		                }
+        		            } else {
+        		            }
         	
-        					// if there is, incrementing col
-        					col = col +1;
-        					
-        					// previous col
-        					if(this.graph.findModelsFromPoint({x: x - (this.horizontalSpace * col), y: y})) {
-        						// getting the element to move
-        						let elementToMove = this.graph.findModelsFromPoint({ x: x - (this.horizontalSpace * col), y: y})
-        						if(elementToMove.length > 0)
-        							elementToMove[0].set(''position'', {x: x - (this.horizontalSpace * col), y: y + this.verticalSpace})
-        					}
-        					
-        					// 2 col before 
-        					if(this.graph.findModelsFromPoint({x: x - (this.horizontalSpace * (col + 1)), y: y})) {
-        						// getting the element to move
-        						let elementToMove = this.graph.findModelsFromPoint({ x: x - (this.horizontalSpace * (col + 1)), y: y})
-        						if(elementToMove.length > 0)
-        							elementToMove[0].set(''position'', {x: x - (this.horizontalSpace * (col + 1)), y: y + this.verticalSpace})
-        					}
-        					
-        					
-                            
-                            // getting element to move
-                            let elementToMove = this.graph.findModelsFromPoint({ x: x - this.horizontalSpace, y: y})
-                            elementToMove[0].set(''position'', {x: x - this.horizontalSpace, y: y + this.verticalSpace })
-                            
-                            // getting its successors
-                            let successors = this.graph.getSuccessors(elementToMove[0]);
-                            
-                            for(var j = 0; j < successors.length; j++) {
-                                // if it''s the first successor no need to move it more than the vertical space
-                                if(j == 0) {
-                                    successors[j].set(''position'', {x: successors[j].attributes.position.x, y : elementToMove[0].attributes.position.y + this.verticalSpace})
-                                } else {
-                                    successors[j].set(''position'', {x: successors[j].attributes.position.x, y : elementToMove[0].attributes.position.y + this.verticalSpace * (j +1)})
-                                }
-                                
-                            }
-                        }
+        					// if a cell is already on points we move it vertically
+        	                if (this.graph.findModelsFromPoint({ x: x, y: y }).length > 0) {
+        	                    let elementToMove = this.graph.findModelsFromPoint({ x: x, y: y })
+        	                    elementToMove[0].set(''position'', {x: x, y: y + this.verticalSpace})
+        	                }
+        	
+        					// if a box is opened and a new branch created, we move down vertically cells from the main branch
+        					// condition checks if there is any cell on left of the current cell
+        	                if(this.graph.findModelsFromPoint({x: x - this.horizontalSpace, y: y }).length > 0){
+        		
+        						// if there is, incrementing col
+        						col = col +1;
+        						
+        						// previous col
+        						if(this.graph.findModelsFromPoint({x: x - (this.horizontalSpace * col), y: y})) {
+        							// getting the element to move
+        							let elementToMove = this.graph.findModelsFromPoint({ x: x - (this.horizontalSpace * col), y: y})
+        							if(elementToMove.length > 0)
+        								elementToMove[0].set(''position'', {x: x - (this.horizontalSpace * col), y: y + this.verticalSpace})
+        						}
+        						
+        						// 2 col before 
+        						if(this.graph.findModelsFromPoint({x: x - (this.horizontalSpace * (col + 1)), y: y})) {
+        							// getting the element to move
+        							let elementToMove = this.graph.findModelsFromPoint({ x: x - (this.horizontalSpace * (col + 1)), y: y})
+        							if(elementToMove.length > 0)
+        								elementToMove[0].set(''position'', {x: x - (this.horizontalSpace * (col + 1)), y: y + this.verticalSpace})
+        						}
+        						
+        						
+        	                    
+        	                    // getting element to move
+        	                    let elementToMove = this.graph.findModelsFromPoint({ x: x - this.horizontalSpace, y: y})
+        	                    elementToMove[0].set(''position'', {x: x - this.horizontalSpace, y: y + this.verticalSpace })
+        	                    
+        	                    // getting its successors
+        	                    let successors = this.graph.getSuccessors(elementToMove[0]);
+        	                    
+        	                    for(var j = 0; j < successors.length; j++) {
+        	                        // if it''s the first successor no need to move it more than the vertical space
+        	                        if(j == 0) {
+        	                            successors[j].set(''position'', {x: successors[j].attributes.position.x, y : elementToMove[0].attributes.position.y + this.verticalSpace})
+        	                        } else {
+        	                            successors[j].set(''position'', {x: successors[j].attributes.position.x, y : elementToMove[0].attributes.position.y + this.verticalSpace * (j +1)})
+        	                        }
+        	                        
+        	                    }
+        	                }
+        				
         	            
         	            
         	            let step = this.addStep({
@@ -311,19 +333,20 @@ scriptContent:
                             element.hasChildren,
                             element.qname,
                             element.className,
-                            false
+                            false,
+        					false
                         )
                         
                         // cellView.model.embed(step)
                         
                         if(i == 0)
-                            this.addLink(cellView.model, step)
+                            this.addLink(cellView.model, step, this.isHorizontal, stepClassName)
                         
                         if (previous != null && stepClassName != "ElseStep") 
-                            this.addLink(previous, step)
+                            this.addLink(previous, step, this.isHorizontal, stepClassName)
                             
                         if (stepClassName == "ElseStep")
-                            this.addLink(cellView.model, step)
+                            this.addLink(cellView.model, step, this.isHorizontal, stepClassName)
                         
                         previous = step
                         
@@ -334,7 +357,279 @@ scriptContent:
                             this.getAndDisplayStepChilds(step.findView(this.paper)) 
                         }
                         */
-        	        }
+        			} 
+        			
+        			/* case we display flow horizontally
+        			***************
+        			*/
+        			else {
+        				// calculate in case it is the first box we are opening
+        		            if(i == 0) {
+        		                if(previous == null && parentClassName == "IfThenElseStep" && stepClassName == "ThenStep") {
+        							this.c8o.callJsonObject(".GetChildren", {
+        	        					qname: element.qname
+        	    					}).then((resp, param) => {
+        									let elem = resp[''array''][0];
+        									y = parent.model.attributes.position.y
+        	                        		x = parent.model.attributes.position.x + this.horizontalSpace
+        									// if a cell is already on points we move it horizontally
+        					                if (this.graph.findModelsFromPoint({ x: x, y: y }).length > 0) {
+        					                    let elementToMove = this.graph.findModelsFromPoint({ x: x, y: y })
+        					                    elementToMove[0].set(''position'', {x: x + this.horizontalSpace, y: y})
+        // getting its successors
+        	                    let successors = this.graph.getSuccessors(elementToMove[0]);
+        	                    
+        	                    for(var j = 0; j < successors.length; j++) {
+        	                        // if it''s the first successor no need to move it more than the horizonal space
+        	                        if(j == 0) {
+        	                            successors[j].set(''position'', {x: successors[j].attributes.position.x + this.horizontalSpace, y : elementToMove[0].attributes.position.y})
+        	                        } else {
+        	                            successors[j].set(''position'', {x: successors[j].attributes.position.x + this.horizontalSpace * (j+1), y : elementToMove[0].attributes.position.y})
+        	                        }
+        	                        
+        	                    }					                
+        }
+        
+        									let step = this.addStep(
+        										{
+        										x: x,
+        										y: y
+        										},
+        										{
+        											width: 70,
+        											height: 70 	
+        										},
+        										elem.displayName,
+        					                    elem.hasChildren,
+        					                    elem.qname,
+        					                    elem.className,
+        					                    false,
+        										false	
+        									)
+        									
+        									this.addLink(cellView.model, step, this.isHorizontal, "true")
+        									this.c8o.log.debug("Then async x :" + x)
+        									this.c8o.log.debug("Then async y :" + y)
+        								return null;
+        							});
+        		                } else if(previous == null && parentClassName == "ElseStep" || parentClassName == "ThenStep") {
+        	                        y = parent.model.attributes.position.y
+        	                        x = parent.model.attributes.position.x + this.horizontalSpace
+        	                    } else if(parentClassName == "SimpleIteratorStep") {
+        	                        y = parent.model.attributes.position.y 
+        	                        x = parent.model.attributes.position.x + this.horizontalSpace
+        	                    } else if(parent.model.attributes[''isStarting''] == true){
+        	                        y = parent.model.attributes.position.y
+        	                        x = parent.model.attributes.position.x + this.horizontalSpace
+        	                    } else {
+        	                        y = parent.model.attributes.position.y
+        	                        x = parent.model.attributes.position.x + this.horizontalSpace
+        	                    }
+        		            } else if(previous != null){
+        		                // positioning Then box
+        		                if(stepClassName == "ThenStep") {
+        		                    y = parent.model.attributes.position.y
+        		                    x = parent.model.attributes.position.x + this.horizontalSpace
+        		                    
+        		                // positioning Else box
+        		                } else if (stepClassName == "ElseStep") {
+        		                    y = parent.model.attributes.position.y + this.verticalSpace
+        		                    x = parent.model.attributes.position.x + this.horizontalSpace
+        		                    // positioning Then''s or Else''s children compared to their parent 
+        		                } else if (parentClassName == "ElseStep" || parentClassName == "ThenStep") {
+        		                    y = parent.model.attributes.position.y 
+        		                    x = parent.model.attributes.position.x + this.horizontalSpace
+        		                } else {
+        		                    y = previous.attributes.position.y
+        		                    x = previous.attributes.position.x + this.horizontalSpace
+        		                }
+        		            } else {
+        						if (parentClassName == "IfThenElseStep" && stepClassName == "ElseStep") {			
+        										this.c8o.callJsonObject(".GetChildren", {
+        				        					qname: element.qname
+        				    					}).then((resp, param) => {
+        												let elem = resp[''array''][0];
+        												y = parent.model.attributes.position.y + this.verticalSpace
+        				                        		x = parent.model.attributes.position.x
+        												let step = this.addStep(
+        													{
+        													x: x,
+        													y: y
+        													},
+        													{
+        														width: 70,
+        														height: 70 	
+        													},
+        													elem.displayName,
+        								                    elem.hasChildren,
+        								                    elem.qname,
+        								                    elem.className,
+        								                    false,
+        													false	
+        												)
+        												
+        												
+        												this.addLink(cellView.model, step, this.isHorizontal, "false")
+        												this.c8o.log.debug("Else async x :" + x)
+        												this.c8o.log.debug("Else async y :" + y)
+        											return null;
+        										});
+        							}
+        		            }
+        
+        
+        				// if a cell is already on points we move it horizontally
+        	                if (this.graph.findModelsFromPoint({ x: x, y: y }).length > 0) {
+        	                    let elementToMove = this.graph.findModelsFromPoint({ x: x, y: y })
+        	                    elementToMove[0].set(''position'', {x: x + this.horizontalSpace, y: y})
+        
+        						let successors = this.graph.getSuccessors(elementToMove[0]);
+        	                    
+        	                    for(var j = 0; j < successors.length; j++) {
+        	                        // if it''s the first successor no need to move it more than the horizonal space
+        	                        if(j == 0) {
+        	                            successors[j].set(''position'', {x: successors[j].attributes.position.x + this.horizontalSpace, y : elementToMove[0].attributes.position.y})
+        	                        } else {
+        	                            successors[j].set(''position'', {x: successors[j].attributes.position.x + this.horizontalSpace * (j+1), y : elementToMove[0].attributes.position.y})
+        	                        }
+        	                        
+        	                    }
+        	                }
+        
+        					
+        
+        					// condition checks if there is any cell upper of the current cell
+        	                if(this.graph.findModelsFromPoint({x: x, y: y - (this.verticalSpace * row)}).length > 0){
+        		
+        						
+        						// previous row
+        						if(this.graph.findModelsFromPoint({x: x, y: y + (this.verticalSpace * row)})) {
+        							// getting the element to move
+        							let elementToMove = this.graph.findModelsFromPoint({ x: x, y: y + (this.verticalSpace * row)})
+        							if(elementToMove.length > 0)
+        								elementToMove[0].set(''position'', {x: x + (this.horizontalSpace * row), y: y + this.verticalSpace})
+        						}
+        						
+        //						// 2 col before 
+        //						if(this.graph.findModelsFromPoint({x: x - (this.horizontalSpace * (col + 1)), y: y})) {
+        //							// getting the element to move
+        //							let elementToMove = this.graph.findModelsFromPoint({ x: x - (this.horizontalSpace * (col + 1)), y: y})
+        //							if(elementToMove.length > 0)
+        //								elementToMove[0].set(''position'', {x: x - (this.horizontalSpace * (col + 1)), y: y + this.verticalSpace})
+        //						}
+        //						
+        //						
+        //	                    
+        	                    // getting element to move
+        	                    let elementToMove = this.graph.findModelsFromPoint({ x: x, y: y - (this.verticalSpace * row)})
+        	                    elementToMove[0].set(''position'', {x: x + this.horizontalSpace * row, y: y - this.verticalSpace })
+        	                    
+        	                    // getting its successors
+        	                    let successors = this.graph.getSuccessors(elementToMove[0]);
+        	                    
+        	                    for(var j = 0; j < successors.length; j++) {
+        	                        // if it''s the first successor no need to move it more than the vertical space
+        	                        if(j == 0) {
+        	                            successors[j].set(''position'', {x: successors[j].attributes.position.x, y : elementToMove[0].attributes.position.y + this.verticalSpace})
+        	                        } else {
+        	                            successors[j].set(''position'', {x: successors[j].attributes.position.x, y : elementToMove[0].attributes.position.y + this.verticalSpace * (j +1)})
+        	                        }
+        	                        
+        	                    }
+        
+        						// if there is, incrementing row
+        						row = row +1;
+        	                }
+        
+        			 
+        		if(stepClassName != "ThenStep" && stepClassName != "ElseStep") {
+        			let step = this.addStep({
+        //                        x: cellView.getBBox().topLeft().x + x,
+        //                        y: cellView.getBBox().topLeft().y      
+        	                      x: x,
+        	                      y: y
+                            }, 
+                            {
+                                width: 70,
+                                height: 70              
+                            }, 
+                            element.displayName,
+                            element.hasChildren,
+                            element.qname,
+                            element.className,
+                            false,
+        					false
+                        )
+        
+        				if(i == 0)
+                            this.addLink(cellView.model, step, this.isHorizontal, "")
+                        
+                        if (previous != null && stepClassName != "ElseStep") 
+                            this.addLink(previous, step, this.isHorizontal, "")
+                            
+                        if (stepClassName == "ElseStep")
+                            this.addLink(cellView.model, step, this.isHorizontal, "")
+                        
+                        previous = step
+        		}
+        
+        				
+        //			if(stepClassName == "ThenStep" || stepClassName == "ElseStep") {
+        //				// getting parent element, to be able to get current''s element object (so we are getting IfThenElseStep element)
+        //	            let elementToMove = this.graph.findModelsFromPoint({ x: parent.model.attributes.position.x, y: parent.model.attributes.position.y})
+        //	            
+        //				
+        //				// getting its successors
+        //	            let successors = this.graph.getSuccessors(step, {deep: true});
+        //				let toto = successors
+        //			}	
+        
+        //			if(parentClassName == "ThenStep" || parentClassName == "ElseStep") {
+        //				// getting then or else box
+        //	            let elementToMove = this.graph.findModelsFromPoint({ x: parent.model.attributes.position.x, y: parent.model.attributes.position.y})
+        //	            
+        //				elementToMove[0].attr(''./display'', ''none'')
+        //				// getting its successors
+        ////	            let successors = this.graph.getSuccessors(elementToMove[0]);
+        ////				let toto = successors
+        //			}	
+        
+        //			 let step = this.addStep({
+        ////                        x: cellView.getBBox().topLeft().x + x,
+        ////                        y: cellView.getBBox().topLeft().y      
+        //	                      x: x,
+        //	                      y: y
+        //                    }, 
+        //                    {
+        //                        width: 70,
+        //                        height: 70              
+        //                    }, 
+        //                    element.displayName,
+        //                    element.hasChildren,
+        //                    element.qname,
+        //                    element.className,
+        //                    false,
+        //					false
+        //                )
+        
+        //                if(i == 0)
+        //                    this.addLink(cellView.model, step, this.isHorizontal, stepClassName)
+        //                
+        //                if (previous != null && stepClassName != "ElseStep") 
+        //                    this.addLink(previous, step, this.isHorizontal, stepClassName)
+        //                    
+        //                if (stepClassName == "ElseStep")
+        //                    this.addLink(cellView.model, step, this.isHorizontal, stepClassName)
+        //                
+        //                previous = step
+        
+        			} // endelse
+        			
+        			
+                        
+                        // cellView.model.embed(step)
+                        
+        	        } // end for
         	        
         //	        /**
         //	         * Get the top most ancestor and ask it to resize itslef to fit all embeds 
@@ -372,19 +667,9 @@ scriptContent:
         //            }
                     return null;
         	    })
-        .fail((error:any)=>{
-        	console.log(error);
-        })
-        	}
-        	
-        	getChildType(className: string) {
-        	    if(className.includes(''variables'')) {
-        	        return ''variables'';
-        	    } else if (className.includes(''steps'')) {
-        	        return ''steps'';
-        	    } else {
-        	        return '''';
-        	    }
+        		.fail((error:any)=>{
+        			console.log(error);
+        		})
         	}
         	
         	ngAfterViewInit() {
@@ -516,11 +801,12 @@ title: Title for FlowViewer
                                   vars.flow[i].hasChildren,
                                   vars.flow[i].qname,
                                   vars.flow[i].className,
-              					true
+              					true,
+              					false
                   		    )
                   		    
                   		    if (previous != null)
-                  		        this.addLink(previous, step)
+                  		        this.addLink(previous, step, this.isHorizontal, vars.flow[i].className)
                   		    previous = step
                   		}
                   		resolve();
@@ -540,7 +826,12 @@ title: Title for FlowViewer
   beanData: '{"ionBean":"Grid","Height":"plain:height:100%"}'
   tagName: ion-grid
   ↓GridRow [ngx.components.UIDynamicElement-1588228741415]: 
-    beanData: '{"ionBean":"GridRow","Height":"plain:1200px"}'
+    beanData: |
+      '{
+       "ionBean": "GridRow",
+       "Width": "plain:100%",
+       "Height": "plain:400px"
+      }'
     tagName: ion-row
     ↓GridCol [ngx.components.UIDynamicElement-1588228746957]: 
       beanData: '{"ionBean":"GridCol"}'
@@ -582,3 +873,23 @@ title: Title for FlowViewer
             - xmlizable: 
               - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
               - MobileSmartSourceType: script:onGridSizeChanged()
+      ↓Text [ngx.components.UIText-1594042417780]: 
+        textValue: 
+          - xmlizable: 
+            - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+            - MobileSmartSourceType: plain:Show horizontally
+      ↓ToggleButton [ngx.components.UIDynamicElement-1594041057759]: 
+        beanData: |
+          '{
+           "ionBean": "Toggle",
+           "ControlName": "plain:name1594041057759",
+           "DoubleBinding": "script:isHorizontal"
+          }'
+        tagName: ion-toggle
+      ↓Directive [ngx.components.UIControlDirective-1594041985238]: 
+        directiveExpression: this.isHorizontal
+        directiveName: If
+        isEnabled: false
+        ↓Button [ngx.components.UIDynamicElement-1594042311511]: 
+          beanData: '{"ionBean":"Button"}'
+          tagName: ion-button

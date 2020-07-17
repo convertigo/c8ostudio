@@ -1,7 +1,7 @@
 ↓MinusLevel [steps.SimpleStep-1589879185131]: 
   expression: |
     level = level - 1;
-    level = 0; // comment this and re-enable the 2 Then to enable level again
+    // level = 0; // comment this and re-enable the 2 Then to enable level again
     handleFolders = handleFolders == "true";
 ↓array [steps.XMLComplexStep-1588584638434]: 
   nodeName: array
@@ -27,7 +27,6 @@
           ↓jIfThenElse [steps.IfThenElseStep-1589878866439]: 
             condition: level > 0
             ↓jThen [steps.ThenStep-1589878867895]: 
-              isEnabled: false
               ↓chidren [steps.XMLComplexStep-1589878912553]: 
                 nodeName: children
                 ↓type [steps.XMLAttributeStep-1589878930213]: 
@@ -81,7 +80,6 @@
           ↓jIfThenElse1 [steps.IfThenElseStep-1589878810899]: 
             condition: level > 0
             ↓jThen [steps.ThenStep-1589878812146]: 
-              isEnabled: false
               ↓chidren [steps.XMLComplexStep-1589880151514]: 
                 nodeName: children
                 ↓type [steps.XMLAttributeStep-1589880151517]: 
@@ -168,16 +166,16 @@
       	}
       	nDbo.getParentNode().removeChild(nDbo);
       }'
-↓qname [variables.RequestableVariable-1588584420887]: 
 ↓level [variables.RequestableVariable-1589878770804]: 
   value: 1
+↓qname [variables.RequestableVariable-1588584420887]: 
 ↓handleFolders [variables.RequestableVariable-1591608448791]: 
   value: false
 ↓C8oStudio [core.TestCase]: 
   ↓qname [variables.TestCaseVariable-1591606715335]: 
     value: C8oStudio
   ↓level [variables.TestCaseVariable-1591606715337]: 
-    value: 1
+    value: 2
   ↓handleFolders [variables.TestCaseVariable-1591608487435]: 
     value: true
 ↓root [core.TestCase]: 
