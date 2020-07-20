@@ -6,6 +6,7 @@ jobs:
     steps:
     - checkout
     - run: |
+        sed -i ~/.gitconfig -e s,github,none,
         sh gradlew --no-daemon --stacktrace --info deploy -Pconvertigo.deploy.server=$C8O_SERVER -Pconvertigo.deploy.user=$C8O_USER -Pconvertigo.deploy.password=$C8O_PASSWORD
 workflows:
   version: 2
