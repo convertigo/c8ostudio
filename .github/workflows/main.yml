@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: CI
+name: Convertigo CI
 
 # Controls when the action will run. Triggers the workflow on push or pull request
 # events but only for the master branch
@@ -29,4 +29,4 @@ jobs:
         C8O_SERVER: ${{ secrets.C8O_SERVER }}
         C8O_USER: ${{ secrets.C8O_USER }}
         C8O_PASSWORD: ${{ secrets.C8O_PASSWORD }}
-      run: echo "Build C8oStudio and deploy to $C8O_SERVER" && sh gradlew --no-daemon --stacktrace --info deploy -Pconvertigo.deploy.server=$C8O_SERVER -Pconvertigo.deploy.user=$C8O_USER -Pconvertigo.deploy.password=$C8O_PASSWORD
+      run: echo "Build C8oStudio and deploy to $C8O_SERVER" && sh gradlew --no-daemon --stacktrace --info deploy -Pconvertigo.deploy.server=$C8O_SERVER -Pconvertigo.deploy.user=$C8O_USER -Pconvertigo.deploy.password=$C8O_PASSWORD -Pconvertigo.load.mobileApplicationEndpoint=$C8O_SERVER
