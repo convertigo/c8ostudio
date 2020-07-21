@@ -21,6 +21,6 @@ jobs:
     - uses: actions/checkout@v2
     - uses: actions/setup-java@v1.3.0
       with:
-        java-version: '14'
+        java-version: '11'
     - name: Run Convertigo build
       run: sh gradlew --no-daemon --stacktrace --info deploy -Pconvertigo.deploy.server=$C8O_SERVER -Pconvertigo.deploy.user=$C8O_USER -Pconvertigo.deploy.password=$C8O_PASSWORD
