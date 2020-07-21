@@ -3,7 +3,8 @@
   "compilerOptions": {
     "outDir": "./out-tsc/app",
     "types": ["node"],
-    "target": "es5"
+    "target": "es5",
+    "importHelpers": true
   },
   "include": [
     "src/**/*.ts"
