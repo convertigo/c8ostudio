@@ -26,6 +26,11 @@
                 "output": "assets"
               },
               {
+                "glob": "**/*",
+                "input": "../../DisplayObjects/mobile/assets",
+                "output": "assets"
+              },
+              {
                 "glob": "env.json",
                 "input": "src",
                 "output": "/"
@@ -71,8 +76,16 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "8mb",
-                  "maximumError": "10mb"
+                  "maximumWarning": "40mb",
+                  "maximumError": "50mb"
+                }
+              ]
+            },
+            "fastbuild": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.fastbuild.ts"
                 }
               ]
             },
