@@ -386,7 +386,7 @@ scriptContent:
         	                        } else {
         	                            successors[j].set(''position'', {x: successors[j].attributes.position.x + this.horizontalSpace * (j+1), y : elementToMove[0].attributes.position.y})
         	                        }
-        	                        
+        	                         
         	                    }					                
         }
         
@@ -526,16 +526,24 @@ scriptContent:
         	                    
         	                    // getting its successors
         	                    let successors = this.graph.getSuccessors(elementToMove[0]);
-        	                    
-        	                    for(var j = 0; j < successors.length; j++) {
-        	                        // if it''s the first successor no need to move it more than the vertical space
-        	                        if(j == 0) {
-        	                            successors[j].set(''position'', {x: successors[j].attributes.position.x, y : elementToMove[0].attributes.position.y + this.verticalSpace})
-        	                        } else {
-        	                            successors[j].set(''position'', {x: successors[j].attributes.position.x, y : elementToMove[0].attributes.position.y + this.verticalSpace * (j +1)})
-        	                        }
-        	                        
-        	                    }
+        
+        						this.setSuccessorsPosition(elementToMove[0], successors);
+        //	                    
+        //	                    for(var j = 0; j < successors.length; j++) {
+        //		
+        //						if(this.checkElementOnPoint(successors[j].attributes.position.x + this.horizontalSpace, elementToMove[0].attributes.position.y)) {
+        //							let element = this.graph.findModelsFromPoint({x: successors[j].attributes.position.x + this.horizontalSpace, y: elementToMove[0].attributes.position.y})
+        //							element[0].set(''position'', {x: element[0].attributes.position.x + this.horizontalSpace, y: element[0].attributes.position.y})
+        //						}
+        //						successors[j].set(''position'', {x: successors[j].attributes.position.x + this.horizontalSpace, y : elementToMove[0].attributes.position.y})
+        ////	                        // if it''s the first successor no need to move it more than the horizontal space
+        ////	                        if(j == 0) {
+        ////	                            successors[j].set(''position'', {x: successors[j].attributes.position.x + this.horizontalSpace, y : elementToMove[0].attributes.position.y})
+        ////	                        } else {
+        ////	                            successors[j].set(''position'', {x: successors[j].attributes.position.x + this.horizontalSpace * j, y : elementToMove[0].attributes.position.y})
+        ////	                        }
+        //	                        
+        //	                    }
         
         						// if there is, incrementing row
         						row = row +1;
@@ -670,6 +678,35 @@ scriptContent:
         		.fail((error:any)=>{
         			console.log(error);
         		})
+        	}
+        	
+        	checkElementOnPoint(x: number, y: number) {
+        		 if (this.graph.findModelsFromPoint({ x: x, y: y }).length > 0)
+        			return true;
+        		else 
+        			return false;
+        	}
+        	
+        	setSuccessorsPosition(element: any, successors: Array<any>) {
+        		for(var j = 0; j < successors.length; j++) {
+        			if(this.checkElementOnPoint(successors[j].attributes.position.x + this.horizontalSpace, element.attributes.position.y)) {
+        				let elmt = this.graph.findModelsFromPoint({x: successors[j].attributes.position.x + this.horizontalSpace, y: element.attributes.position.y})
+        				elmt[0].set(''position'', {x: elmt[0].attributes.position.x + this.horizontalSpace, y: elmt[0].attributes.position.y})
+        				
+        				if(this.checkElementOnPoint(elmt[0].attributes.position.x, elmt[0].attributes.position.y)) {
+        					let children = this.graph.getSuccessors(elmt[0]);
+        					this.setSuccessorsPosition(elmt[0], children)
+        				}
+        			}
+        			
+        			successors[j].set(''position'', {x: successors[j].attributes.position.x + this.horizontalSpace, y : element.attributes.position.y})
+        //		    // if it''s the first successor no need to move it more than the horizontal space
+        //		    if(j == 0) {
+        //		    	successors[j].set(''position'', {x: successors[j].attributes.position.x + this.horizontalSpace, y : element.attributes.position.y})
+        //		    } else {
+        //		        successors[j].set(''position'', {x: successors[j].attributes.position.x + this.horizontalSpace * j, y : element.attributes.position.y})
+        //		    }
+        	    }
         	}
         	
         	ngAfterViewInit() {
