@@ -51,6 +51,7 @@
                   		
                   		// creating children node in parent''s node
                   		var childNode = context.addTextNode(parentNode, "children", "");
+                  		childNode.setAttribute("type", "array");
                   
                   		// for each children 
                   		for (var i = 0; i < child.size(); i++) {
@@ -129,6 +130,7 @@
                   		
                   		// creating children node in parent''s node
                   		var childNode = context.addTextNode(parentNode, "children", "");
+                  		childNode.setAttribute("type", "array");
                   
                   		// for each children 
                   		for (var i = 0; i < child.size(); i++) {
