@@ -1,6 +1,3 @@
-↓jIf [steps.IfStep-1591624361427]: 
-  condition: qname.endsWith(":")
-  ↓Return [steps.ReturnStep-1591624361430]: 
 ↓GetPalette [steps.SimpleStep-1589289617815]: 
   expression: |
     var theApp = com.twinsoft.convertigo.engine.Engine.theApp;

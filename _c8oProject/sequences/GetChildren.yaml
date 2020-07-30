@@ -126,9 +126,12 @@
                 nodeName: className
           ↓jIfHandleFolders [steps.IfStep-1591608962293]: 
             condition: handleFolders
-            ↓jElement [steps.ElementStep-1591609000330]: 
+            ↓jElement [steps.ElementStep-1596121054631]: 
               expression: item.getFolderType().displayName()
               nodeName: folder
+              ↓shortName [steps.AttributeStep-1596121059910]: 
+                expression: item.getFolderType().shortName()
+                nodeName: shortName
 ↓jIfHandleFolders [steps.IfStep-1591610627996]: 
   condition: handleFolders
   ↓AddFolders [steps.SimpleStep-1591608423207]: 
@@ -139,8 +142,9 @@
       while (i.hasNext()) {
       	var nDbo = i.next();
       	var dFld = nDbo.getTextContent();
-      	log.warn("dbo:" + dFld);
-      	log.warn("l  :" + dFld.length());
+      	var tFld = nDbo.getAttribute("shortName");
+      //	log.warn("dbo:" + dFld);
+      //	log.warn("l  :" + dFld.length());
       	if (dFld.length() > 0) {
       		var nFld = xpath.selectNode(context.outputDocument, "/document/array/folder[displayName=''" + dFld + "'']/children");
       		log.warn("fld:" + nFld);
@@ -149,7 +153,7 @@
       			nFld.setAttribute("type", "object");
       			var field = dom.createElement("qname");
       			nFld.appendChild(field);
-      			field.setTextContent(qname + "." + dFld + ":");
+      			field.setTextContent(qname + "." + tFld + ":");
       			field = dom.createElement("displayName");
       			nFld.appendChild(field);
       			field.setTextContent(dFld);

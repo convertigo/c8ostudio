@@ -45,8 +45,11 @@ scriptContent:
                                     ''before'', before
                                 ).then((response, param) => {
                                     if (response[''success'']) {
+                                        var newTo = response[''qname''].replace(new RegExp("(?:\\.|(:))[^.:]*?$"), "$1");
+                                        to.parent = this.tree.treeModel.getNodeById(newTo);
                                         tree.moveNode(from, to);
                                         from.data.qname = response[''qname''];
+                                        from.data.displayName = response[''displayName''];
                                     }
                                     return null;
                                 });
@@ -59,7 +62,7 @@ scriptContent:
                                         ''before'', before
                                     ).then((response, param) => {
                                         if (response[''success'']) {
-                                            this.refresh(to.parent.data.qname);
+                                            this.refresh(to.parent.data.qname.replace(new RegExp("\\.\\w+?:$"), ""));
                                         }
                                         return null;
                                     });
