@@ -174,43 +174,62 @@ title: Title for Projects1
                 - ↑value: angular-tree-component
               - java.lang.String: 
                 - ↑value: 8.5.6
-↓ButtonSet [ngx.components.UIDynamicElement-1593004414057]: 
-  beanData: '{"ionBean":"ButtonSet"}'
-  tagName: ion-buttons
-  ↓Save [ngx.components.UIDynamicElement-1593004414060]: 
-    beanData: '{"ionBean":"Button"}'
-    tagName: button
-    ↓Icon [ngx.components.UIDynamicElement-1593004414063]: 
-      beanData: '{"ionBean":"Icon","IconName":"plain:archive"}'
-      tagName: ion-icon
-    ↓Event [ngx.components.UIControlEvent-1593004414066]: 
-      ↓Save [ngx.components.UIDynamicAction-1593004414069]: 
-        beanData: '{"ionBean":"CallSequenceAction","requestable":"plain:C8oStudio.Save"}'
-        ↓project [ngx.components.UIControlVariable-1593004414072]: 
-          comment: new variable
-          varValue: 
-            - xmlizable: 
-              - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
-              - MobileSmartSourceType: script:this.tree.treeModel.getFocusedNode().data.qname.replace(/\\..*/, '')
-        ↓Log [ngx.components.UIDynamicAction-1593004414075]: 
-          beanData: '{"ionBean":"LogAction","message":"script:out.success ? ''saved'' : ''save failed''"}'
-  ↓Refresh [ngx.components.UIDynamicElement-1593004414078]: 
-    beanData: '{"ionBean":"Button"}'
-    tagName: button
-    ↓Icon [ngx.components.UIDynamicElement-1593004414081]: 
-      beanData: '{"ionBean":"Icon","IconName":"plain:refresh-circle"}'
-      tagName: ion-icon
-    ↓Event [ngx.components.UIControlEvent-1593004414084]: 
-      ↓Refresh [ngx.components.UICustomAction-1593004414087]: 
-        actionValue: 
+↓Header [ngx.components.UIDynamicElement-1596466499450]: 
+  beanData: '{"ionBean":"Header"}'
+  tagName: ion-header
+  ↓ButtonSet [ngx.components.UIDynamicElement-1593004414057]: 
+    beanData: '{"ionBean":"ButtonSet"}'
+    tagName: ion-buttons
+    ↓Save [ngx.components.UIDynamicElement-1596468949617]: 
+      beanData: '{"ionBean":"Button"}'
+      tagName: ion-button
+      ↓Icon [ngx.components.UIDynamicElement-1593004414063]: 
+        beanData: '{"ionBean":"Icon","IconName":"plain:archive"}'
+        tagName: ion-icon
+      ↓Event [ngx.components.UIControlEvent-1593004414066]: 
+        ↓Save [ngx.components.UIDynamicAction-1593004414069]: 
+          beanData: '{"ionBean":"CallSequenceAction","requestable":"plain:C8oStudio.Save"}'
+          ↓project [ngx.components.UIControlVariable-1593004414072]: 
+            comment: new variable
+            varValue: 
+              - xmlizable: 
+                - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+                - MobileSmartSourceType: script:this.tree.treeModel.getFocusedNode().data.qname.replace(/\\..*/, '')
+          ↓Log [ngx.components.UIDynamicAction-1593004414075]: 
+            beanData: '{"ionBean":"LogAction","message":"script:out.success ? ''saved'' : ''save failed''"}'
+          ↓Toast [ngx.components.UIDynamicAction-1596464023553]: 
+            beanData: '{"ionBean":"ToastAction","message":"script:out.success ? ''saved'' : ''save failed''"}'
+      ↓Attr [ngx.components.UIAttribute-1596470720741]: 
+        attrName: title
+        attrValue: 
           - xmlizable: 
-            - ↑classname: com.twinsoft.convertigo.beans.common.FormatedContent
-            - com.twinsoft.convertigo.beans.common.FormatedContent: 
-              →: |
-                '		page.c8o.log.debug(''[MB] ''+ props.actionFunction +'': ''+ props.actionName);
-                		this.refresh(this.tree.treeModel.getFocusedNode().data.qname);
-                		resolve();
-                '
+            - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+            - MobileSmartSourceType: plain:Save
+    ↓Refresh [ngx.components.UIDynamicElement-1596468952408]: 
+      beanData: '{"ionBean":"Button"}'
+      tagName: ion-button
+      ↓Icon [ngx.components.UIDynamicElement-1593004414081]: 
+        beanData: '{"ionBean":"Icon","IconName":"plain:refresh-circle"}'
+        tagName: ion-icon
+      ↓Event [ngx.components.UIControlEvent-1593004414084]: 
+        ↓Refresh [ngx.components.UICustomAction-1593004414087]: 
+          actionValue: 
+            - xmlizable: 
+              - ↑classname: com.twinsoft.convertigo.beans.common.FormatedContent
+              - com.twinsoft.convertigo.beans.common.FormatedContent: 
+                →: |
+                  '		page.c8o.log.debug(''[MB] ''+ props.actionFunction +'': ''+ props.actionName);
+                  		this.refresh(this.tree.treeModel.getFocusedNode().data.qname);
+                  		resolve();
+                  '
+        ↓Toast [ngx.components.UIDynamicAction-1596468501091]: 
+          beanData: '{"ionBean":"ToastAction","message":"plain:refreshed !"}'
+      ↓Attr [ngx.components.UIAttribute-1596472394341]: 
+        attrName: title
+        attrValue: 
+          - xmlizable: 
+            - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+            - MobileSmartSourceType: plain:Refresh
 ↓Subscribe_Handler [ngx.components.UIEventSubscriber-1593440013446]: 
   topic: propertyChanged
   ↓Log [ngx.components.UIDynamicAction-1593441465602]: 
@@ -234,91 +253,100 @@ title: Title for Projects1
               '
     ↓Toast [ngx.components.UIDynamicAction-1593440262536]: 
       beanData: '{"ionBean":"ToastAction","message":"plain:name changed"}'
-↓Tag [ngx.components.UIElement-1593004414090]: 
-  identifier: tree
-  tagName: tree-root
-  ↓nodes [ngx.components.UIAttribute-1593004414093]: 
-    attrName: '[nodes]'
-    attrValue: 
-      - xmlizable: 
-        - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
-        - MobileSmartSourceType: script:nodes
-  ↓options [ngx.components.UIAttribute-1593004414096]: 
-    attrName: '[options]'
-    attrValue: 
-      - xmlizable: 
-        - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
-        - MobileSmartSourceType: script:options
-  ↓Tag [ngx.components.UIElement-1593004414099]: 
-    identifier: treeNodeTemplate
-    tagName: ng-template
-    ↓Tag [ngx.components.UIElement-1593004414102]: 
-      selfClose: true
-      tagName: img
-      ↓Attr [ngx.components.UIAttribute-1593004414105]: 
-        attrName: src
-        attrValue: 
-          - xmlizable: 
-            - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
-            - MobileSmartSourceType: plain:{{ this.c8o.endpoint }}/.bin?__sequence=GetIcon&className={{ node.data.className }}
-      ↓Attr1 [ngx.components.UIAttribute-1593004414108]: 
-        attrName: width
-        attrValue: 
-          - xmlizable: 
-            - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
-            - MobileSmartSourceType: plain:16px
-      ↓Attr2 [ngx.components.UIAttribute-1593004414111]: 
-        attrName: height
-        attrValue: 
-          - xmlizable: 
-            - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
-            - MobileSmartSourceType: plain:16px
-    ↓span [ngx.components.UIElement-1593004414114]: 
-      tagName: span
-      ↓Text [ngx.components.UIText-1593004414117]: 
-        i18n: false
-        textValue: 
-          - xmlizable: 
-            - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
-            - MobileSmartSourceType: plain:{{ node.data.displayName }}
-      ↓Attr [ngx.components.UIAttribute-1593004414120]: 
-    ↓Attr [ngx.components.UIAttribute-1593004414123]: 
-      attrName: let-node
+↓Content [ngx.components.UIDynamicElement-1596466518968]: 
+  beanData: '{"ionBean":"Content"}'
+  tagName: ion-content
+  ↓Tag [ngx.components.UIElement-1593004414090]: 
+    identifier: tree
+    tagName: tree-root
+    ↓nodes [ngx.components.UIAttribute-1593004414093]: 
+      attrName: '[nodes]'
       attrValue: 
         - xmlizable: 
           - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
-          - MobileSmartSourceType: plain:
-  ↓focus [ngx.components.UIControlEvent-1593004414126]: 
-    attrName: (blur)
-    eventName: (blur)
-    ↓PublishEvent [ngx.components.UIDynamicAction-1593004414129]: 
-      beanData: |
-        '{
-         "ionBean": "PublishEventAction",
-         "topic": "plain:dboFocus",
-         "data": "script:out.node.data.qname"
-        }'
-  ↓toggleExpanded [ngx.components.UIControlEvent-1593004414132]: 
-    attrName: (toggleExpanded)
-    eventName: (toggleExpanded)
-    ↓prefetchChildren [ngx.components.UICustomAction-1593004414135]: 
-      actionValue: 
+          - MobileSmartSourceType: script:nodes
+    ↓options [ngx.components.UIAttribute-1593004414096]: 
+      attrName: '[options]'
+      attrValue: 
         - xmlizable: 
-          - ↑classname: com.twinsoft.convertigo.beans.common.FormatedContent
-          - com.twinsoft.convertigo.beans.common.FormatedContent: 
-            →: |
-              '		page.c8o.log.debug(''[MB] ''+ props.actionFunction +'': ''+ props.actionName);
-              		if (event.node[''_noExpand''] || event.node.children == undefined) {
-              		} else {
-              			event.node.children.forEach((n) => {
-              				console.log(''event ex1: '' + n.data.qname + '' children: '' + n.children + '' exp:'' + n[''_noExpand'']);
-              				n[''_noExpand''] = true;
-              				n.expand();
-              				window.setTimeout(()=> {
-              					n.collapse();
-              					n[''_noExpand''] = false;
-              				},1);
-              			});
-              		}
-              		resolve();
-              '
+          - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+          - MobileSmartSourceType: script:options
+    ↓Tag [ngx.components.UIElement-1593004414099]: 
+      identifier: treeNodeTemplate
+      tagName: ng-template
+      ↓Tag [ngx.components.UIElement-1593004414102]: 
+        selfClose: true
+        tagName: img
+        ↓Attr [ngx.components.UIAttribute-1593004414105]: 
+          attrName: src
+          attrValue: 
+            - xmlizable: 
+              - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+              - MobileSmartSourceType: plain:{{ this.c8o.endpoint }}/.bin?__sequence=GetIcon&className={{ node.data.className }}
+        ↓Attr1 [ngx.components.UIAttribute-1593004414108]: 
+          attrName: width
+          attrValue: 
+            - xmlizable: 
+              - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+              - MobileSmartSourceType: plain:16px
+        ↓Attr2 [ngx.components.UIAttribute-1593004414111]: 
+          attrName: height
+          attrValue: 
+            - xmlizable: 
+              - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+              - MobileSmartSourceType: plain:16px
+      ↓span [ngx.components.UIElement-1593004414114]: 
+        tagName: span
+        ↓Text [ngx.components.UIText-1593004414117]: 
+          i18n: false
+          textValue: 
+            - xmlizable: 
+              - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+              - MobileSmartSourceType: plain:{{ node.data.displayName }}
+        ↓Attr [ngx.components.UIAttribute-1593004414120]: 
+      ↓Attr [ngx.components.UIAttribute-1593004414123]: 
+        attrName: let-node
+        attrValue: 
+          - xmlizable: 
+            - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+            - MobileSmartSourceType: plain:
+    ↓focus [ngx.components.UIControlEvent-1593004414126]: 
+      attrName: (blur)
+      eventName: (blur)
+      ↓PublishEvent [ngx.components.UIDynamicAction-1593004414129]: 
+        beanData: |
+          '{
+           "ionBean": "PublishEventAction",
+           "topic": "plain:dboFocus",
+           "data": "script:out.node.data.qname"
+          }'
+    ↓toggleExpanded [ngx.components.UIControlEvent-1593004414132]: 
+      attrName: (toggleExpanded)
+      eventName: (toggleExpanded)
+      ↓prefetchChildren [ngx.components.UICustomAction-1593004414135]: 
+        actionValue: 
+          - xmlizable: 
+            - ↑classname: com.twinsoft.convertigo.beans.common.FormatedContent
+            - com.twinsoft.convertigo.beans.common.FormatedContent: 
+              →: |
+                '		page.c8o.log.debug(''[MB] ''+ props.actionFunction +'': ''+ props.actionName);
+                		if (event.node[''_noExpand''] || event.node.children == undefined) {
+                		} else {
+                			event.node.children.forEach((n) => {
+                				console.log(''event ex1: '' + n.data.qname + '' children: '' + n.children + '' exp:'' + n[''_noExpand'']);
+                				n[''_noExpand''] = true;
+                				n.expand();
+                				window.setTimeout(()=> {
+                					n.collapse();
+                					n[''_noExpand''] = false;
+                				},1);
+                			});
+                		}
+                		resolve();
+                '
+  ↓Attr [ngx.components.UIAttribute-1596469254149]: 
+    attrName: class
+    attrValue: 
+      - xmlizable: 
+        - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+        - MobileSmartSourceType: plain:page-projects
