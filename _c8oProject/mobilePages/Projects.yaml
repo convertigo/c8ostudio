@@ -47,6 +47,10 @@ scriptContent:
                                     if (response[''success'']) {
                                         var newTo = response[''qname''].replace(new RegExp("(?:\\.|(:))[^.:]*?$"), "$1");
                                         to.parent = this.tree.treeModel.getNodeById(newTo);
+                                        if (to.dropOnNode) {
+                                          to.dropOnNode = false;
+                                          to.index = to.parent.children.length;
+                                        }
                                         tree.moveNode(from, to);
                                         from.data.qname = response[''qname''];
                                         from.data.displayName = response[''displayName''];
