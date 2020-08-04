@@ -21,6 +21,9 @@ scriptContent:
                 allowDrag: true,
                 actionMapping: {
                     mouse: {
+                        dblClick: (tree:TreeModel, node:TreeNode, $event:any) => {
+                            this.events.publish(''edit'', node.data.qname);
+                        },
                         drop: (tree:TreeModel, node:TreeNode, $event:any, {from, to}) => {
                             var data = $event.dataTransfer.getData(''application/json'');
                             data = data ? JSON.parse(data) : null;
@@ -364,11 +367,6 @@ title: Title for Projects1
                 		}
                 		resolve();
                 '
-    ↓Event [ngx.components.UIControlEvent-1596547635842]: 
-      attrName: (dblClick)
-      eventName: (dblClick)
-      ↓Log [ngx.components.UIDynamicAction-1596547661651]: 
-        beanData: '{"ionBean":"LogAction","message":"plain:dblClick"}'
   ↓Attr [ngx.components.UIAttribute-1596469254149]: 
     attrName: class
     attrValue: 
