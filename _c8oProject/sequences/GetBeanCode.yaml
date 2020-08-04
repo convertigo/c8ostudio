@@ -1,0 +1,24 @@
+↓GetBeanCode [steps.SimpleStep-1596531390582]: 
+  expression: |
+    'success = false;
+    code = "";
+    try {
+      var dbo = com.twinsoft.convertigo.engine.Engine.theApp.databaseObjectsManager.getDatabaseObjectByQName(qname);
+      code = dbo.getExpression();
+      success = true;
+    } catch (e) {
+    	log.warn("Failed to GetBeanCode for " + qname + ": " + e);
+    }'
+↓success [steps.ElementStep-1596535650752]: 
+  expression: success
+  nodeName: success
+  ↓type [steps.XMLAttributeStep-1596535671452]: 
+    nodeName: type
+    nodeText: boolean
+↓code [steps.ElementStep-1596535689823]: 
+  expression: code
+  nodeName: code
+↓qname [variables.RequestableVariable-1596531373824]: 
+↓GetBeanCode [core.TestCase]: 
+  ↓qname [variables.TestCaseVariable-1596535722701]: 
+    value: C8oStudio.GetBeanCode.GetBeanCode

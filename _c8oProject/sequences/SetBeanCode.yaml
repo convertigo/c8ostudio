@@ -1,0 +1,23 @@
+↓SetBeanCode [steps.SimpleStep-1596545544181]: 
+  expression: |
+    'success = false;
+    try {
+      if (code.length != length) {
+    	throw "code length doesn''t match";
+      }
+      var dbo = com.twinsoft.convertigo.engine.Engine.theApp.databaseObjectsManager.getDatabaseObjectByQName(qname);
+      code = dbo.setExpression(code);
+      success = true;
+    } catch (e) {
+    	log.warn("Failed to SetBeanCode for " + qname + ": " + e);
+    }'
+↓success [steps.ElementStep-1596545544184]: 
+  expression: success
+  nodeName: success
+  ↓type [steps.XMLAttributeStep-1596545544187]: 
+    nodeName: type
+    nodeText: boolean
+↓qname [variables.RequestableVariable-1596545327497]: 
+↓code [variables.RequestableVariable-1596545629508]: 
+↓length [variables.RequestableVariable-1596545639128]: 
+  value: '-1'

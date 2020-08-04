@@ -230,6 +230,26 @@ title: Title for Projects1
           - xmlizable: 
             - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
             - MobileSmartSourceType: plain:Refresh
+    ↓Edit [ngx.components.UIDynamicElement-1596530184343]: 
+      beanData: '{"ionBean":"Button"}'
+      tagName: ion-button
+      ↓Icon [ngx.components.UIDynamicElement-1596530184346]: 
+        beanData: '{"ionBean":"Icon","IconName":"plain:pencil"}'
+        tagName: ion-icon
+      ↓Event [ngx.components.UIControlEvent-1596530184349]: 
+        ↓PublishEvent [ngx.components.UIDynamicAction-1596530295822]: 
+          beanData: |
+            '{
+             "ionBean": "PublishEventAction",
+             "topic": "plain:edit",
+             "data": "script:this.tree.treeModel.getFocusedNode().data.qname"
+            }'
+      ↓Attr [ngx.components.UIAttribute-1596530184358]: 
+        attrName: title
+        attrValue: 
+          - xmlizable: 
+            - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+            - MobileSmartSourceType: plain:Edit
 ↓Subscribe_Handler [ngx.components.UIEventSubscriber-1593440013446]: 
   topic: propertyChanged
   ↓Log [ngx.components.UIDynamicAction-1593441465602]: 
@@ -344,6 +364,11 @@ title: Title for Projects1
                 		}
                 		resolve();
                 '
+    ↓Event [ngx.components.UIControlEvent-1596547635842]: 
+      attrName: (dblClick)
+      eventName: (dblClick)
+      ↓Log [ngx.components.UIDynamicAction-1596547661651]: 
+        beanData: '{"ionBean":"LogAction","message":"plain:dblClick"}'
   ↓Attr [ngx.components.UIAttribute-1596469254149]: 
     attrName: class
     attrValue: 

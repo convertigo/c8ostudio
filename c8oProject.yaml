@@ -4,6 +4,7 @@
   corsOrigin: =Origin
   version: 1.0
   ↓void [connectors.SqlConnector]: 🗏 connectors/void.yaml
+  ↓GetBeanCode [sequences.GenericSequence]: 🗏 sequences/GetBeanCode.yaml
   ↓GetCategorizedPalette [sequences.GenericSequence]: 🗏 sequences/GetCategorizedPalette.yaml
   ↓GetChildren [sequences.GenericSequence]: 🗏 sequences/GetChildren.yaml
   ↓GetGraph [sequences.GenericSequence]: 🗏 sequences/GetGraph.yaml
@@ -14,6 +15,7 @@
   ↓MoveDatabaseObject [sequences.GenericSequence]: 🗏 sequences/MoveDatabaseObject.yaml
   ↓NewDatabaseObject [sequences.GenericSequence]: 🗏 sequences/NewDatabaseObject.yaml
   ↓Save [sequences.GenericSequence]: 🗏 sequences/Save.yaml
+  ↓SetBeanCode [sequences.GenericSequence]: 🗏 sequences/SetBeanCode.yaml
   ↓SetProperty [sequences.GenericSequence]: 🗏 sequences/SetProperty.yaml
   ↓Project_reference [references.ProjectSchemaReference]: 
     projectName: lib_ExtendedComponents=https://github.com/convertigo/c8oprj-lib-extended-components.git:branch=ionic5
