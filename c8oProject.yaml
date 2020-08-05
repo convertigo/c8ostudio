@@ -4,6 +4,7 @@
   corsOrigin: =Origin
   version: 1.0
   ↓void [connectors.SqlConnector]: 🗏 connectors/void.yaml
+  ↓Execute [sequences.GenericSequence]: 🗏 sequences/Execute.yaml
   ↓GetBeanCode [sequences.GenericSequence]: 🗏 sequences/GetBeanCode.yaml
   ↓GetCategorizedPalette [sequences.GenericSequence]: 🗏 sequences/GetCategorizedPalette.yaml
   ↓GetChildren [sequences.GenericSequence]: 🗏 sequences/GetChildren.yaml

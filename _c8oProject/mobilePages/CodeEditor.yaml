@@ -9,7 +9,7 @@ scriptContent:
         import { NgxEditorModel }  from ''ngx-monaco-editor'';
         /*End_c8o_PageImport*/
         /*Begin_c8o_PageDeclaration*/
-        	codeOptions = {theme: ''vs-dark'', language: ''javascript''}
+        	codeOptions = {theme: ''vs-dark'', language: ''xml''}
         	code = "";
         	monacoEditor: any;
         	qname: String = null;
@@ -61,7 +61,7 @@ title: First page
           - MobileSmartSourceType: script:out
     ↓If [ngx.components.UIDynamicAction-1596536310791]: 
       beanData: '{"ionBean":"IfAction","condition":"script:out.success == true && (this.code = out.code) != null && (this.qname = stack[''root''].out) != null"}'
-↓Subscribe_Handler [ngx.components.UIEventSubscriber-1596545270000]: 
+↓onCodeSaved [ngx.components.UIEventSubscriber-1596545270000]: 
   topic: codeSaved
   ↓CallSequence [ngx.components.UIDynamicAction-1596545878305]: 
     beanData: '{"ionBean":"CallSequenceAction","requestable":"plain:C8oStudio.SetBeanCode"}'
@@ -83,3 +83,15 @@ title: First page
         - xmlizable: 
           - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
           - MobileSmartSourceType: script:out.length
+↓onExecute [ngx.components.UIEventSubscriber-1596634426599]: 
+  topic: execute
+  ↓CallSequence [ngx.components.UIDynamicAction-1596634426602]: 
+    beanData: '{"ionBean":"CallSequenceAction","requestable":"plain:C8oStudio.Execute"}'
+    ↓qname [ngx.components.UIControlVariable-1596634426605]: 
+      comment: new variable
+      varValue: 
+        - xmlizable: 
+          - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+          - MobileSmartSourceType: script:out
+    ↓If [ngx.components.UIDynamicAction-1596634426608]: 
+      beanData: '{"ionBean":"IfAction","condition":"script:out.success == true && (this.codeOptions.language = ''xml'') != null && (this.code = out.output) != null && (this.qname = '''') != null"}'

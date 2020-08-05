@@ -1,0 +1,52 @@
+↓Execute [steps.SimpleStep-1596635691593]: 
+  expression: |
+    'success = false;
+    output = "";
+    try {
+      var dbo = com.twinsoft.convertigo.engine.Engine.theApp.databaseObjectsManager.getDatabaseObjectByQName(qname);
+      var project = dbo.getProject(); 
+      var session = context.project.get("studio-session");
+      var request;
+      if (session == null || session.getMaxInactiveInterval() <= 1) {
+        request = new com.twinsoft.convertigo.engine.requesters.InternalHttpServletRequest();
+        session = request.getSession("studio");
+      } else {
+        request = new InternalHttpServletRequest(session);
+      }
+      var parameters = new java.util.HashMap();
+      var ar = java.lang.reflect.Array.newInstance(java.lang.String, 1);
+      ar[0] = project.getName();
+      parameters.put("__project", ar);
+      ar = java.lang.reflect.Array.newInstance(java.lang.String, 1);
+      ar[0] = dbo.getName();
+      parameters.put("__sequence", ar);
+      var requester = new com.twinsoft.convertigo.engine.requesters.InternalRequester(parameters, request);
+      com.twinsoft.convertigo.engine.requesters.HttpSessionListener.checkSession(requester.getHttpServletRequest());
+      var doc = requester.processRequest();
+      org.apache.log4j.MDC.put("ContextualParameters", context.logParameters);
+      if (mode == "json") {
+        var jsonRoot = project.getJsonRoot();
+        useType = project.getJsonOutput() == com.twinsoft.convertigo.engine.enums.JsonOutput.useType;
+        output = com.twinsoft.convertigo.engine.util.XMLUtils.XmlToJson(doc.getDocumentElement(), true, useType, jsonRoot);
+      } else {
+        output = com.twinsoft.convertigo.engine.util.XMLUtils.prettyPrintDOMWithEncoding(doc, "UTF-8");
+      }
+      
+      //log.warn("Execute for " + qname + ": " + s);
+      success = true;
+    } catch (e) {
+    	log.warn("Failed to Execute for " + qname + ": " + e);
+    	log.warn("typeof " + typeof(e));
+    }'
+↓success [steps.ElementStep-1596637624104]: 
+  expression: success
+  nodeName: success
+  ↓type [steps.XMLAttributeStep-1596637624107]: 
+    nodeName: type
+    nodeText: boolean
+↓output [steps.ElementStep-1596637624110]: 
+  expression: output
+  nodeName: output
+↓qname [variables.RequestableVariable-1596635682395]: 
+↓mode [variables.RequestableVariable-1596637582091]: 
+  value: xml

@@ -253,6 +253,26 @@ title: Title for Projects1
           - xmlizable: 
             - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
             - MobileSmartSourceType: plain:Edit
+    ↓Execute [ngx.components.UIDynamicElement-1596619428915]: 
+      beanData: '{"ionBean":"Button"}'
+      tagName: ion-button
+      ↓Icon [ngx.components.UIDynamicElement-1596619428918]: 
+        beanData: '{"ionBean":"Icon","IconName":"plain:rocket"}'
+        tagName: ion-icon
+      ↓Event [ngx.components.UIControlEvent-1596619428921]: 
+        ↓PublishEvent [ngx.components.UIDynamicAction-1596619428924]: 
+          beanData: |
+            '{
+             "ionBean": "PublishEventAction",
+             "topic": "plain:execute",
+             "data": "script:this.tree.treeModel.getFocusedNode().data.qname"
+            }'
+      ↓Attr [ngx.components.UIAttribute-1596619428927]: 
+        attrName: title
+        attrValue: 
+          - xmlizable: 
+            - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+            - MobileSmartSourceType: plain:Execute
 ↓Subscribe_Handler [ngx.components.UIEventSubscriber-1593440013446]: 
   topic: propertyChanged
   ↓Log [ngx.components.UIDynamicAction-1593441465602]: 
