@@ -17,23 +17,47 @@
       var ar = java.lang.reflect.Array.newInstance(java.lang.String, 1);
       ar[0] = project.getName();
       parameters.put("__project", ar);
-      ar = java.lang.reflect.Array.newInstance(java.lang.String, 1);
-      ar[0] = dbo.getName();
-      parameters.put("__sequence", ar);
-      var requester = new com.twinsoft.convertigo.engine.requesters.InternalRequester(parameters, request);
-      com.twinsoft.convertigo.engine.requesters.HttpSessionListener.checkSession(requester.getHttpServletRequest());
-      var doc = requester.processRequest();
-      org.apache.log4j.MDC.put("ContextualParameters", context.logParameters);
-      if (mode == "json") {
-        var jsonRoot = project.getJsonRoot();
-        useType = project.getJsonOutput() == com.twinsoft.convertigo.engine.enums.JsonOutput.useType;
-        output = com.twinsoft.convertigo.engine.util.XMLUtils.XmlToJson(doc.getDocumentElement(), true, useType, jsonRoot);
-      } else {
-        output = com.twinsoft.convertigo.engine.util.XMLUtils.prettyPrintDOMWithEncoding(doc, "UTF-8");
+    
+      var found = false;
+      while (!found && dbo != null) {
+        if (dbo instanceof com.twinsoft.convertigo.beans.core.Sequence) {
+          ar = java.lang.reflect.Array.newInstance(java.lang.String, 1);
+          ar[0] = dbo.getName();
+          parameters.put("__sequence", ar);
+          found = true;
+        } else if (dbo instanceof com.twinsoft.convertigo.beans.core.Transaction) {
+          ar = java.lang.reflect.Array.newInstance(java.lang.String, 1);
+          ar[0] = dbo.getParent().getName();
+          parameters.put("__connector", ar);
+          ar = java.lang.reflect.Array.newInstance(java.lang.String, 1);
+          ar[0] = dbo.getName();
+          parameters.put("__transaction", ar);
+          found = true;
+        } else if (dbo instanceof com.twinsoft.convertigo.beans.core.TestCase) {
+          ar = java.lang.reflect.Array.newInstance(java.lang.String, 1);
+          ar[0] = dbo.getName();
+          parameters.put("__testcase", ar);
+          dbo = dbo.getParent();
+        } else {
+    	  dbo = dbo.getParent();
+        }
       }
       
-      //log.warn("Execute for " + qname + ": " + s);
-      success = true;
+      if (found) {
+        var requester = new com.twinsoft.convertigo.engine.requesters.InternalRequester(parameters, request);
+        com.twinsoft.convertigo.engine.requesters.HttpSessionListener.checkSession(requester.getHttpServletRequest());
+        var doc = requester.processRequest();
+        org.apache.log4j.MDC.put("ContextualParameters", context.logParameters);
+        if (mode == "json") {
+          var jsonRoot = project.getJsonRoot();
+          useType = project.getJsonOutput() == com.twinsoft.convertigo.engine.enums.JsonOutput.useType;
+          output = com.twinsoft.convertigo.engine.util.XMLUtils.XmlToJson(doc.getDocumentElement(), true, useType, jsonRoot);
+        } else {
+          output = com.twinsoft.convertigo.engine.util.XMLUtils.prettyPrintDOMWithEncoding(doc, "UTF-8");
+        }
+        
+        success = true;
+      }
     } catch (e) {
     	log.warn("Failed to Execute for " + qname + ": " + e);
     	log.warn("typeof " + typeof(e));
