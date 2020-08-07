@@ -325,7 +325,7 @@ title: Title for Projects1
           attrValue: 
             - xmlizable: 
               - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
-              - MobileSmartSourceType: plain:{{ this.c8o.endpoint }}/.bin?__sequence=GetIcon&className={{ node.data.className }}
+              - MobileSmartSourceType: plain:{{ this.c8o.endpoint }}/.bin?__sequence=GetIcon&__nolog=true&className={{ node.data.className }}
         ↓Attr1 [ngx.components.UIAttribute-1593004414108]: 
           attrName: width
           attrValue: 

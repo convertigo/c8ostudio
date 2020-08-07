@@ -7,6 +7,9 @@ componentScriptContent:
         /*End_c8o_AppImport*/
         /*Begin_c8o_AppDeclaration*/
         	/*End_c8o_AppDeclaration*/
+        /*Begin_c8o_AppSettings*/
+                settings.addHeader("x-convertigo-no-log", "true");
+                /*End_c8o_AppSettings*/
         /*Begin_c8o_AppConstructor*/
         		/*End_c8o_AppConstructor*/
         /*Begin_c8o_AppInitialization*/

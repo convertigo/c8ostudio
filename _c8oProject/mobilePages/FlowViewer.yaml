@@ -178,7 +178,7 @@ scriptContent:
         //                    fill: ''white''
         //                },
                         image: {
-                            ''xlink:href'': this.c8o.endpoint + ''/.bin?__sequence=GetIcon&className='' + className + ''&large=true'',
+                            ''xlink:href'': this.c8o.endpoint + ''/.bin?__sequence=GetIcon&className='' + className + ''&large=true&__nolog=true'',
                             width: 32,
                             height: 32,
                             ref: ''rect'',

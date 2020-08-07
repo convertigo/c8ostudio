@@ -2,6 +2,8 @@
   expression: |
     'success = false;
     output = "";
+    var nolog = org.apache.log4j.MDC.get("nolog");
+    
     try {
       var dbo = com.twinsoft.convertigo.engine.Engine.theApp.databaseObjectsManager.getDatabaseObjectByQName(qname);
       var project = dbo.getProject(); 
@@ -46,8 +48,12 @@
       if (found) {
         var requester = new com.twinsoft.convertigo.engine.requesters.InternalRequester(parameters, request);
         com.twinsoft.convertigo.engine.requesters.HttpSessionListener.checkSession(requester.getHttpServletRequest());
+        if (nolog != null) {
+          org.apache.log4j.MDC.put("nolog", false);
+        }
         var doc = requester.processRequest();
         org.apache.log4j.MDC.put("ContextualParameters", context.logParameters);
+    
         if (mode == "json") {
           var jsonRoot = project.getJsonRoot();
           useType = project.getJsonOutput() == com.twinsoft.convertigo.engine.enums.JsonOutput.useType;
@@ -55,12 +61,16 @@
         } else {
           output = com.twinsoft.convertigo.engine.util.XMLUtils.prettyPrintDOMWithEncoding(doc, "UTF-8");
         }
-        
+    
         success = true;
       }
     } catch (e) {
     	log.warn("Failed to Execute for " + qname + ": " + e);
     	log.warn("typeof " + typeof(e));
+    }
+    
+    if (nolog != null) {
+      org.apache.log4j.MDC.put("nolog", nolog);
     }'
 ↓success [steps.ElementStep-1596637624104]: 
   expression: success

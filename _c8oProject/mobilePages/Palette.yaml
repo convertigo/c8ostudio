@@ -178,7 +178,7 @@ title: Title for Palette
                               attrValue: 
                                 - xmlizable: 
                                   - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
-                                  - MobileSmartSourceType: plain:{{ this.c8o.endpoint }}/.bin?__sequence=GetIcon&className={{ item1593607087206.className }}&large=true
+                                  - MobileSmartSourceType: plain:{{ this.c8o.endpoint }}/.bin?__sequence=GetIcon&className={{ item1593607087206.className }}&large=true&__nolog=true
                             ↓Attr1 [ngx.components.UIAttribute-1589310725332]: 
                               attrName: draggable
                               attrValue: 
