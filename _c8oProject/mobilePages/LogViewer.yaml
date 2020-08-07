@@ -7,37 +7,41 @@ scriptContent:
         /*End_c8o_PageImport*/
         /*Begin_c8o_PageDeclaration*/
         	columnDefs = [
-                  {headerName: ''Time'', field: ''Time''},
-                  {headerName: ''DeltaTime'', field: ''DeltaTime''},
-                  {headerName: ''Message'', field: ''Message''},
-                  {headerName: ''Level'', field: ''Level''},
-                  {headerName: ''User'', field: ''User''},
-                  {headerName: ''UUID'', field: ''UUID''},
-                  {headerName: ''Category'', field: ''Category''},
-                  {headerName: ''Thread'', field: ''Thread''},
-                  {headerName: ''Project'', field: ''Project''},
-                  {headerName: ''Connector'', field: ''Connector''},
-                  {headerName: ''Transaction'', field: ''Transaction''},
-                  {headerName: ''Sequence'', field: ''Sequence''},
-                  {headerName: ''ContextID'', field: ''ContextID''}
+                  {headerName: ''Category'', field: ''category''},
+                  {headerName: ''Date'', field: ''date''},
+                  {headerName: ''Time'', field: ''time''},
+                  {headerName: ''DeltaTime'', field: ''deltaTime''},
+                  {headerName: ''Level'', field: ''level''},
+                  {headerName: ''Thread'', field: ''thread''},
+                  {headerName: ''Message'', field: ''message''},
+                  {headerName: ''User'', field: ''user''},
+                  {headerName: ''UID'', field: ''uid''},
+                  {headerName: ''Project'', field: ''project''},
+                  {headerName: ''Connector'', field: ''connector''},
+                  {headerName: ''Transaction'', field: ''transaction''},
+                  {headerName: ''Sequence'', field: ''sequence''},
+                  {headerName: ''ContextID'', field: ''contextid''}
         	]
         	
         	logData = [
-        	     { Time: ''2020-04-26 15:23:52,754'', DeltaTime: '' 200 ms'', Message: true, Level: ""},	           
-                 { Time: ''2020-04-26 15:23:53,754'', DeltaTime: ''   3 ms'', Message: true, Level: ""},               
-                 { Time: ''2020-04-26 15:23:54,754'', DeltaTime: ''  40 ms'', Message: true, Level: ""},               
-                 { Time: ''2020-04-26 15:23:55,754'', DeltaTime: ''  10 ms'', Message: true, Level: ""},               
-                 { Time: ''2020-04-26 15:23:56,754'', DeltaTime: '' 100 ms'', Message: true, Level: ""},               
-                 { Time: ''2020-04-26 15:23:57,754'', DeltaTime: '' 102 ms'', Message: true, Level: ""},               
-                 { Time: ''2020-04-26 15:23:58,754'', DeltaTime: '' 300 ms'', Message: true, Level: ""},               
-                 { Time: ''2020-04-26 15:23:59,754'', DeltaTime: '' 100 ms'', Message: true, Level: ""},               
-                 { Time: ''2020-04-26 15:23:60,754'', DeltaTime: ''   7 ms'', Message: true, Level: ""},               
-                 { Time: ''2020-04-26 15:23:61,754'', DeltaTime: ''  89 ms'', Message: true, Level: ""},               
+        //	     { Time: ''2020-04-26 15:23:52,754'', DeltaTime: '' 200 ms'', Message: true, Level: ""},	           
+        //         { Time: ''2020-04-26 15:23:53,754'', DeltaTime: ''   3 ms'', Message: true, Level: ""},               
+        //         { Time: ''2020-04-26 15:23:54,754'', DeltaTime: ''  40 ms'', Message: true, Level: ""},               
+        //         { Time: ''2020-04-26 15:23:55,754'', DeltaTime: ''  10 ms'', Message: true, Level: ""},               
+        //         { Time: ''2020-04-26 15:23:56,754'', DeltaTime: '' 100 ms'', Message: true, Level: ""},               
+        //         { Time: ''2020-04-26 15:23:57,754'', DeltaTime: '' 102 ms'', Message: true, Level: ""},               
+        //         { Time: ''2020-04-26 15:23:58,754'', DeltaTime: '' 300 ms'', Message: true, Level: ""},               
+        //         { Time: ''2020-04-26 15:23:59,754'', DeltaTime: '' 100 ms'', Message: true, Level: ""},               
+        //         { Time: ''2020-04-26 15:23:60,754'', DeltaTime: ''   7 ms'', Message: true, Level: ""},               
+        //         { Time: ''2020-04-26 15:23:61,754'', DeltaTime: ''  89 ms'', Message: true, Level: ""},               
         	]
         	/*End_c8o_PageDeclaration*/
         /*Begin_c8o_PageConstructor*/
         		/*End_c8o_PageConstructor*/
         /*Begin_c8o_PageFunction*/
+        	ngAfterViewInit() {
+        	    this.events.publish(''getlog'');
+        	}
         	/*End_c8o_PageFunction*/
         '
 segment: path-to-logviewer
@@ -75,3 +79,20 @@ title: Title for LogViewer
       - xmlizable: 
         - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
         - MobileSmartSourceType: script:logData
+↓Subscribe_Handler [ngx.components.UIEventSubscriber-1596793269858]: 
+  topic: getlog
+  ↓CallSequence [ngx.components.UIDynamicAction-1596793306524]: 
+    beanData: '{"ionBean":"CallSequenceAction","requestable":"plain:C8oStudio.GetLog"}'
+    ↓If [ngx.components.UIDynamicAction-1596793327963]: 
+      beanData: '{"ionBean":"IfAction","condition":"script:this.agGrid.api.setRowData(out.lines)"}'
+    ↓PublishEvent [ngx.components.UIDynamicAction-1596793497638]: 
+      beanData: |
+        '{
+         "ionBean": "PublishEventAction",
+         "topic": "plain:getlog",
+         "data": "plain:"
+        }'
+      isEnabled: false
+    ↓If1 [ngx.components.UIDynamicAction-1596807016806]: 
+      beanData: '{"ionBean":"IfAction","condition":"script:this.agGrid.api.applyTransaction({add:out.lines})"}'
+      isEnabled: false

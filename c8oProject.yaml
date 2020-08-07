@@ -2,7 +2,7 @@
 ↓C8oStudio [core.Project]: 
   comment: Convertigo Mobile builder Project
   corsOrigin: =Origin
-  version: 2020.08.07.08.41
+  version: 2020.08.07.15.46
   ↓void [connectors.SqlConnector]: 🗏 connectors/void.yaml
   ↓Execute [sequences.GenericSequence]: 🗏 sequences/Execute.yaml
   ↓GetBeanCode [sequences.GenericSequence]: 🗏 sequences/GetBeanCode.yaml
@@ -10,6 +10,7 @@
   ↓GetChildren [sequences.GenericSequence]: 🗏 sequences/GetChildren.yaml
   ↓GetGraph [sequences.GenericSequence]: 🗏 sequences/GetGraph.yaml
   ↓GetIcon [sequences.GenericSequence]: 🗏 sequences/GetIcon.yaml
+  ↓GetLog [sequences.GenericSequence]: 🗏 sequences/GetLog.yaml
   ↓GetMobileComponents [sequences.GenericSequence]: 🗏 sequences/GetMobileComponents.yaml
   ↓GetPalette [sequences.GenericSequence]: 🗏 sequences/GetPalette.yaml
   ↓GetProperties [sequences.GenericSequence]: 🗏 sequences/GetProperties.yaml
