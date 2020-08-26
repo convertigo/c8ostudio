@@ -41,6 +41,11 @@
                 "output": "./svg"
               },
               {
+                "glob": "animate.min.css",
+                "input": "node_modules/animate.css",
+                "output": "assets/css"
+              },
+              {
                 "glob": "**/*",
                 "input": "node_modules/ngx-monaco-editor/assets/monaco",
                 "output": "assets/monaco"

@@ -8,7 +8,6 @@ import { C8oPage, C8oPageBase, C8oRouter, C8oCafUtils }                      			
 import { C8oNetworkStatus }                                 							from 'c8osdkangular';
 import { ChangeDetectorRef, ChangeDetectionStrategy, InjectionToken, Injector, Type}	from "@angular/core";
 import { TranslateService }                                 							from '@ngx-translate/core';
-import { ComponentFactoryResolver }					    							    from '@angular/core'
 import { ActionBeans } 																	from '../../services/actionbeans.service';
 import { Events } 																		from '../../services/events.service';
 
@@ -28,6 +27,7 @@ import { Events } 																		from '../../services/events.service';
 export class /*=c8o_PageName*/  extends C8oPage {
 	/*=c8o_PageDeclarations*/
 
+	public navParams : NavParams;
 	public events : Events;
 	public subscriptions = {};
 	public actionBeans: ActionBeans;
@@ -35,10 +35,17 @@ export class /*=c8o_PageName*/  extends C8oPage {
 	/*Begin_c8o_PageDeclaration*/
 	/*End_c8o_PageDeclaration*/
 
-	constructor(routerProvider: C8oRouter, private route: ActivatedRoute, private angularRouter: Router, loadingCtrl: LoadingController, sanitizer: DomSanitizer, ref: ChangeDetectorRef, injector: Injector, menuCtrl: MenuController, public translate: TranslateService, private cfr: ComponentFactoryResolver){
+	constructor(routerProvider: C8oRouter, private route: ActivatedRoute, private angularRouter: Router, loadingCtrl: LoadingController, sanitizer: DomSanitizer, ref: ChangeDetectorRef, injector: Injector, menuCtrl: MenuController, public translate: TranslateService){
 		super(routerProvider, loadingCtrl, sanitizer, ref, injector, menuCtrl);
 		this.events = this.getInstance(Events);
 		this.actionBeans = this.getInstance(ActionBeans);
+		try {
+			// for PopoverController, ModalController
+			this.navParams = new NavParams(this.getInstance(NavParams).data)
+		} catch (e) {
+			// for NavController (based on angular router)
+			this.navParams = new NavParams(this.route.snapshot.queryParams)
+		}
 		
 		/*=c8o_PageConstructors*/
 		
@@ -57,6 +64,10 @@ export class /*=c8o_PageName*/  extends C8oPage {
 	
 	public log(val) {
 	    console.log(val);
+	}
+	
+	public navigate(url: string, data: any) {
+	    this.angularRouter.navigate([url], { queryParams: data });
 	}
 	
 	public navigateByUrl(url: string){
