@@ -14,37 +14,47 @@
     //logmanager.setDateStart(new Date(System.currentTimeMillis()));
     //logmanager.setDateEnd(LogManager.date_last);
     
-    if (appender == null) {
-    	appender = new JavaAdapter(org.apache.log4j.AppenderSkeleton, {
-    		append: function (event) {
-    			this.notifyAll();
-    		},
-    		close: function () {},
-    		requiresLayout: function() {
-    			return false;
-    		}
-    	});
-    	context.set("appender", appender);
-    } else {
-    	appender.notifyAll();
-    }
-    
-    com.twinsoft.convertigo.engine.Engine.logConvertigo.addAppender(appender);
-    var appender = context.get("appender");
+    //if (appender == null) {
+    //	appender = new JavaAdapter(org.apache.log4j.AppenderSkeleton, {
+    //		append: function (event) {
+    //			sync(function () {
+    //			    appender.notifyAll();				
+    //			}, appender);
+    //		},
+    //		close: function () {},
+    //		requiresLayout: function() {
+    //			return false;
+    //		}
+    //	});
+    //	context.set("appender", appender);
+    //} else {
+    //	appender.notifyAll();
+    //}
+    //
+    //com.twinsoft.convertigo.engine.Engine.logConvertigo.addAppender(appender);
+    //var appender = context.get("appender");
     
     var logs = logmanager.getLines();
     var interrupted = false;
-    while (logs.length() == 0 && !interrupted) {
+    var loop = 60;
+    while (logs.length() == 0 && !interrupted && loop-- > 0) {
     	try {
-    		appender.wait(2000);
+    		java.lang.Thread.sleep(1000);
+    		logs = logmanager.getLines();
+    //		sync(function () {
+    //			appender.wait(2000);
+    //		}, appender);
     	} catch (ex) {
-    		interrupted = true;
+    		interrupted = ex;
     	}
     }
     
     var DATE_FORMAT = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss,S");
-    var lastLogTime = 0;
-    com.twinsoft.convertigo.engine.Engine.logConvertigo.removeAppender(appender);
+    var lastLogTime = context.get("lastLogTime");
+    if (!lastLogTime) {
+    	lastLogTime = 0;
+    }
+    //com.twinsoft.convertigo.engine.Engine.logConvertigo.removeAppender(appender);
     var lines = dom.getDocumentElement().getElementsByTagName("lines").item(0);
     for (i = 0; i < logs.length(); i++) {
       var logLine = logs.get(i);
@@ -72,6 +82,7 @@
     			}
     		}
     		lastLogTime = currentDate;
+    		context.set("lastLogTime", lastLogTime);
     	} catch (e) {
     		log.warn("catch " + e);
     		deltaTime = "n/a";
@@ -193,3 +204,9 @@
     //        	}
     //        }
     //}'
+↓interrupted [steps.ElementStep-1598363890105]: 
+  expression: interrupted
+  nodeName: interrupted
+↓loop [steps.ElementStep-1598369597201]: 
+  expression: loop
+  nodeName: loop

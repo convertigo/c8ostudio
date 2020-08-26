@@ -7,13 +7,13 @@ scriptContent:
         /*End_c8o_PageImport*/
         /*Begin_c8o_PageDeclaration*/
         	columnDefs = [
+                  {headerName: ''Date'', field: ''date'', hide: true},
+                  {headerName: ''Time'', field: ''time'', width: 95, resizable: false},
+                  {headerName: ''DeltaTime'', field: ''deltaTime'', width: 85, resizable: false},
+                  {headerName: ''Message'', field: ''message'', flex: 1, minWidth: 500},
                   {headerName: ''Category'', field: ''category''},
-                  {headerName: ''Date'', field: ''date''},
-                  {headerName: ''Time'', field: ''time''},
-                  {headerName: ''DeltaTime'', field: ''deltaTime''},
                   {headerName: ''Level'', field: ''level''},
                   {headerName: ''Thread'', field: ''thread''},
-                  {headerName: ''Message'', field: ''message''},
                   {headerName: ''User'', field: ''user''},
                   {headerName: ''UID'', field: ''uid''},
                   {headerName: ''Project'', field: ''project''},
@@ -23,62 +23,34 @@ scriptContent:
                   {headerName: ''ContextID'', field: ''contextid''}
         	]
         	
-        	logData = [
-        //	     { Time: ''2020-04-26 15:23:52,754'', DeltaTime: '' 200 ms'', Message: true, Level: ""},	           
-        //         { Time: ''2020-04-26 15:23:53,754'', DeltaTime: ''   3 ms'', Message: true, Level: ""},               
-        //         { Time: ''2020-04-26 15:23:54,754'', DeltaTime: ''  40 ms'', Message: true, Level: ""},               
-        //         { Time: ''2020-04-26 15:23:55,754'', DeltaTime: ''  10 ms'', Message: true, Level: ""},               
-        //         { Time: ''2020-04-26 15:23:56,754'', DeltaTime: '' 100 ms'', Message: true, Level: ""},               
-        //         { Time: ''2020-04-26 15:23:57,754'', DeltaTime: '' 102 ms'', Message: true, Level: ""},               
-        //         { Time: ''2020-04-26 15:23:58,754'', DeltaTime: '' 300 ms'', Message: true, Level: ""},               
-        //         { Time: ''2020-04-26 15:23:59,754'', DeltaTime: '' 100 ms'', Message: true, Level: ""},               
-        //         { Time: ''2020-04-26 15:23:60,754'', DeltaTime: ''   7 ms'', Message: true, Level: ""},               
-        //         { Time: ''2020-04-26 15:23:61,754'', DeltaTime: ''  89 ms'', Message: true, Level: ""},               
-        	]
+        	logData = []
         	/*End_c8o_PageDeclaration*/
         /*Begin_c8o_PageConstructor*/
         		/*End_c8o_PageConstructor*/
         /*Begin_c8o_PageFunction*/
         	ngAfterViewInit() {
-        	    this.events.publish(''getlog'');
+        		this.agGrid.api.setRowData([]);
+        		console.log(''init log viewer'');
+        		this.doGetLog();
+        		
+        //	    this.events.publish(''getlog'');
+        	}
+        	
+        	doGetLog() {
+        		this.c8o.callJson(''.GetLog'').then((response, _) => {
+                    console.log(''apply logs: '' + response[''lines''].length);
+                    this.agGrid.api.updateRowData({''add'': response[''lines'']});
+                    var rowCount = this.agGrid.api.rowModel.getRowCount();
+                    console.log(''rowCount: '' + rowCount);
+                    this.agGrid.api.ensureIndexVisible(rowCount - 1, ''bottom'');
+                    this.doGetLog();
+                    return null;
+                });
         	}
         	/*End_c8o_PageFunction*/
         '
 segment: path-to-logviewer
 title: Title for LogViewer
-↓UseSharedComponent [ngx.components.UIUseShared-1587906236844]: 
-  sharedcomponent: lib_ExtendedComponents.MobileApplication.Application.agGrid
-  ↓pagination [ngx.components.UIControlVariable-1587907310009]: 
-    comment: |
-      On of the themes defined here :
-      
-      https://www.ag-grid.com/javascript-grid-themes-provided/
-      
-      Also be shure to add the themes in the Themi object :
-      
-      
-    varValue: 
-      - xmlizable: 
-        - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
-        - MobileSmartSourceType: script:false
-  ↓class [ngx.components.UIControlVariable-1587907310012]: 
-    comment: 'boolean: true (default) or false'
-    varValue: 
-      - xmlizable: 
-        - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
-        - MobileSmartSourceType: script:'ag-theme-balham-dark'
-  ↓columnDefs [ngx.components.UIControlVariable-1587907713899]: 
-    comment: 'Array of columnDef {headerName: ''headerName'', field: ''fieldName''} objects'
-    varValue: 
-      - xmlizable: 
-        - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
-        - MobileSmartSourceType: script:columnDefs
-  ↓rowData [ngx.components.UIControlVariable-1587907713901]: 
-    comment: 'Array of row { fieldName1: ''value1'', fieldName2: ''value2'', fieldName3: true, ...} objects'
-    varValue: 
-      - xmlizable: 
-        - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
-        - MobileSmartSourceType: script:logData
 ↓Subscribe_Handler [ngx.components.UIEventSubscriber-1596793269858]: 
   topic: getlog
   ↓CallSequence [ngx.components.UIDynamicAction-1596793306524]: 
@@ -90,9 +62,57 @@ title: Title for LogViewer
         '{
          "ionBean": "PublishEventAction",
          "topic": "plain:getlog",
-         "data": "plain:"
+         "data": "plain:poll"
         }'
-      isEnabled: false
-    ↓If1 [ngx.components.UIDynamicAction-1596807016806]: 
-      beanData: '{"ionBean":"IfAction","condition":"script:this.agGrid.api.applyTransaction({add:out.lines})"}'
-      isEnabled: false
+↓Content [ngx.components.UIDynamicElement-1598430719191]: 
+  beanData: |
+    '{
+     "ionBean": "Content",
+     "IonColor": "plain:dark",
+     "Padding": "plain:ion-no-padding",
+     "ScrollY": "plain:false"
+    }'
+  tagName: ion-content
+  ↓UseSharedComponent [ngx.components.UIUseShared-1587906236844]: 
+    sharedcomponent: lib_ExtendedComponents.MobileApplication.Application.agGrid
+    ↓pagination [ngx.components.UIControlVariable-1587907310009]: 
+      comment: |
+        On of the themes defined here :
+        
+        https://www.ag-grid.com/javascript-grid-themes-provided/
+        
+        Also be shure to add the themes in the Themi object :
+        
+        
+      varValue: 
+        - xmlizable: 
+          - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+          - MobileSmartSourceType: script:false
+    ↓class [ngx.components.UIControlVariable-1587907310012]: 
+      comment: 'boolean: true (default) or false'
+      varValue: 
+        - xmlizable: 
+          - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+          - MobileSmartSourceType: script:'ag-theme-balham-dark'
+    ↓columnDefs [ngx.components.UIControlVariable-1587907713899]: 
+      comment: 'Array of columnDef {headerName: ''headerName'', field: ''fieldName''} objects'
+      varValue: 
+        - xmlizable: 
+          - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+          - MobileSmartSourceType: script:columnDefs
+    ↓rowData [ngx.components.UIControlVariable-1587907713901]: 
+      comment: 'Array of row { fieldName1: ''value1'', fieldName2: ''value2'', fieldName3: true, ...} objects'
+      varValue: 
+        - xmlizable: 
+          - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+          - MobileSmartSourceType: script:logData
+    ↓height [ngx.components.UIControlVariable-1598435010210]: 
+      varValue: 
+        - xmlizable: 
+          - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+          - MobileSmartSourceType: plain:100%
+    ↓defaultColDef [ngx.components.UIControlVariable-1598448703222]: 
+      varValue: 
+        - xmlizable: 
+          - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+          - MobileSmartSourceType: 'script:{hide: false, editable: false, sortable: false, resizable: true, filter: true, checkboxSelection: false, singleClickEdit: false}'
