@@ -36,8 +36,8 @@
     
     var logs = logmanager.getLines();
     var interrupted = false;
-    var loop = 60;
-    while (logs.length() == 0 && !interrupted && loop-- > 0) {
+    var maxts = new Date().getTime() + 60000;
+    while (logs.length() == 0 && !interrupted && new Date().getTime() < maxts) {
     	try {
     		java.lang.Thread.sleep(1000);
     		logs = logmanager.getLines();

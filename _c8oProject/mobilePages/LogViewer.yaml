@@ -37,7 +37,7 @@ scriptContent:
         	}
         	
         	doGetLog() {
-        		this.c8o.callJson(''.GetLog'').then((response, _) => {
+        		this.c8o.callJson(''.GetLog'', ''__context'', ''GetLog'').then((response, _) => {
                     console.log(''apply logs: '' + response[''lines''].length);
                     this.agGrid.api.updateRowData({''add'': response[''lines'']});
                     var rowCount = this.agGrid.api.rowModel.getRowCount();
