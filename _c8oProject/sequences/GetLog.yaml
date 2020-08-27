@@ -11,50 +11,15 @@
     	logmanager.setContinue(true);
     	logmanager.setDateStart(new java.util.Date(java.lang.System.currentTimeMillis()));
     }
-    //logmanager.setDateStart(new Date(System.currentTimeMillis()));
-    //logmanager.setDateEnd(LogManager.date_last);
     
-    //if (appender == null) {
-    //	appender = new JavaAdapter(org.apache.log4j.AppenderSkeleton, {
-    //		append: function (event) {
-    //			sync(function () {
-    //			    appender.notifyAll();				
-    //			}, appender);
-    //		},
-    //		close: function () {},
-    //		requiresLayout: function() {
-    //			return false;
-    //		}
-    //	});
-    //	context.set("appender", appender);
-    //} else {
-    //	appender.notifyAll();
-    //}
-    //
-    //com.twinsoft.convertigo.engine.Engine.logConvertigo.addAppender(appender);
-    //var appender = context.get("appender");
-    
-    var logs = logmanager.getLines();
-    var interrupted = false;
-    var maxts = new Date().getTime() + 60000;
-    while (logs.length() == 0 && !interrupted && new Date().getTime() < maxts) {
-    	try {
-    		java.lang.Thread.sleep(1000);
-    		logs = logmanager.getLines();
-    //		sync(function () {
-    //			appender.wait(2000);
-    //		}, appender);
-    	} catch (ex) {
-    		interrupted = ex;
-    	}
-    }
+    var logs = logmanager.waitForLines(10000);
     
     var DATE_FORMAT = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss,S");
     var lastLogTime = context.get("lastLogTime");
     if (!lastLogTime) {
-    	lastLogTime = 0;
+    	lastLogTime = new Date().getTime();
     }
-    //com.twinsoft.convertigo.engine.Engine.logConvertigo.removeAppender(appender);
+    
     var lines = dom.getDocumentElement().getElementsByTagName("lines").item(0);
     for (i = 0; i < logs.length(); i++) {
       var logLine = logs.get(i);
@@ -204,9 +169,3 @@
     //        	}
     //        }
     //}'
-↓interrupted [steps.ElementStep-1598363890105]: 
-  expression: interrupted
-  nodeName: interrupted
-↓loop [steps.ElementStep-1598369597201]: 
-  expression: loop
-  nodeName: loop
