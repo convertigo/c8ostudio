@@ -30,7 +30,6 @@ scriptContent:
         /*Begin_c8o_PageFunction*/
         	ngAfterViewInit() {
         		this.agGrid.api.setRowData([]);
-        		console.log(''init log viewer'');
         		this.doGetLog();
         		
         //	    this.events.publish(''getlog'');
@@ -38,10 +37,8 @@ scriptContent:
         	
         	doGetLog() {
         		this.c8o.callJson(''.GetLog'', ''__context'', ''GetLog'').then((response, _) => {
-                    console.log(''apply logs: '' + response[''lines''].length);
                     this.agGrid.api.updateRowData({''add'': response[''lines'']});
                     var rowCount = this.agGrid.api.rowModel.getRowCount();
-                    console.log(''rowCount: '' + rowCount);
                     this.agGrid.api.ensureIndexVisible(rowCount - 1, ''bottom'');
                     this.doGetLog();
                     return null;
