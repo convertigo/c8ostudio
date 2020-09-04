@@ -709,6 +709,62 @@ scriptContent:
         	    }
         	}
         	
+        	// nodeObject : GetGraph.array
+        	walkChildren(nodeObject: any) {
+        		let x = 30;
+        		let y = 30;
+        			
+        		let previous = null;
+        		for (var i=0; i < nodeObject.length; i++) {
+        			let stepClassName = nodeObject[i].dbo.className.substring(this.strStep.length)
+        	        // let parentClassName = previous.model.attributes[''className''].substring(this.strStep.length)
+        			
+        //			console.log("i am parent className + i "+ parentClassName + " " + i);
+        			
+        //			if(previous != null && stepClassName == "ThenStep") {
+        //		    	y = previous.model.attributes.position.y + this.verticalSpace
+        //	            x = previous.model.attributes.position.x + this.horizontalSpace
+        //		    }
+        
+        			if (this.checkElementOnPoint(x, y + this.verticalSpace * i)) {
+        	        	let elementToMove = this.graph.findModelsFromPoint({ x: x, y: y + this.verticalSpace * i})
+        	            
+        				x = elementToMove[0].attributes.position.x + this.horizontalSpace;
+        				y = elementToMove[0].attributes.position.y;
+        
+        	        }
+        			let step = this.addStep({
+        //                        x: cellView.getBBox().topLeft().x + x,
+        //                        y: cellView.getBBox().topLeft().y      
+        	                      x: x,
+        	                      y: y + this.verticalSpace * i
+                            }, 
+                            {
+                                width: 70,
+                                height: 70              
+                            }, 
+                            nodeObject[i].dbo.displayName,
+                            false,
+                            nodeObject[i].dbo.qname,
+                            nodeObject[i].dbo.className,
+                            false,
+        					false
+                        )
+        
+        			previous = step;
+        
+        //			console.log("walkChildren displayName " + nodeObject[i].displayName)
+        //			console.log("walkChildren qname " + nodeObject[i].qname)
+        //			console.log("walkChildren className" + nodeObject[i].qname)
+        //			
+        //			console.log("walkChildren children " + JSON.stringify(nodeObject[i].children))
+        			
+        			if(nodeObject[i].dbo.children != undefined && nodeObject[i].dbo.children.length > 0) {
+        				this.walkChildren(nodeObject[i].dbo.children);
+        			}
+        		}
+        	}
+        	
         	ngAfterViewInit() {
         	    /**
         	     * TODO : Implement Drag & Drop from palette see : https://codepen.io/fxaeberard/pen/reGvjm
@@ -812,7 +868,7 @@ title: Title for FlowViewer
 ↓Subscribe_Handler [ngx.components.UIEventSubscriber-1588686865663]: 
   topic: dboFocus
   ↓CallSequence [ngx.components.UIDynamicAction-1588686924736]: 
-    beanData: '{"ionBean":"CallSequenceAction","requestable":"plain:C8oStudio.GetChildren"}'
+    beanData: '{"ionBean":"CallSequenceAction","requestable":"plain:C8oStudio.GetGraph"}'
     ↓DisplayFlow [ngx.components.UICustomAction-1588687209815]: 
       actionValue: 
         - xmlizable: 
@@ -824,41 +880,50 @@ title: Title for FlowViewer
                           }
               		    
                   		this.graph.clear();
-                  		let previous = null
-                  		for (var i=0; i < vars.flow.length ; i++) {
-                  		    let step = this.addStep({
-                      		        x: 30,
-                      		        y: 30 + this.verticalSpace * i		        
-                      		    }, 
-                      		    {
-                                      width: 70,
-                                      height: 70              
-                                  }, 
-                                  vars.flow[i].displayName,
-                                  vars.flow[i].hasChildren,
-                                  vars.flow[i].qname,
-                                  vars.flow[i].className,
-              					true,
-              					false
-                  		    )
-                  		    
-                  		    if (previous != null)
-                  		        this.addLink(previous, step, this.isHorizontal, vars.flow[i].className)
-                  		    previous = step
-                  		}
+              			console.log(vars.flow);
+              //    		let previous = null
+              //
+              //    		for (var i=0; i < vars.flow.length ; i++) {
+              //    		    let step = this.addStep({
+              //        		        x: 30,
+              //        		        y: 30 + this.verticalSpace * i		        
+              //        		    }, 
+              //        		    {
+              //                        width: 70,
+              //                        height: 70              
+              //                    }, 
+              //                    vars.flow[i].displayName,
+              //                    vars.flow[i].hasChildren,
+              //                    vars.flow[i].qname,
+              //                    vars.flow[i].className,
+              //					true,
+              //					false
+              //    		    )
+              //    		    
+              //    		    if (previous != null)
+              //    		        this.addLink(previous, step, this.isHorizontal, vars.flow[i].className)
+              //    		    previous = step
+              //    		}
+              			this.walkChildren(vars.flow)
                   		resolve();
               '
       ↓flow [ngx.components.UIControlVariable-1588693303067]: 
         varValue: 
           - xmlizable: 
             - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
-            - MobileSmartSourceType: source:{"filter":"Sequence","project":"C8oStudio","input":"listen(['C8oStudio.GetChildren'])?.array"}
+            - MobileSmartSourceType: source:{"filter":"Sequence","project":"C8oStudio","input":"listen(['C8oStudio.GetChildren'])?.array","model":{"data":[{"sequence":"C8oStudio.GetGraph","marker":""}],"path":"?.array","prefix":"","suffix":"","custom":"","useCustom":false}}
     ↓qname [ngx.components.UIControlVariable-1589811848532]: 
       comment: new variable
       varValue: 
         - xmlizable: 
           - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
           - MobileSmartSourceType: script:out
+    ↓level [ngx.components.UIControlVariable-1598523209744]: 
+      comment: new variable
+      varValue: 
+        - xmlizable: 
+          - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+          - MobileSmartSourceType: plain:100
 ↓Grid [ngx.components.UIDynamicElement-1588228737881]: 
   beanData: '{"ionBean":"Grid","Height":"plain:height:100%"}'
   tagName: ion-grid

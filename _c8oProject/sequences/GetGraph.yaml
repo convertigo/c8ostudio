@@ -14,7 +14,8 @@
         expression: com.twinsoft.convertigo.engine.Engine.theApp.databaseObjectsManager.getAllProjectNamesList(true)
         ↓dbo [steps.XMLComplexStep-1595494019494]: 
           nodeName: dbo
-          ↓type [steps.XMLAttributeStep-1595494019497]: 
+          ↓type [steps.XMLAttributeStep-1599122401043]: 
+            isEnabled: false
             nodeName: type
             nodeText: object
           ↓jSource [steps.SourceStep-1595596256118]: 
@@ -94,6 +95,7 @@
         ↓dbo [steps.XMLComplexStep-1595494243491]: 
           nodeName: dbo
           ↓type [steps.XMLAttributeStep-1595494243494]: 
+            isEnabled: false
             nodeName: type
             nodeText: object
           ↓jSource [steps.SourceStep-1595514510828]: 
