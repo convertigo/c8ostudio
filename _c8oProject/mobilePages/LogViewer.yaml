@@ -24,6 +24,28 @@ scriptContent:
         	]
         	
         	logData = []
+        	
+        	defaultColDef = {
+        		hide: false, 
+        		editable: false, 
+        		sortable: false, 
+        		resizable: true, 
+        		filter: true, 
+        		checkboxSelection: false, 
+        		singleClickEdit: false,
+        	}
+        	
+        	// defines rules to color text
+        	rowClassRules = {
+        		''log-level-info'' : function(params) { return params.data.level == "INFO"; },
+        		''log-level-debug'' : function(params) { return params.data.level == "DEBUG"; },
+        		''log-level-warning'': function(params) { return params.data.level == "WARNING"; },
+        		''log-level-error'': function(params) { return params.data.level == "ERROR"; },
+        		''log-level-trace'': function(params) { return params.data.level == "TRACE"; }
+        	}
+        
+        	
+        
         	/*End_c8o_PageDeclaration*/
         /*Begin_c8o_PageConstructor*/
         		/*End_c8o_PageConstructor*/
@@ -90,7 +112,7 @@ title: Title for LogViewer
       varValue: 
         - xmlizable: 
           - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
-          - MobileSmartSourceType: script:'ag-theme-balham-dark'
+          - MobileSmartSourceType: script:'ag-theme-balham-dark info'
     ↓columnDefs [ngx.components.UIControlVariable-1587907713899]: 
       comment: 'Array of columnDef {headerName: ''headerName'', field: ''fieldName''} objects'
       varValue: 
@@ -112,4 +134,34 @@ title: Title for LogViewer
       varValue: 
         - xmlizable: 
           - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
-          - MobileSmartSourceType: 'script:{hide: false, editable: false, sortable: false, resizable: true, filter: true, checkboxSelection: false, singleClickEdit: false}'
+          - MobileSmartSourceType: script:defaultColDef
+    ↓paginationPageSize [ngx.components.UIControlVariable-1599486387026]: 
+      comment: 'integer: 10 by default'
+      varValue: 
+        - xmlizable: 
+          - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+          - MobileSmartSourceType: script:10
+    ↓rowSelection [ngx.components.UIControlVariable-1599486387028]: 
+      comment: 'string: ''single'' (default) or ''multiple'''
+      varValue: 
+        - xmlizable: 
+          - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+          - MobileSmartSourceType: script:'single'
+    ↓rowDeselection [ngx.components.UIControlVariable-1599486387030]: 
+      comment: 'boolean: true (default) or false'
+      varValue: 
+        - xmlizable: 
+          - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+          - MobileSmartSourceType: script:true
+    ↓width [ngx.components.UIControlVariable-1599486387032]: 
+      comment: width value in % or px
+      isEnabled: false
+      varValue: 
+        - xmlizable: 
+          - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+          - MobileSmartSourceType: script:'100%'
+    ↓rowClassRules [ngx.components.UIControlVariable-1599486387034]: 
+      varValue: 
+        - xmlizable: 
+          - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+          - MobileSmartSourceType: script:rowClassRules
