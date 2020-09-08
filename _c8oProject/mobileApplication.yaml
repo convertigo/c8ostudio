@@ -656,9 +656,7 @@ tplProjectName: C8oStudio
         →: |
           '/* All Aggrid styles goes there goes there */
           @import "../../node_modules/ag-grid-community/dist/styles/ag-grid.scss";
-          @import "../../node_modules/ag-grid-community/dist/styles/ag-theme-balham-dark/sass/ag-theme-balham-dark.scss";
-          
-          '
+          @import "../../node_modules/ag-grid-community/dist/styles/ag-theme-balham-dark/sass/ag-theme-balham-dark.scss";'
 ↓AngularTreeStyle [ngx.components.UIStyle-1587969303224]: 
   styleContent: 
     - xmlizable: 
@@ -1196,4 +1194,29 @@ tplProjectName: C8oStudio
             --padding-end: 0px;
             --padding-top: 5px;
             --padding-bottom: 0px;
+          }'
+↓logLevelStyle [ngx.components.UIStyle-1599491580869]: 
+  styleContent: 
+    - xmlizable: 
+      - ↑classname: com.twinsoft.convertigo.beans.common.FormatedContent
+      - com.twinsoft.convertigo.beans.common.FormatedContent: 
+        →: |
+          '.log-level-info {
+          	color: #09ff00 !important;
+          }
+          
+          .log-level-debug {
+          	color: #00fff9 !important;
+          }
+          
+          .log-level-warning {
+          	color: #ff9b00 !important;
+          }
+          
+          .log-level-error {
+          	color: #ff0000 !important;
+          }
+          
+          .log-level-trace {
+          	color: #f0ff00 !important;
           }'
