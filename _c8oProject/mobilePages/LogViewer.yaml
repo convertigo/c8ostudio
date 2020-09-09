@@ -39,7 +39,7 @@ scriptContent:
         	rowClassRules = {
         		''log-level-info'' : function(params) { return params.data.level == "INFO"; },
         		''log-level-debug'' : function(params) { return params.data.level == "DEBUG"; },
-        		''log-level-warning'': function(params) { return params.data.level == "WARNING"; },
+        		''log-level-warning'': function(params) { return params.data.level == "WARN"; },
         		''log-level-error'': function(params) { return params.data.level == "ERROR"; },
         		''log-level-trace'': function(params) { return params.data.level == "TRACE"; }
         	}
@@ -62,7 +62,7 @@ scriptContent:
                     this.agGrid.api.updateRowData({''add'': response[''lines'']});
                     var rowCount = this.agGrid.api.rowModel.getRowCount();
                     this.agGrid.api.ensureIndexVisible(rowCount - 1, ''bottom'');
-                    this.doGetLog();
+        //            this.doGetLog();
                     return null;
                 });
         	}
