@@ -19,6 +19,7 @@
   ↓Save [sequences.GenericSequence]: 🗏 sequences/Save.yaml
   ↓SetBeanCode [sequences.GenericSequence]: 🗏 sequences/SetBeanCode.yaml
   ↓SetProperty [sequences.GenericSequence]: 🗏 sequences/SetProperty.yaml
+  ↓toto [sequences.GenericSequence]: 🗏 sequences/toto.yaml
   ↓Project_reference [references.ProjectSchemaReference]: 
     projectName: lib_ExtendedComponents=https://github.com/convertigo/c8oprj-lib-extended-components.git:branch=ionic5
   ↓MobileApplication [core.MobileApplication]: 

@@ -116,6 +116,7 @@
                   'context.addTextNode(dboNode.item(0), "qname", item.getFullQName());
                   context.addTextNode(dboNode.item(0), "displayName", item.getName());
                   context.addTextNode(dboNode.item(0), "className", item.getClass().getName());
+                  context.addTextNode(dboNode.item(0), "isStarting", true);
                   
                   parentQName = item.getFullQName();
                   
@@ -145,6 +146,7 @@
                   			context.addTextNode(dboChildNode, "qname", '''' + childQName);
                   			context.addTextNode(dboChildNode, "displayName", '''' + childDisplayName);
                   			context.addTextNode(dboChildNode, "className", '''' + childClassName);
+                  			context.addTextNode(dboChildNode, "isStarting", false)
                   			
                   			
                   			// getting children of children
@@ -169,6 +171,9 @@
                 ↓type [steps.XMLAttributeStep-1595494243533]: 
                   nodeName: type
                   nodeText: boolean
+              ↓isStarting [steps.XMLElementStep-1599567230744]: 
+                nodeName: isStarting
+                nodeText: true
           ↓jIfThenElse [steps.IfThenElseStep-1595494243539]: 
             condition: dbo instanceof com.twinsoft.convertigo.beans.core.MobileComponent
             isEnabled: false

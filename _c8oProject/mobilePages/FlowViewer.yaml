@@ -12,8 +12,10 @@ scriptContent:
         /*Begin_c8o_PageDeclaration*/
         	graph = new joint.dia.Graph;
         	paper : joint.dia.Paper
+        	paperMiniMap : joint.dia.Paper
         	scale : number = 10
         	dragStartPosition = null;
+        	dragStartPositionMiniMap = null;
         	isHorizontal = true;
         	verticalSpace = 140
         	horizontalSpace = 140
@@ -29,6 +31,7 @@ scriptContent:
         	}
         
         	onMouseMove(event) {
+        		console.log("I AM EVENT " + JSON.stringify(event));
         	    if (this.dragStartPosition != null) {
                     // this.c8o.log.debug("Mouse Move : " + JSON.stringify(this.dragStartPosition))
                     this.paper.translate(
@@ -36,6 +39,15 @@ scriptContent:
                         event.offsetY - this.dragStartPosition.y);
         	    }
             }
+        
+        	onMouseMoveMiniMap(event) {
+        		if(this.dragStartPositionMiniMap != null) {
+        			this.paperMiniMap.translate(
+        				event.offsetX - this.dragStartPositionMiniMap.x,
+        				event.offsetY - this.dragStartPositionMiniMap.y
+        			);
+        		}
+        	}
         
         	addLink(source, dest, isHorizontal, label) {
         	    var link = new joint.shapes.standard.Link();
@@ -71,132 +83,224 @@ scriptContent:
         	    let rect;
         	    
         	    // custom diamond shape for logical nodes 
-        	    if(className.includes("If")) {
-        	        rect = new joint.shapes.basic.Path({
-        	            position: position,
-        	            size: { width: 70, height: 70 },
-        	            ports: {
-        	                groups: {
-        	                    ''source'': {
-        	                        position: ''right'',
-        	                        attrs: {
-        	                            ''.joint-port-body'' : {
-        	                                fill: ''orange'',
-        	                                magnet: true
-        	                            }
-        	                        }
-        	                    },
-        	                    ''dest'': {
-        	                        position: ''left'',
-        	                        attrs: {
-        	                            ''.joint-port-body'' : {
-        	                                fill: ''green'',
-        	                                magnet: true
-        	                            }
-        	                        }
-        	                    }
-        	                },
-        	                items: [{
-        	                    group: ''source'',
-        	                    args: {}, // extra arguments for the port layout function, see `layout.Port` section
-        	                },
-        	                {
-        	                    group: ''dest'',
-        	                    args: {}, // extra arguments for the port layout function, see `layout.Port` section
-        	                }]
-        	            },
-        	            attrs: {
-        	                path: { 
-        	                    d: ''M 30 0 L 60 30 30 60 0 30 z'', 
-        	                    fill: ''blue'' 
-        	                },
-        	                ''text'': { 
-        	                    text: text, 
-        	                    fill: ''white'' 
-        	               }
-        	            },
-        	            qname: qname,
-        	            className: className,
-        	            isStarting: isStarting
-        	         })
-        
-        			if(isHidden)
-        				rect.attr(''./display'', ''none'')
+        //	    if(className.includes("If")) {
+        //	        rect = new joint.shapes.basic.Path({
+        //				markup: ''<path /><image /><text />'',
+        //// 				markup: ''<g class="rotatable"><g class="scalable"><path/></g><image /><text/></g>'',
+        //	            position: position,
+        //	            size: { width: 70, height: 70 },
+        //	            ports: {
+        //	                groups: {
+        //	                    ''source'': {
+        //	                        position: ''right'',
+        //	                        attrs: {
+        //	                            ''.joint-port-body'' : {
+        //	                                fill: ''orange'',
+        //	                                magnet: true
+        //	                            }
+        //	                        }
+        //	                    },
+        //	                    ''dest'': {
+        //	                        position: ''left'',
+        //	                        attrs: {
+        //	                            ''.joint-port-body'' : {
+        //	                                fill: ''green'',
+        //	                                magnet: true
+        //	                            }
+        //	                        }
+        //	                    }
+        //	                },
+        //	                items: [{
+        //	                    group: ''source'',
+        //	                    args: {}, // extra arguments for the port layout function, see `layout.Port` section
+        //	                },
+        //	                {
+        //	                    group: ''dest'',
+        //	                    args: {}, // extra arguments for the port layout function, see `layout.Port` section
+        //	                }]
+        //	            },
+        //	            attrs: {
+        //	                path: { 
+        //	                    // d: ''M 30 0 L 60 30 30 60 0 30 z'',
+        //						d: ''M 0 0 a 1 1 0 0 0 10 0 A 1 1 0 0 0 0 0'', 
+        //	                    fill: ''blue'' 
+        //	                },
+        //	                ''text'': { 
+        //	                    text: text, 
+        //	                    fill: ''white'' 
+        //	               },
+        //					image: {
+        //	                    ''xlink:href'': this.c8o.endpoint + ''/.bin?__sequence=GetIcon&className='' + className + ''&large=true&__nolog=true'',
+        //	                    width: 32,
+        //	                    height: 32,
+        //	                    ref: ''rect'',
+        //	                    refY: ''0.27'',
+        //	                    refX: ''0.27''
+        //                	}
+        //	            },
+        //	            qname: qname,
+        //	            className: className,
+        //	            isStarting: isStarting
+        //	         })
+        //
+        //			if(isHidden)
+        //				rect.attr(''./display'', ''none'')
         				
-        	    } else {
+        //	    } else {
         	       
-                rect = new joint.shapes.basic.Rect( {
-                    markup: ''<g class="rotatable"><g class="scalable"><rect class="rect"/></g><image/><text/></g>'',
-                    position: position,
-                    size: size,
-                    ports: {
-                        groups: {
-                            ''source'': {
-                                position: ''right'',
-                                attrs: {
-                                    ''.joint-port-body'' : {
-                                        fill: ''orange'',
-                                        magnet: true
-                                    }
-                                }
-                            },
-                            ''dest'': {
-                                position: ''left'',
-                                attrs: {
-                                    ''.joint-port-body'' : {
-                                        fill: ''green'',
-                                        magnet: true
-                                    }
-                                }
-                            }
-                        },
-                        items: [{
-                            group: ''source'',
-                            args: {}, // extra arguments for the port layout function, see `layout.Port` section
-                        },
-                        {
-                            group: ''dest'',
-                            args: {}, // extra arguments for the port layout function, see `layout.Port` section
-                        }]
-                    },            
-                    attrs: {
-                        rect: {
-                            fill: hasChildren ? ''#222222'' : ''blue'',
-                            strokeDasharray: 2,
-                            strokeWidth: 2,
-                            stroke: hasChildren ? ''white'' : null 
-                        },
-                        text: {
-                            text: text,
-                            fill: ''white'',
-                            ref:''rect'',
-                            refY: ''.7''
-                          },
-        //                text:
-        //                {
-        //                    text: text,
-        //                    fill: ''white''
+        //        rect = new joint.shapes.basic.Circle( { 
+        //            markup: ''<g class="rotatable"><g class="scalable"><circle class="circle"/></g><image/><text/></g>'',
+        //            position: position,
+        //            size: size,
+        //            ports: {
+        //                groups: {
+        //                    ''source'': {
+        //                        position: ''right'',
+        //                        attrs: {
+        //                            ''.joint-port-body'' : {
+        //                                fill: ''orange'',
+        //                                magnet: true
+        //                            }
+        //                        }
+        //                    },
+        //                    ''dest'': {
+        //                        position: ''left'',
+        //                        attrs: {
+        //                            ''.joint-port-body'' : {
+        //                                fill: ''green'',
+        //                                magnet: true
+        //                            }
+        //                        }
+        //                    }
         //                },
-                        image: {
-                            ''xlink:href'': this.c8o.endpoint + ''/.bin?__sequence=GetIcon&className='' + className + ''&large=true&__nolog=true'',
-                            width: 32,
-                            height: 32,
-                            ref: ''rect'',
-                            refY: ''0.27'',
-                            refX: ''0.27''
-                        }
-                    },
-                    qname: qname,
-                    className: className,
-                    isStarting: isStarting
-                });
-        	    }
+        //                items: [{
+        //                    group: ''source'',
+        //                    args: {}, // extra arguments for the port layout function, see `layout.Port` section
+        //                },
+        //                {
+        //                    group: ''dest'',
+        //                    args: {}, // extra arguments for the port layout function, see `layout.Port` section
+        //                }]
+        //            },            
+        //            attrs: {
+        //                circle: {
+        //					r: 50,
+        //					cx: 50,
+        //                    fill: hasChildren ? ''#222222'' : ''blue'',
+        //                    strokeDasharray: 2,
+        //                    strokeWidth: 2,
+        //                    stroke: hasChildren ? ''white'' : null 
+        //                },
+        //// 				path: { 
+        ////	                    d: ''M 0 0 a 1 1 0 0 0 10 0 A 1 1 0 0 0 0 0'', 
+        ////	                    fill: ''blue'' 
+        ////	                },
+        //                text: {
+        //                    text: text,
+        //                    fill: ''white'',
+        //                    ref:''rect'',
+        //                    refY: ''.7''
+        //                  },
+        ////                text:
+        ////                {
+        ////                    text: text,
+        ////                    fill: ''white''
+        ////                },
+        //                image: {
+        //                    ''xlink:href'': this.c8o.endpoint + ''/.bin?__sequence=GetIcon&className='' + className + ''&large=true&__nolog=true'',
+        //                    width: 32,
+        //                    height: 32,
+        //                    ref: ''rect'',
+        //                    refY: ''0.27'',
+        //                    refX: ''0.27''
+        //                }
+        //            },
+        //            qname: qname,
+        //            className: className,
+        //            isStarting: isStarting
+        //        });
+        
+        var inscribedImage = new joint.shapes.standard.InscribedImage();
+        inscribedImage.resize(70, 70);
+        inscribedImage.position(position.x, position.y);
+        // inscribedImage.attr(''root/tabindex'', 11);
+        inscribedImage.attr(''root/title'', ''joint.shapes.standard.InscribedImage'');
+        inscribedImage.attr(''label/text'', text);
+        inscribedImage.attr(''label/fill'', ''#fff'');
+        inscribedImage.attr(''root'', { class: ''pulsar'' });
+        inscribedImage.attr(''background/fill'', ''#fe854f'');
+        inscribedImage.attr(''background/fillOpacity'', 0.5);
+        inscribedImage.attr(''border/stroke'', ''#fe854f'');
+        // inscribedImage.attr(''root/style'', '' @keyframes pulse { from { stroke-width: 3px; stroke-opacity: 1; transform-origin: center; transform: scale(0.3); } to { stroke-width: 0; stroke-opacity: 0; transform-origin: center; transform: scale(0.5); } } animation: pulse 2s infinite'');
+        inscribedImage.attr(''image'', {
+        	xlinkHref: this.c8o.endpoint + ''/.bin?__sequence=GetIcon&className='' + className + ''&large=false&__nolog=true'',
+        	''width'': "16",
+        	''height'': "16"
+        	});
+        inscribedImage.prop(''qname'', qname);
+        inscribedImage.prop(''className'', className);
+        console.log(" I AM SHAPE " + JSON.stringify(inscribedImage));
+        //	                    width: 32,
+        //	                    height: 32,
+        //	                    ref: ''rect'',
+        //	                    refY: ''0.27'',
+        //	                    refX: ''0.27''
+        inscribedImage.addTo(this.graph);
+        //joint.shapes.devs.Model = joint.shapes.devs.Model.extend({
+        //
+        //  markup: ''<g class="rotatable"><g class="scalable"><circle class="body"/></g><text class="label"/><g class="inPorts"/><g class="outPorts"/></g>'',
+        //  portMarkup: ''<g class="port port<%= id %>"><rect class="port-body"/><text class="port-label"/></g>'',
+        //
+        //  defaults: joint.util.deepSupplement({
+        //
+        //    type: ''devs.CircleModel'',
+        //    attrs: {
+        //      ''.body'': {
+        //        r: 50,
+        //        cx: 50,
+        //        stroke: ''blue'',
+        //        fill: ''lightblue''
+        //      },
+        //      ''.label'': {
+        //        text: ''Circle Model'',
+        //        ''ref-y'': 0.5,
+        //        ''y-alignment'': ''middle''
+        //      },
+        //      ''.port-body'': {
+        //        width: 10,
+        //        height: 10,
+        //        x: -5,
+        //        stroke: ''gray'',
+        //        fill: ''lightgray'',
+        //        magnet: ''active''
+        //      }
+        //    }
+        //
+        //  }, joint.shapes.devs.Model.prototype.defaults)
+        //});
+        //
+        //
+        //
+        //var circleModel = new joint.shapes.devs.Model({
+        //  position: {
+        //    x: 150,
+        //    y: 100
+        //  },
+        //  size: {
+        //    width: 100,
+        //    height: 100
+        //  },
+        //  inPorts: [''a''],
+        //  outPorts: [''b'']
+        //});
+        //circleModel.addTo(this.graph)
+        //	    }
         
         			if(isHidden)
         				rect.attr(''./display'', ''none'')
                 
-                rect.addTo(this.graph);
-                return rect
+        //        rect.addTo(this.graph);
+                return inscribedImage
         	}
         	
         	getAndDisplayStepChilds(cellView: joint.dia.CellView) {
@@ -710,48 +814,272 @@ scriptContent:
         	}
         	
         	// nodeObject : GetGraph.array
-        	walkChildren(nodeObject: any) {
-        		let x = 30;
-        		let y = 30;
-        			
-        		let previous = null;
+        	walkChildren(nodeObject: any, previous = null) {
+        //		let x = 30;
+        //		let y = 30;
+        		let isHidden = false
+        		let tmpThenStep;
+        		let tmpElseStep;
+        		// let previous = null;
+        		
         		for (var i=0; i < nodeObject.length; i++) {
         			let stepClassName = nodeObject[i].dbo.className.substring(this.strStep.length)
-        	        // let parentClassName = previous.model.attributes[''className''].substring(this.strStep.length)
+        			console.log("I AM PREVIOUS " + JSON.stringify(previous));
+        //			if(stepClassName == "ThenStep" || stepClassName == "ElseStep")
+        //				isHidden = true
         			
-        //			console.log("i am parent className + i "+ parentClassName + " " + i);
+        //			console.log(JSON.stringify(previous));
+        //			console.log("previous i" + i)
+        //			if (this.checkElementOnPoint(x, y + this.verticalSpace * i)) {
+        //	        	let elementToMove = this.graph.findModelsFromPoint({ x: x, y: y + this.verticalSpace * i})
+        //	            
+        //				x = elementToMove[0].attributes.position.x + this.horizontalSpace;
+        //				y = elementToMove[0].attributes.position.y;
+        //
+        //	        }
+        
+        //			if(nodeObject[i].dbo.isStarting) {
+        //				y = y + this.verticalSpace;
+        //				let step = this.addStep({
+        ////                        x: cellView.getBBox().topLeft().x + x,
+        ////                        y: cellView.getBBox().topLeft().y      
+        //	                      x: x,
+        //	                      y: y
+        //                    }, 
+        //                    {
+        //                        width: 70,
+        //                        height: 70              
+        //                    }, 
+        //                    nodeObject[i].dbo.displayName,
+        //                    false,
+        //                    nodeObject[i].dbo.qname,
+        //                    nodeObject[i].dbo.className,
+        //                    nodeObject[i].dbo.isStarting,
+        //					false
+        //                )
+        //
+        ////				previous = step;
+        //				
+        //			}
+        
+        			
+        			if(previous != null)  { 
+        	        	let parentClassName = previous.attributes[''className''].substring(this.strStep.length)
+        				
+        				var x = previous.attributes.position.x
+        				var y = previous.attributes.position.y
+        				
+        				if (this.checkElementOnPoint(x, y)) {
+        		        	let elementToMove = this.graph.findModelsFromPoint({ x: x, y: y})
+        		            
+        				//	console.log("i am element to move " + JSON.stringify(elementToMove[0]))
+        					x = elementToMove[0].attributes.position.x + this.horizontalSpace;
+        					y = elementToMove[0].attributes.position.y;
+        
+        	        	} 
+        				if (this.checkElementOnPoint(x, y + this.verticalSpace)) {
+        		        	let elementToMove = this.graph.findModelsFromPoint({ x: x, y: y + this.verticalSpace})
+        		            elementToMove[0].set(''position'', {x: elementToMove[0].attributes.position.x, y: elementToMove[0].attributes.position.y + this.verticalSpace})
+        				//	console.log("i am element to move " + JSON.stringify(elementToMove[0]))
+        //					x = elementToMove[0].attributes.position.x + this.horizontalSpace;
+        //					y = elementToMove[0].attributes.position.y;
+        
+        	        	}
+        
+        				if(parentClassName == "IfThenElseStep" && stepClassName == "ThenStep") {
+        		             y = previous.attributes.position.y
+        		             x = previous.attributes.position.x + this.horizontalSpace
+        //
+        //					var firstChild = nodeObject[i].dbo.children[0];
+        //					let step = this.addStep({
+        //		//                        x: cellView.getBBox().topLeft().x + x,
+        //		//                        y: cellView.getBBox().topLeft().y      
+        //			                      x: x,
+        //			                      y: y
+        //		                    }, 
+        //		                    {
+        //		                        width: 70,
+        //		                        height: 70              
+        //		                    }, 
+        //		                    firstChild.dbo.displayName,
+        //		                    false,
+        //		                   	firstChild.dbo.qname,
+        //		                    firstChild.dbo.className,
+        //		                    firstChild.dbo.isStarting,
+        //							isHidden
+        //		                )
+        //
+        //					this.addLink(previous, step, this.isHorizontal, "Then")
+        //					previous = step
+        //					 if (this.checkElementOnPoint(x, y)) {
+        //			        	let elementToMove = this.graph.findModelsFromPoint({ x: x, y: y})
+        //						elementToMove[0].set(''position'', {x: x + this.horizontalSpace, y: y})
+        //			            let successors = this.graph.getSuccessors(elementToMove[0]);
+        //			            if(successors.length > 0) {
+        //							this.setSuccessorsPosition(previous, successors);
+        //						}
+        					//	console.log("i am element to move " + JSON.stringify(elementToMove[0]))
+        //						x = elementToMove[0].attributes.position.x + this.horizontalSpace;
+        //						y = elementToMove[0].attributes.position.y;
+        	
+        //		        	}
+        
+        		                    
+        		        // positioning Else box
+        		        } else if (parentClassName == "IfThenElseStep" && stepClassName == "ElseStep") {
+        		            y = previous.attributes.position.y + this.verticalSpace
+        		            x = previous.attributes.position.x
+        		       // positioning Then''s or Else''s children compared to their parent 
+        		       } else {
+        			
+        			   }
+        
+        //			if (this.checkElementOnPoint(x, y)) {
+        //				let elementToMove = this.graph.findModelsFromPoint({ x: x, y: y})
+        //				elementToMove[0].set(''position'', {x: elementToMove[0].attributes.position.x + this.horizontalSpace, y: y})
+        //				let successors = this.graph.getSuccessors(elementToMove[0]);
+        //			    if(successors.length > 0) {
+        //					this.setSuccessorsPosition(previous, successors);
+        //				}
+        //					//	console.log("i am element to move " + JSON.stringify(elementToMove[0]))
+        ////						x = elementToMove[0].attributes.position.x + this.horizontalSpace;
+        ////						y = elementToMove[0].attributes.position.y;
+        //	
+        //		     }
+        
+        // si pstepClassName == "ThenStep"
+        // 	alors
+        // 		firstChild = nodeObject[i].dbo.children[0]
+        //		x = previous.attributes.position.x + horizontalSpace
+        //		y = previous.attributes.position.y
+        // si stepClassName == "ElseStep"
+        //	alors 
+        // 	 	firstChild = nodeObject[i].dbo.children[0]
+        // 		x = previous.attributes.position.x
+        // 		y = previous.attributes.position.y + verticalSpace
+        //
+        //
+        // 
+        
+        				if(parentClassName == "IfThenElseStep" && stepClassName == "ElseStep") {
+        					y = previous.attributes.position.y + this.verticalSpace
+        		            x = previous.attributes.position.x
+        					var firstChild = nodeObject[i].dbo.children[0];
+        					let step = this.addStep({
+        		//                        x: cellView.getBBox().topLeft().x + x,
+        		//                        y: cellView.getBBox().topLeft().y      
+        			                      x: x,
+        			                      y: y
+        		                    }, 
+        		                    {
+        		                        width: 70,
+        		                        height: 70              
+        		                    }, 
+        		                    firstChild.dbo.displayName,
+        		                    false,
+        		                   	firstChild.dbo.qname,
+        		                    firstChild.dbo.className,
+        		                    firstChild.dbo.isStarting,
+        							isHidden
+        		                )
+        
+        					this.addLink(previous, step, this.isHorizontal, "Else")
+        					
+        //					if(this.graph.findModelsFromPoint({x: x + this.horizontalSpace, y: y})) {
+        //							// getting the element to move
+        //							let elementToMove = this.graph.findModelsFromPoint({ x: x + this.horizontalSpace, y: y})
+        //							console.log("i am elementToMove x before setting" + elementToMove[0].attributes.position.x)
+        //							if(elementToMove.length > 0)
+        //								elementToMove[0].set(''position'', {x: elementToMove[0].attributes.position.x  + (this.horizontalSpace * 2), y: y})
+        //							
+        //							// console.log("i am step x " + step.attributes.position.x)
+        //							console.log("i am elementToMove x after setting" + elementToMove[0].attributes.position.x)					
+        //					}
+        					console.log("i am typeof " + typeof step)
+        //					step.highlight(null/* defaults to cellView.el */, {
+        //					    highlighter: {
+        //					        name: ''addClass'',
+        //					        options: {
+        //					            className: ''pulsar''
+        //					        }
+        //					    }
+        //					});
+        					
+        					previous = step
+        
+        				}
+        				if(stepClassName != "ThenStep" && stepClassName != "ElseStep") {
+        					let step = this.addStep({
+        		//                        x: cellView.getBBox().topLeft().x + x,
+        		//                        y: cellView.getBBox().topLeft().y      
+        			                      x: x,
+        			                      y: y
+        		                    }, 
+        		                    {
+        		                        width: 70,
+        		                        height: 70              
+        		                    }, 
+        		                    nodeObject[i].dbo.displayName,
+        		                    false,
+        		                    nodeObject[i].dbo.qname,
+        		                    nodeObject[i].dbo.className,
+        		                    nodeObject[i].dbo.isStarting,
+        							isHidden
+        		                )
+        
+        					if (previous != null && stepClassName == "ThenStep") 
+                            	this.addLink(previous, step, this.isHorizontal, stepClassName)
+        					if (previous != null && stepClassName == "ElseStep") 
+                            	this.addLink(previous, step, this.isHorizontal, stepClassName)
+        					if(previous != null) {
+        						if(this.graph.findModelsFromPoint({ x: x - this.horizontalSpace, y: y}).length > 0) {
+        							let element = this.graph.findModelsFromPoint({ x: x - this.horizontalSpace, y: y})
+        							if(element[0].attributes.className.substring(this.strStep.length) == "IfThenElseStep") {
+        								this.addLink(previous, step, this.isHorizontal, "Then")
+        							} else {
+        								this.addLink(previous, step, this.isHorizontal, "")
+        							}
+        						} else {
+        							this.addLink(previous, step, this.isHorizontal, "")
+        						}
+        						//this.addLink(previous, step, this.isHorizontal, "")
+        					}
+        					
+        //					if(previous != null && parentClassName == "ThenStep") {
+        //						this.addLink(previous, step, this.isHorizontal, "Then")
+        //					}
+        	//	
+        					previous = step;
+        			}
+        				if(nodeObject[i].dbo.children != undefined && nodeObject[i].dbo.children.length > 0) {
+        					this.walkChildren(nodeObject[i].dbo.children, previous);
+        				} // endif
+        			} 
+        			
         			
         //			if(previous != null && stepClassName == "ThenStep") {
         //		    	y = previous.model.attributes.position.y + this.verticalSpace
         //	            x = previous.model.attributes.position.x + this.horizontalSpace
         //		    }
-        
-        			if (this.checkElementOnPoint(x, y + this.verticalSpace * i)) {
-        	        	let elementToMove = this.graph.findModelsFromPoint({ x: x, y: y + this.verticalSpace * i})
-        	            
-        				x = elementToMove[0].attributes.position.x + this.horizontalSpace;
-        				y = elementToMove[0].attributes.position.y;
-        
-        	        }
-        			let step = this.addStep({
-        //                        x: cellView.getBBox().topLeft().x + x,
-        //                        y: cellView.getBBox().topLeft().y      
-        	                      x: x,
-        	                      y: y + this.verticalSpace * i
-                            }, 
-                            {
-                                width: 70,
-                                height: 70              
-                            }, 
-                            nodeObject[i].dbo.displayName,
-                            false,
-                            nodeObject[i].dbo.qname,
-                            nodeObject[i].dbo.className,
-                            false,
-        					false
-                        )
-        
-        			previous = step;
+        //			let step = this.addStep({
+        ////                        x: cellView.getBBox().topLeft().x + x,
+        ////                        y: cellView.getBBox().topLeft().y      
+        //	                      x: x,
+        //	                      y: y
+        //                    }, 
+        //                    {
+        //                        width: 70,
+        //                        height: 70              
+        //                    }, 
+        //                    nodeObject[i].dbo.displayName,
+        //                    false,
+        //                    nodeObject[i].dbo.qname,
+        //                    nodeObject[i].dbo.className,
+        //                    nodeObject[i].dbo.isStarting,
+        //					false
+        //                )
+        //
+        //			previous = step;
         
         //			console.log("walkChildren displayName " + nodeObject[i].displayName)
         //			console.log("walkChildren qname " + nodeObject[i].qname)
@@ -759,10 +1087,11 @@ scriptContent:
         //			
         //			console.log("walkChildren children " + JSON.stringify(nodeObject[i].children))
         			
-        			if(nodeObject[i].dbo.children != undefined && nodeObject[i].dbo.children.length > 0) {
-        				this.walkChildren(nodeObject[i].dbo.children);
-        			}
+        //			if(nodeObject[i].dbo.children != undefined && nodeObject[i].dbo.children.length > 0) {
+        //				this.walkChildren(nodeObject[i].dbo.children, previous);
+        //			}
         		}
+        		
         	}
         	
         	ngAfterViewInit() {
@@ -776,7 +1105,7 @@ scriptContent:
                     width: ''100%'',
                     height: ''100%'',
                     model: this.graph,
-                    gridSize: 1,
+                    gridSize: 10,
                         defaultLink: new joint.dia.Link({
                         attrs: {
                             ''.connection'' : {
@@ -785,6 +1114,12 @@ scriptContent:
                             }
                         }                
                     }),
+        			drawGrid: {
+        				name: ''doubleMesh'',
+        				args: {
+        					color: ''white''
+        				}
+        			},
                     defaultRouter: {
                         name: ''manhattan''
                     },
@@ -799,13 +1134,45 @@ scriptContent:
                             return true
                     }
                 });
-        	    
+        
+        	// minimap paper view
+        		let miniMap = document.getElementById(''paper-multiple-papers-small'')
+        	    var paperMiniMap = new joint.dia.Paper({
+        	        el: miniMap,
+        	        model: this.graph,
+        	        width: ''100%'',
+        	        height: ''100%'',
+        	        gridSize: 5,
+        	        interactive: true
+        	    });
+        	    paperMiniMap.scale(0.33);
+        //		miniMap.addEventListener(''mousemove'', e => {
+        //			// console.log("i am minimap event " + JSON.stringify(e));
+        //			if (this.dragStartPosition != null) {
+        //				console.log("i am minimap dragPosition " + JSON.stringify(this.dragStartPosition));
+        //            paperSmall.translate(
+        //                e.offsetX - this.dragStartPositionMiniMap.x, 
+        //                e.offsetY - this.dragStartPositionMiniMap.y);
+        //	    }
+        //		})
+        //paperSmall.$el.css(''pointer-events'', ''none'');
+        		    
                 this.paper.on(''blank:pointerdown'', (event, x, y) => {
                     this.c8o.log.debug("Mouse Start")
                     this.dragStartPosition = { x: x * this.scale / 10, y: y * this.scale / 10};
                 });
                 
                 this.paper.on(''cell:pointerup blank:pointerup'', (cellView, x, y) => {
+                    this.c8o.log.debug("Mouse Up")
+                    this.dragStartPosition = null
+                });
+        
+        		this.paperMiniMap.on(''blank:pointerdown'', (event, x, y) => {
+                    this.c8o.log.debug("Mouse Start")
+                    this.dragStartPositionMiniMap = { x: x * this.scale / 10, y: y * this.scale / 10};
+                });
+                
+                this.paperMiniMap.on(''cell:pointerup blank:pointerup'', (cellView, x, y) => {
                     this.c8o.log.debug("Mouse Up")
                     this.dragStartPosition = null
                 });
@@ -880,31 +1247,35 @@ title: Title for FlowViewer
                           }
               		    
                   		this.graph.clear();
-              			console.log(vars.flow);
-              //    		let previous = null
-              //
-              //    		for (var i=0; i < vars.flow.length ; i++) {
-              //    		    let step = this.addStep({
-              //        		        x: 30,
-              //        		        y: 30 + this.verticalSpace * i		        
-              //        		    }, 
-              //        		    {
-              //                        width: 70,
-              //                        height: 70              
-              //                    }, 
-              //                    vars.flow[i].displayName,
-              //                    vars.flow[i].hasChildren,
-              //                    vars.flow[i].qname,
-              //                    vars.flow[i].className,
-              //					true,
-              //					false
-              //    		    )
-              //    		    
-              //    		    if (previous != null)
-              //    		        this.addLink(previous, step, this.isHorizontal, vars.flow[i].className)
-              //    		    previous = step
-              //    		}
-              			this.walkChildren(vars.flow)
+              // 			console.log("I AM VARS FLOW" + JSON.stringify(vars.flow));
+                  		let previous = null
+              
+                  		for (var i=0; i < vars.flow.length ; i++) {
+                  		    let step = this.addStep({
+                      		        x: 30,
+                      		        y: 30 + this.verticalSpace * i		        
+                      		    }, 
+                      		    {
+                                      width: 70,
+                                      height: 70              
+                                  }, 
+                                  vars.flow[i].dbo.displayName,
+                                  vars.flow[i].dbo.hasChildren,
+                                  vars.flow[i].dbo.qname,
+                                  vars.flow[i].dbo.className,
+              					true,
+              					false
+                  		    )
+                  		    
+                  		    if (previous != null)
+                  		        this.addLink(previous, step, this.isHorizontal, vars.flow[i].dbo.className)
+                  		    previous = step
+              				
+              				if(vars.flow[i].dbo.children != undefined && vars.flow[i].dbo.children.length > 0) {
+              					this.walkChildren(vars.flow[i].dbo.children, previous)
+              				}
+                  		}
+              //			this.walkChildren(vars.flow, null)
                   		resolve();
               '
       ↓flow [ngx.components.UIControlVariable-1588693303067]: 
@@ -925,18 +1296,18 @@ title: Title for FlowViewer
           - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
           - MobileSmartSourceType: plain:100
 ↓Grid [ngx.components.UIDynamicElement-1588228737881]: 
-  beanData: '{"ionBean":"Grid","Height":"plain:height:100%"}'
+  beanData: '{"ionBean":"Grid","Height":"plain:"}'
   tagName: ion-grid
   ↓GridRow [ngx.components.UIDynamicElement-1588228741415]: 
     beanData: |
       '{
        "ionBean": "GridRow",
        "Width": "plain:100%",
-       "Height": "plain:400px"
+       "Height": "plain:300px"
       }'
     tagName: ion-row
     ↓GridCol [ngx.components.UIDynamicElement-1588228746957]: 
-      beanData: '{"ionBean":"GridCol"}'
+      beanData: '{"ionBean":"GridCol","SizeXl":"plain:12"}'
       tagName: ion-col
       ↓Div [ngx.components.UIDynamicElement-1588137806849]: 
         beanData: '{"ionBean":"DivTag"}'
@@ -948,8 +1319,26 @@ title: Title for FlowViewer
             - xmlizable: 
               - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
               - MobileSmartSourceType: plain:onMouseMove($event)
+    ↓GridCol1 [ngx.components.UIDynamicElement-1600682513448]: 
+      beanData: '{"ionBean":"GridCol","SizeXl":"plain:2"}'
+      isEnabled: false
+      tagName: ion-col
+      ↓Tag [ngx.components.UIElement-1600681837711]: 
+        tagName: div
+        ↓Attr [ngx.components.UIAttribute-1600681920905]: 
+          attrName: id
+          attrValue: 
+            - xmlizable: 
+              - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+              - MobileSmartSourceType: plain:paper-multiple-papers-small
+        ↓Attr1 [ngx.components.UIAttribute-1600682197627]: 
+          attrName: (document:mousemove)
+          attrValue: 
+            - xmlizable: 
+              - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+              - MobileSmartSourceType: plain:onMouseMove($event)
   ↓GridRow1 [ngx.components.UIDynamicElement-1588228813856]: 
-    beanData: '{"ionBean":"GridRow","Height":"plain:height:50px"}'
+    beanData: '{"ionBean":"GridRow","Height":"plain:100px"}'
     tagName: ion-row
     ↓GridCol [ngx.components.UIDynamicElement-1588228819248]: 
       beanData: '{"ionBean":"GridCol"}'
@@ -962,6 +1351,7 @@ title: Title for FlowViewer
            "Max": "plain:10",
            "Snaps": "plain:true"
           }'
+        isEnabled: false
         tagName: ion-range
         ↓Attr [ngx.components.UIAttribute-1588159106785]: 
           attrName: '[(ngModel)]'
@@ -976,6 +1366,7 @@ title: Title for FlowViewer
               - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
               - MobileSmartSourceType: script:onGridSizeChanged()
       ↓Text [ngx.components.UIText-1594042417780]: 
+        isEnabled: false
         textValue: 
           - xmlizable: 
             - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
@@ -987,6 +1378,7 @@ title: Title for FlowViewer
            "ControlName": "plain:name1594041057759",
            "DoubleBinding": "script:isHorizontal"
           }'
+        isEnabled: false
         tagName: ion-toggle
       ↓Directive [ngx.components.UIControlDirective-1594041985238]: 
         directiveExpression: this.isHorizontal
@@ -995,3 +1387,17 @@ title: Title for FlowViewer
         ↓Button [ngx.components.UIDynamicElement-1594042311511]: 
           beanData: '{"ionBean":"Button"}'
           tagName: ion-button
+      ↓Tag [ngx.components.UIElement-1600690556904]: 
+        tagName: div
+        ↓Attr [ngx.components.UIAttribute-1600690556907]: 
+          attrName: id
+          attrValue: 
+            - xmlizable: 
+              - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+              - MobileSmartSourceType: plain:paper-multiple-papers-small
+        ↓Attr1 [ngx.components.UIAttribute-1600690556910]: 
+          attrName: (document:mousemove)
+          attrValue: 
+            - xmlizable: 
+              - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+              - MobileSmartSourceType: plain:onMouseMoveMiniMap($event)

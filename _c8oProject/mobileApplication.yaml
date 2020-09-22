@@ -759,7 +759,78 @@ tplProjectName: C8oStudio
       - ↑classname: com.twinsoft.convertigo.beans.common.FormatedContent
       - com.twinsoft.convertigo.beans.common.FormatedContent: 
         →: |
-          '/*! JointJS v3.1.1 (2019-10-28) - JavaScript diagramming library
+          '//svg g g g ellipse[fill="none"] {
+          //  fill: white !important;
+          //  fill-opacity: 0 !important;
+          //  transform-origin: 50% 50% !important;
+          //  animation-duration: 2s !important;
+          //  animation-name: pulse !important;
+          //  animation-iteration-count: infinite !important;
+          //}
+          //
+          //@keyframes pulse {
+          //  from {
+          //    stroke-width: 3px;
+          //    stroke-opacity: 1;
+          //    transform: scale(0.3);
+          //  }
+          //  to {
+          //    stroke-width: 0;
+          //    stroke-opacity: 0;
+          //    transform: scale(2);
+          //  }
+          //}
+          
+          //.pulsar {
+          //  position: relative;
+          //  &:before,
+          //  &:after {
+          //    content: "";
+          //    @include circle(50px);
+          //    background-color: tomato;
+          //    position: absolute;
+          //    top: 0;
+          //    right: 0;
+          //    bottom: 0;
+          //    left: 0;
+          //    margin: auto;
+          //    transform: scale(0.5);
+          //    transform-origin: center center;
+          //    animation: pulse-me 3s linear infinite;
+          //  }
+          //  &:after {
+          //    animation-delay: 2s;
+          //  }
+          //}
+          //
+          //@keyframes pulse-me {
+          //  0% {
+          //    transform: scale(0.5);
+          //    opacity: 0;
+          //  }
+          //  50% {
+          //    opacity: 0.1;
+          //  }
+          //  70% {
+          //    opacity: 0.09;
+          //  }
+          //  100% {
+          //    transform: scale(5);
+          //    opacity: 0;
+          //  }
+          //}
+          
+          
+          //@keyframes pulse {
+          //  0% {
+          //    background-color: #001F3F;
+          //  }
+          //  100% {
+          //    background-color: #FF4136;
+          //  }
+          //}
+          
+          /*! JointJS v3.1.1 (2019-10-28) - JavaScript diagramming library
           
           
           This Source Code Form is subject to the terms of the Mozilla Public
