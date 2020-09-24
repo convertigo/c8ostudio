@@ -8,44 +8,74 @@ scriptContent:
         import * as backbone    from ''backbone'';
         import * as joint       from ''jointjs'';
         import { ElementRef }   from ''@angular/core'';
+        import * as $ from "jquery";
         /*End_c8o_PageImport*/
         /*Begin_c8o_PageDeclaration*/
         	graph = new joint.dia.Graph;
         	paper : joint.dia.Paper
         	paperMiniMap : joint.dia.Paper
         	scale : number = 10
+        	miniMapScale = 0.2
         	dragStartPosition = null;
         	dragStartPositionMiniMap = null;
         	isHorizontal = true;
         	verticalSpace = 140
         	horizontalSpace = 140
+        	minimapNavigatorPosition = {
+          		minX: 0,
+          		minY: 0,
+          		maxX: 500,
+          		maxY: 250,
+        	};
         	
         	strStep = ''com.twinsoft.convertigo.beans.steps.''
         	cdinalStepsList = [''IfThenElseStep'', ''ThenStep'', ''ElseStep'']
         	/*End_c8o_PageDeclaration*/
-        /*Begin_c8o_PageConstructor*/
+        /*Begin_c8o_PageConstructor*/		
+        		this.local.maxX = 0
+        		this.local.maxY = 0
         		/*End_c8o_PageConstructor*/
         /*Begin_c8o_PageFunction*/
         	onGridSizeChanged() {
         	    this.paper.scale(this.scale / 10)
         	}
+        	
+        	setX(x){
+        		if(this.local.maxX < x){
+        			this.local.maxX = x;
+        		}
+        	}
+        	setY(y){
+        		if(this.local.maxY < y){
+        			this.local.maxY = y;
+        		}
+        	}
         
         	onMouseMove(event) {
         		console.log("I AM EVENT " + JSON.stringify(event));
-        	    if (this.dragStartPosition != null) {
-                    // this.c8o.log.debug("Mouse Move : " + JSON.stringify(this.dragStartPosition))
-                    this.paper.translate(
-                        event.offsetX - this.dragStartPosition.x, 
-                        event.offsetY - this.dragStartPosition.y);
-        	    }
+        		 if (this.dragStartPosition != null) {
+        			// this.c8o.log.debug("Mouse Move : " + JSON.stringify(this.dragStartPosition))
+        		    this.paper.translate(
+        		    	event.offsetX - this.dragStartPosition.x * this.scale / 10, 
+        		        event.offsetY - this.dragStartPosition.y * this.scale / 10);
+        			this.paperMiniMap.translate(
+        				event.offsetX - this.dragStartPosition.x,
+        				event.offsetY - this.dragStartPosition.y
+        			)
+        		}
             }
         
         	onMouseMoveMiniMap(event) {
         		if(this.dragStartPositionMiniMap != null) {
+        			console.log("EVENT x: "+ event.offsetX + " y: "+event.offsetY);
+        			console.log(JSON.stringify(this.dragStartPositionMiniMap))
         			this.paperMiniMap.translate(
-        				event.offsetX - this.dragStartPositionMiniMap.x,
-        				event.offsetY - this.dragStartPositionMiniMap.y
+        				event.offsetX - this.dragStartPositionMiniMap.x * this.miniMapScale,
+        				event.offsetY - this.dragStartPositionMiniMap.y * this.miniMapScale
         			);
+        			this.paper.translate(
+                        event.offsetX - this.dragStartPositionMiniMap.x, 
+                        event.offsetY - this.dragStartPositionMiniMap.y);
         		}
         	}
         
@@ -234,18 +264,20 @@ scriptContent:
         // inscribedImage.attr(''root/style'', '' @keyframes pulse { from { stroke-width: 3px; stroke-opacity: 1; transform-origin: center; transform: scale(0.3); } to { stroke-width: 0; stroke-opacity: 0; transform-origin: center; transform: scale(0.5); } } animation: pulse 2s infinite'');
         inscribedImage.attr(''image'', {
         	xlinkHref: this.c8o.endpoint + ''/.bin?__sequence=GetIcon&className='' + className + ''&large=false&__nolog=true'',
-        	''width'': "16",
-        	''height'': "16"
+        	width: 32,
+        	height: 32
         	});
         inscribedImage.prop(''qname'', qname);
         inscribedImage.prop(''className'', className);
-        console.log(" I AM SHAPE " + JSON.stringify(inscribedImage));
+        //console.log(" I AM SHAPE " + JSON.stringify(inscribedImage));
         //	                    width: 32,
         //	                    height: 32,
         //	                    ref: ''rect'',
         //	                    refY: ''0.27'',
         //	                    refX: ''0.27''
         inscribedImage.addTo(this.graph);
+        this.setX(position.x + 70 + this.horizontalSpace)
+        this.setY(position.y + 70 + this.verticalSpace)
         //joint.shapes.devs.Model = joint.shapes.devs.Model.extend({
         //
         //  markup: ''<g class="rotatable"><g class="scalable"><circle class="body"/></g><text class="label"/><g class="inPorts"/><g class="outPorts"/></g>'',
@@ -824,7 +856,7 @@ scriptContent:
         		
         		for (var i=0; i < nodeObject.length; i++) {
         			let stepClassName = nodeObject[i].dbo.className.substring(this.strStep.length)
-        			console.log("I AM PREVIOUS " + JSON.stringify(previous));
+        	//		console.log("I AM PREVIOUS " + JSON.stringify(previous));
         //			if(stepClassName == "ThenStep" || stepClassName == "ElseStep")
         //				isHidden = true
         			
@@ -869,6 +901,7 @@ scriptContent:
         				var x = previous.attributes.position.x
         				var y = previous.attributes.position.y
         				
+        				
         				if (this.checkElementOnPoint(x, y)) {
         		        	let elementToMove = this.graph.findModelsFromPoint({ x: x, y: y})
         		            
@@ -883,7 +916,7 @@ scriptContent:
         				//	console.log("i am element to move " + JSON.stringify(elementToMove[0]))
         //					x = elementToMove[0].attributes.position.x + this.horizontalSpace;
         //					y = elementToMove[0].attributes.position.y;
-        
+        					
         	        	}
         
         				if(parentClassName == "IfThenElseStep" && stepClassName == "ThenStep") {
@@ -1056,6 +1089,8 @@ scriptContent:
         				} // endif
         			} 
         			
+        //			this.minimapNavigatorPosition.maxX = (this.local.maxX * this.miniMapScale) + 150;
+        //			this.minimapNavigatorPosition.maxY = (this.local.maxY * this.miniMapScale) + 150;
         			
         //			if(previous != null && stepClassName == "ThenStep") {
         //		    	y = previous.model.attributes.position.y + this.verticalSpace
@@ -1092,6 +1127,8 @@ scriptContent:
         //			}
         		}
         		
+        		
+        		
         	}
         	
         	ngAfterViewInit() {
@@ -1102,8 +1139,8 @@ scriptContent:
         	    let element = this.flowID as ElementRef
                 this.paper = new joint.dia.Paper({
                     el: element.nativeElement,
-                    width: ''100%'',
-                    height: ''100%'',
+                    width: ''600px'',
+                    height: ''300px'',
                     model: this.graph,
                     gridSize: 10,
                         defaultLink: new joint.dia.Link({
@@ -1115,7 +1152,7 @@ scriptContent:
                         }                
                     }),
         			drawGrid: {
-        				name: ''doubleMesh'',
+        				name: ''dot'',
         				args: {
         					color: ''white''
         				}
@@ -1141,41 +1178,117 @@ scriptContent:
         	        el: miniMap,
         	        model: this.graph,
         	        width: ''100%'',
-        	        height: ''100%'',
+        	        height: ''300'',
         	        gridSize: 5,
-        	        interactive: true
+        	        interactive: { elementMove: false },
+        //			drawGrid: {
+        //				name: ''mesh'',
+        //				args: {
+        //					color: ''white''
+        //				}
+        //			}
         	    });
-        	    paperMiniMap.scale(0.33);
-        //		miniMap.addEventListener(''mousemove'', e => {
-        //			// console.log("i am minimap event " + JSON.stringify(e));
-        //			if (this.dragStartPosition != null) {
-        //				console.log("i am minimap dragPosition " + JSON.stringify(this.dragStartPosition));
-        //            paperSmall.translate(
-        //                e.offsetX - this.dragStartPositionMiniMap.x, 
-        //                e.offsetY - this.dragStartPositionMiniMap.y);
-        //	    }
-        //		})
+        		this.paperMiniMap = paperMiniMap;
+        	    paperMiniMap.scale(this.miniMapScale);
+        		/*miniMap.addEventListener(''mousemove'', e => {
+        			// console.log("i am minimap event " + JSON.stringify(e));
+        			if (this.dragStartPositionMiniMap != null) {
+        				console.log("i am minimap dragPosition " + JSON.stringify(this.dragStartPositionMiniMap));
+                    paperMiniMap.translate(
+                        e.offsetX - this.dragStartPositionMiniMap.x, 
+                        e.offsetY - this.dragStartPositionMiniMap.y);
+        	    }
+        		})
+        		*/
         //paperSmall.$el.css(''pointer-events'', ''none'');
-        		    
-                this.paper.on(''blank:pointerdown'', (event, x, y) => {
-                    this.c8o.log.debug("Mouse Start")
-                    this.dragStartPosition = { x: x * this.scale / 10, y: y * this.scale / 10};
-                });
-                
-                this.paper.on(''cell:pointerup blank:pointerup'', (cellView, x, y) => {
-                    this.c8o.log.debug("Mouse Up")
-                    this.dragStartPosition = null
-                });
         
-        		this.paperMiniMap.on(''blank:pointerdown'', (event, x, y) => {
-                    this.c8o.log.debug("Mouse Start")
-                    this.dragStartPositionMiniMap = { x: x * this.scale / 10, y: y * this.scale / 10};
-                });
-                
-                this.paperMiniMap.on(''cell:pointerup blank:pointerup'', (cellView, x, y) => {
-                    this.c8o.log.debug("Mouse Up")
-                    this.dragStartPosition = null
-                });
+        		$(''#minimap-navigator'').width(215);
+        		$(''#minimap-navigator'').height(108);
+        		
+        		// Bind container scrolling
+        		$(''#flowContainer'').scroll( e => {
+        		  $(''#minimap-navigator'').css(
+        		    ''top'',
+        		    this.minimapNavigatorPosition.minY + e.target.scrollTop * this.miniMapScale
+        		  );
+        		  $(''#minimap-navigator'').css(
+        		    ''left'',
+        		    this.minimapNavigatorPosition.minX + e.target.scrollLeft * this.miniMapScale
+        		  );
+        		}); 
+        		
+        		// Bind minimap navigator drag
+        		var dragFlag = false;
+        		var x = 0;
+        		var y = 0;
+        		var initialOffset = { x: 0, y: 0 };
+        		$(''#minimap-navigator'').mousedown( e => {
+        		  dragFlag = true;
+        		  x = e.clientX;
+        		  y = e.clientY;
+        		  initialOffset.x = e.target.offsetLeft;
+        		  initialOffset.y = e.target.offsetTop;
+        		 console.log("initialOffsetX : " + initialOffset.x + '' initialOffsetY : '' + initialOffset.y)
+        		});
+        		$(''#minimap-navigator'').mouseup( () => {
+        		  dragFlag = false;
+        		});
+        		$(''#minimap-container'').mouseleave( () =>  {
+        		  dragFlag = false;
+        		});
+        		$(''#minimap-navigator'').mousemove( e => {
+        		  if (dragFlag) {
+        			
+        		    var newX = initialOffset.x + e.clientX - x;
+        		    var newY = initialOffset.y + e.clientY - y;
+        			console.log(''eClientX : '' + e.clientX + '' eClientY : '' + e.clientY)
+        			console.log(''x : '' + x + '' y : '' + y)
+        			console.log("newX : " + newX + '' newY:'' + newY)
+        		    /*if (this.minimapNavigatorPosition.minY > newY) {
+        		      newY = this.minimapNavigatorPosition.minY;
+        		    }
+        		    if (this.minimapNavigatorPosition.minX > newX) {
+        		      newX = this.minimapNavigatorPosition.minX;
+        		    }
+        		    if (this.minimapNavigatorPosition.maxY < newY) {
+        		      newY = this.minimapNavigatorPosition.maxY;
+        		    }
+        		    if (this.minimapNavigatorPosition.maxX < newX) {
+        		      newX = this.minimapNavigatorPosition.maxX;
+        		    }*/
+        		console.log("newX : " + newX + '' newY:'' + newY)
+        		    //$(''#minimap-navigator'').css(''top'', newY);
+        		    //$(''#minimap-navigator'').css(''left'', newX);
+        			// newX / this.miniMapScale
+        			console.log(" i am calcul : " + newX *((this.scale/10) / this.miniMapScale))
+        			$(''#flowContainer'').scrollLeft(newX *((this.scale/10) / this.miniMapScale));
+        		    $(''#flowContainer'').scrollTop(newY *((this.scale/10) / this.miniMapScale));
+        			/*
+        		    $(''#flowContainer'').scrollLeft((newX - this.minimapNavigatorPosition.maxX) / this.miniMapScale);
+        		    $(''#flowContainer'').scrollTop((newY - this.minimapNavigatorPosition.maxY)  / this.miniMapScale);
+        */
+        		  }
+        		});
+           
+        //        this.paper.on(''blank:pointerdown'', (event, x, y) => {
+        //            this.c8o.log.debug("Mouse Start")
+        //            this.dragStartPosition = { x: x * this.scale / 10, y: y * this.scale / 10};
+        //        });
+        //        
+        //        this.paper.on(''cell:pointerup blank:pointerup'', (cellView, x, y) => {
+        //            this.c8o.log.debug("Mouse Up")
+        //            this.dragStartPosition = null
+        //        });
+        //
+        //		this.paperMiniMap.on(''blank:pointerdown'', (event, x, y) => {
+        //            this.c8o.log.debug("Mouse Start")
+        //            this.dragStartPositionMiniMap = { x: x , y: y };
+        //        });
+        //        
+        //        this.paperMiniMap.on(''cell:pointerup blank:pointerup'', (cellView, x, y) => {
+        //            this.c8o.log.debug("Mouse Up")
+        //            this.dragStartPositionMiniMap = null
+        //        });
                 
                 this.paper.on(''cell:pointerclick'',  (cellView) => {
                     this.c8o.log.debug("Step clicked !!!")
@@ -1273,6 +1386,8 @@ title: Title for FlowViewer
               				
               				if(vars.flow[i].dbo.children != undefined && vars.flow[i].dbo.children.length > 0) {
               					this.walkChildren(vars.flow[i].dbo.children, previous)
+              					console.log("I AM SETDIMENSIONS : " + this.local.maxX + '' '' + this.local.maxY)
+              					this.paper.setDimensions(this.local.maxX, this.local.maxY)
               				}
                   		}
               //			this.walkChildren(vars.flow, null)
@@ -1309,16 +1424,76 @@ title: Title for FlowViewer
     ↓GridCol [ngx.components.UIDynamicElement-1588228746957]: 
       beanData: '{"ionBean":"GridCol","SizeXl":"plain:12"}'
       tagName: ion-col
-      ↓Div [ngx.components.UIDynamicElement-1588137806849]: 
+      ↓Div [ngx.components.UIDynamicElement-1600960364621]: 
         beanData: '{"ionBean":"DivTag"}'
-        identifier: flowID
         tagName: div
-        ↓Attr [ngx.components.UIAttribute-1588238054179]: 
-          attrName: (document:mousemove)
-          attrValue: 
+        ↓Tag [ngx.components.UIElement-1600959915099]: 
+          tagName: div
+          ↓Attr1 [ngx.components.UIAttribute-1600935208423]: 
+            attrName: id
+            attrValue: 
+              - xmlizable: 
+                - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+                - MobileSmartSourceType: plain:flowContainer
+          ↓Div [ngx.components.UIDynamicElement-1588137806849]: 
+            beanData: '{"ionBean":"DivTag"}'
+            identifier: flowID
+            tagName: div
+            ↓Attr [ngx.components.UIAttribute-1588238054179]: 
+              attrName: (document:mousemove)
+              attrValue: 
+                - xmlizable: 
+                  - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+                  - MobileSmartSourceType: plain:onMouseMove($event)
+              isEnabled: false
+        ↓Style [ngx.components.UIStyle-1600961212571]: 
+          styleContent: 
             - xmlizable: 
-              - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
-              - MobileSmartSourceType: plain:onMouseMove($event)
+              - ↑classname: com.twinsoft.convertigo.beans.common.FormatedContent
+              - com.twinsoft.convertigo.beans.common.FormatedContent: 
+                →: |
+                  '/**
+                   * Custom properties (sometimes referred to as CSS variables or cascading variables)
+                   * are entities defined by CSS authors that contain specific values to be reused throughout a document.
+                   * They are set using custom property notation, e.g.: --main-color: black;
+                   * and are accessed using the var() function, e.g.: color: var(--main-color);
+                   * You can find below your component''s properties you can customize within the page.
+                   * If you''d like to make some customizations for whole app, please see your app Style & Theme components.
+                   * For more informations see https://ionicframework.com/docs/theming.
+                  **/
+                  //--ion-grid-column-padding	//Padding for the Column
+                  //--ion-grid-column-padding-lg	//Padding for the Column on lg screens and up
+                  //--ion-grid-column-padding-md	//Padding for the Column on md screens and up
+                  //--ion-grid-column-padding-sm	//Padding for the Column on sm screens and up
+                  //--ion-grid-column-padding-xl	//Padding for the Column on xl screens and up
+                  //--ion-grid-column-padding-xs	//Padding for the Column on xs screens and up
+                  //--ion-grid-columns	//The number of total Columns in the Grid
+                  max-height:300px !important;
+                  '
+      ↓Style [ngx.components.UIStyle-1600961167941]: 
+        styleContent: 
+          - xmlizable: 
+            - ↑classname: com.twinsoft.convertigo.beans.common.FormatedContent
+            - com.twinsoft.convertigo.beans.common.FormatedContent: 
+              →: |
+                '/**
+                 * Custom properties (sometimes referred to as CSS variables or cascading variables)
+                 * are entities defined by CSS authors that contain specific values to be reused throughout a document.
+                 * They are set using custom property notation, e.g.: --main-color: black;
+                 * and are accessed using the var() function, e.g.: color: var(--main-color);
+                 * You can find below your component''s properties you can customize within the page.
+                 * If you''d like to make some customizations for whole app, please see your app Style & Theme components.
+                 * For more informations see https://ionicframework.com/docs/theming.
+                **/
+                //--ion-grid-column-padding	//Padding for the Column
+                //--ion-grid-column-padding-lg	//Padding for the Column on lg screens and up
+                //--ion-grid-column-padding-md	//Padding for the Column on md screens and up
+                //--ion-grid-column-padding-sm	//Padding for the Column on sm screens and up
+                //--ion-grid-column-padding-xl	//Padding for the Column on xl screens and up
+                //--ion-grid-column-padding-xs	//Padding for the Column on xs screens and up
+                //--ion-grid-columns	//The number of total Columns in the Grid
+                max-height:300px !important;
+                '
     ↓GridCol1 [ngx.components.UIDynamicElement-1600682513448]: 
       beanData: '{"ionBean":"GridCol","SizeXl":"plain:2"}'
       isEnabled: false
@@ -1338,7 +1513,7 @@ title: Title for FlowViewer
               - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
               - MobileSmartSourceType: plain:onMouseMove($event)
   ↓GridRow1 [ngx.components.UIDynamicElement-1588228813856]: 
-    beanData: '{"ionBean":"GridRow","Height":"plain:100px"}'
+    beanData: '{"ionBean":"GridRow","Height":"plain:350"}'
     tagName: ion-row
     ↓GridCol [ngx.components.UIDynamicElement-1588228819248]: 
       beanData: '{"ionBean":"GridCol"}'
@@ -1401,3 +1576,18 @@ title: Title for FlowViewer
             - xmlizable: 
               - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
               - MobileSmartSourceType: plain:onMouseMoveMiniMap($event)
+          isEnabled: false
+      ↓Tag1 [ngx.components.UIElement-1600877872727]: 
+        tagName: div
+        ↓Attr [ngx.components.UIAttribute-1600877917499]: 
+          attrName: id
+          attrValue: 
+            - xmlizable: 
+              - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+              - MobileSmartSourceType: plain:minimap-navigator
+      ↓Attr [ngx.components.UIAttribute-1600877980416]: 
+        attrName: id
+        attrValue: 
+          - xmlizable: 
+            - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+            - MobileSmartSourceType: plain:minimap-container
