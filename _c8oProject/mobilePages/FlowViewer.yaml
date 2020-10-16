@@ -19,8 +19,8 @@ scriptContent:
         	dragStartPosition = null;
         	dragStartPositionMiniMap = null;
         	isHorizontal = true;
-        	verticalSpace = 140
-        	horizontalSpace = 140
+        	verticalSpace = 170
+        	horizontalSpace = 170
         	minimapNavigatorPosition = {
           		minX: 0,
           		minY: 0,
@@ -80,39 +80,86 @@ scriptContent:
         	}
         
         	addLink(source, dest, isHorizontal, label) {
-        	    var link = new joint.shapes.standard.Link();
-                link.source(source, {
-                    anchor: {
-                        name: (isHorizontal) ? ''center'' : ''bottom''
-                    }
-                })
-                
-                link.target(dest, {
-                    anchor: {
-                        name: (isHorizontal) ? ''center'' : ''top''
-                    }
-                })
-        
-        		if(isHorizontal) {
-        			link.appendLabel({
+        		
+        	var link = new joint.shapes.standard.ShadowLink({
+        	    source: source,
+        	    target: dest,
+        //	    vertices: [{ x: 150, y: 350 }, { x: 300, y: 280 }],
+        //	    smooth: true,
+        	    markup: [{
+        	        tagName: ''path'',
+        	        selector: ''shadow'',
+        	        attributes: {
+        	            ''fill'': ''none''
+        	        }
+        	    }, {
+        	        tagName: ''path'',
+        	        selector: ''line'',
+        	        attributes: {
+        	            ''fill'': ''none''
+        	        }
+        	    }, {
+        	        tagName: ''text'',
+        	        selector: ''label''
+        	    }],
+        	    attrs: {
+        	        line: {
+        	            stroke: ''#3c4260''
+        	        }
+        		},
+        //	    label: {
+        //	      textPath: {
+        //	      	selector: ''line'',
+        //	        startOffset: ''50%''
+        //	      },
+        //	      textAnchor: ''middle'',
+        //	      textVerticalAnchor: ''middle'',
+        //	      text: '''',
+        //	      fill: ''#f6f6f6'',
+        //	      fontSize: 15,
+        //	      fontWeight: ''bold'',
+        //	      fontFamily: ''fantasy''
+        //	    }
+        	});
+        	link.appendLabel({
         				attrs : {
         					text: {
         						text: label
         					}
         				}
         			})
-        		}
-                
-                link.attr(''line/stroke'', ''white'');
-                link.connector(''jumpover'', { size: 10 });	
-                link.addTo(this.graph);
+        	link.addTo(this.graph)
+        //	    var link = new joint.shapes.standard.Link();
+        //        link.source(source, {
+        //            anchor: {
+        //                name: (isHorizontal) ? ''center'' : ''bottom''
+        //            }
+        //        })
+        //        
+        //        link.target(dest, {
+        //            anchor: {
+        //                name: (isHorizontal) ? ''center'' : ''top''
+        //            }
+        //        })
+        //
+        //		if(isHorizontal) {
+        //			link.appendLabel({
+        //				attrs : {
+        //					text: {
+        //						text: label
+        //					}
+        //				}
+        //			})
+        //		}
+        //        
+        //        link.attr(''line/stroke'', ''white'');
+        //        link.connector(''jumpover'', { size: 10 });	
+        //        link.addTo(this.graph);
         	}
         	
         	addStep(position, size, text:string, hasChildren:boolean, qname: string, className: string, isStarting: boolean, isHidden: boolean) {
-        	    
-        	    let rect;
-        	    
-        	    // custom diamond shape for logical nodes 
+        	   
+        let rect; // custom diamond shape for logical nodes 
         //	    if(className.includes("If")) {
         //	        rect = new joint.shapes.basic.Path({
         //				markup: ''<path /><image /><text />'',
@@ -250,34 +297,54 @@ scriptContent:
         //            isStarting: isStarting
         //        });
         
-        var inscribedImage = new joint.shapes.standard.InscribedImage();
-        inscribedImage.resize(70, 70);
-        inscribedImage.position(position.x, position.y);
-        // inscribedImage.attr(''root/tabindex'', 11);
-        inscribedImage.attr(''root/title'', ''joint.shapes.standard.InscribedImage'');
-        inscribedImage.attr(''label/text'', text);
-        inscribedImage.attr(''label/fill'', ''#fff'');
-        inscribedImage.attr(''root'', { class: ''pulsar'' });
-        inscribedImage.attr(''background/fill'', ''#fe854f'');
-        inscribedImage.attr(''background/fillOpacity'', 0.5);
-        inscribedImage.attr(''border/stroke'', ''#fe854f'');
-        // inscribedImage.attr(''root/style'', '' @keyframes pulse { from { stroke-width: 3px; stroke-opacity: 1; transform-origin: center; transform: scale(0.3); } to { stroke-width: 0; stroke-opacity: 0; transform-origin: center; transform: scale(0.5); } } animation: pulse 2s infinite'');
-        inscribedImage.attr(''image'', {
-        	xlinkHref: this.c8o.endpoint + ''/.bin?__sequence=GetIcon&className='' + className + ''&large=false&__nolog=true'',
-        	width: 32,
-        	height: 32
-        	});
-        inscribedImage.prop(''qname'', qname);
-        inscribedImage.prop(''className'', className);
-        //console.log(" I AM SHAPE " + JSON.stringify(inscribedImage));
-        //	                    width: 32,
-        //	                    height: 32,
-        //	                    ref: ''rect'',
-        //	                    refY: ''0.27'',
-        //	                    refX: ''0.27''
-        inscribedImage.addTo(this.graph);
-        this.setX(position.x + 70 + this.horizontalSpace)
-        this.setY(position.y + 70 + this.verticalSpace)
+        
+        //var inscribedImage = new joint.shapes.standard.InscribedImage();
+        //inscribedImage.resize(70, 70);
+        //inscribedImage.position(position.x, position.y);
+        //// inscribedImage.attr(''root/tabindex'', 11);
+        //inscribedImage.attr(''root/title'', ''joint.shapes.standard.InscribedImage'');
+        //inscribedImage.attr(''label/text'', text);
+        //inscribedImage.attr(''label/fill'', ''#fff'');
+        //inscribedImage.attr(''root'', { class: ''pulsar'' });
+        //inscribedImage.attr(''background/fill'', ''#fe854f'');
+        //inscribedImage.attr(''background/fillOpacity'', 0.5);
+        //inscribedImage.attr(''border/stroke'', ''#fe854f'');
+        //// inscribedImage.attr(''root/style'', '' @keyframes pulse { from { stroke-width: 3px; stroke-opacity: 1; transform-origin: center; transform: scale(0.3); } to { stroke-width: 0; stroke-opacity: 0; transform-origin: center; transform: scale(0.5); } } animation: pulse 2s infinite'');
+        //inscribedImage.attr(''image'', {
+        //	xlinkHref: this.c8o.endpoint + ''/.bin?__sequence=GetIcon&className='' + className + ''&large=false&__nolog=true'',
+        //	});
+        //inscribedImage.attr(''image/width'', 16);
+        //inscribedImage.attr(''image/height'', 16);
+        //inscribedImage.prop(''qname'', qname);
+        //inscribedImage.prop(''className'', className);
+        ////console.log(" I AM SHAPE " + JSON.stringify(inscribedImage));
+        ////	                    width: 32,
+        ////	                    height: 32,
+        ////	                    ref: ''rect'',
+        ////	                    refY: ''0.27'',
+        ////	                    refX: ''0.27''
+        //inscribedImage.addTo(this.graph);
+        //this.setX(position.x + 70 + this.horizontalSpace)
+        //this.setY(position.y + 70 + this.verticalSpace)
+        
+        var headeredRectangle = new joint.shapes.standard.HeaderedRectangle();
+        headeredRectangle.resize(100, 100);
+        headeredRectangle.position(position.x, position.y);
+        headeredRectangle.attr(''root/tabindex'', 12);
+        headeredRectangle.attr(''root/title'', ''joint.shapes.standard.HeaderedRectangle'');
+        headeredRectangle.attr(''header/fill'', ''#000000'');
+        headeredRectangle.attr(''header/fillOpacity'', 1);
+        headeredRectangle.attr(''headerText/text'', text);
+        headeredRectangle.attr(''headerText/fill'', "#FFFFFF");
+        headeredRectangle.attr(''body/fill'', ''#fe854f'');
+        headeredRectangle.attr(''body/fillOpacity'', 1);
+        //headeredRectangle.attr(''bodyText/text'', ''Headered\nRectangle'');
+        headeredRectangle.prop(''qname'', qname);
+        headeredRectangle.prop(''className'', className);
+        headeredRectangle.addTo(this.graph);
+        this.setX(position.x + 100 + this.horizontalSpace)
+        this.setY(position.y + 100 + this.verticalSpace)
+        
         //joint.shapes.devs.Model = joint.shapes.devs.Model.extend({
         //
         //  markup: ''<g class="rotatable"><g class="scalable"><circle class="body"/></g><text class="label"/><g class="inPorts"/><g class="outPorts"/></g>'',
@@ -332,7 +399,7 @@ scriptContent:
         				rect.attr(''./display'', ''none'')
                 
         //        rect.addTo(this.graph);
-                return inscribedImage
+                return headeredRectangle
         	}
         	
         	getAndDisplayStepChilds(cellView: joint.dia.CellView) {
@@ -1386,7 +1453,7 @@ title: Title for FlowViewer
               				
               				if(vars.flow[i].dbo.children != undefined && vars.flow[i].dbo.children.length > 0) {
               					this.walkChildren(vars.flow[i].dbo.children, previous)
-              					console.log("I AM SETDIMENSIONS : " + this.local.maxX + '' '' + this.local.maxY)
+              //					console.log("I AM SETDIMENSIONS : " + this.local.maxX + '' '' + this.local.maxY)
               					this.paper.setDimensions(this.local.maxX, this.local.maxY)
               				}
                   		}
