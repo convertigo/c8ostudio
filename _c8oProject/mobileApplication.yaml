@@ -657,109 +657,98 @@ tplProjectName: C8oStudio
           '/* All Aggrid styles goes there goes there */
           @import "../../node_modules/ag-grid-community/dist/styles/ag-grid.scss";
           @import "../../node_modules/ag-grid-community/dist/styles/ag-theme-balham-dark/sass/ag-theme-balham-dark.scss";'
-↓AngularTreeStyle [ngx.components.UIStyle-1587969303224]: 
-  styleContent: 
-    - xmlizable: 
-      - ↑classname: com.twinsoft.convertigo.beans.common.FormatedContent
-      - com.twinsoft.convertigo.beans.common.FormatedContent: 
-        →: |
-          '/* All the angular Treeview */
-          .tree-children.tree-children-no-padding { padding-left: 0 }
-          .tree-children { padding-left: 20px; overflow: hidden }
-          .node-drop-slot { display: block; height: 2px }
-          .node-drop-slot.is-dragging-over { background: #ddffee; height: 20px; border: 2px dotted #888; }
-          .toggle-children-wrapper-expanded .toggle-children { transform: rotate(90deg) }
-          .toggle-children-wrapper-collapsed .toggle-children { transform: rotate(0); }
-          .toggle-children-wrapper {
-            padding: 2px 3px 5px 1px;
-          }
-          /* tslint:disable */
-          .toggle-children {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns=''http://www.w3.org/2000/svg'' width=''512'' height=''512'' viewBox=''0 0 512 512''%3E%3Ctitle%3Eionicons-v5-b%3C/title%3E%3Cpath d=''M190.06,414,353.18,274.22a24,24,0,0,0,0-36.44L190.06,98c-15.57-13.34-39.62-2.28-39.62,18.22V395.82C150.44,416.32,174.49,427.38,190.06,414Z''/%3E%3C/svg%3E");
-            filter: invert(100%);
-            height: 10px;
-            width: 10px;
-            background-size: contain;
-            display: inline-block;
-            position: relative;
-            top: 1px;
-            background-repeat: no-repeat;
-            background-position: center;
-          }
-          .toggle-children-placeholder {
-            display: inline-block;
-            height: 10px;
-            width: 10px;
-            position: relative;
-            top: 1px;
-            padding-right: 3px;
-          }
-          .node-content-wrapper {
-            display: inline-block;
-            padding: 2px 5px;
-            border-radius: 2px;
-            transition: background-color .15s,box-shadow .15s;
-          }
-          .node-wrapper {display: flex; align-items: flex-start;}
-          .node-content-wrapper-active,
-          .node-content-wrapper.node-content-wrapper-active:hover,
-          .node-content-wrapper-active.node-content-wrapper-focused {
-            background: #4a5154;
-          }
-          .node-content-wrapper-focused { background: #e7f4f9 }
-          .node-content-wrapper:hover { background: #8080ff }
-          .node-content-wrapper-active, .node-content-wrapper-focused, .node-content-wrapper:hover {
-            box-shadow: inset 0 0 1px #999;
-          }
-          .node-content-wrapper.is-dragging-over { background: #ddffee; box-shadow: inset 0 0 1px #999; }
-          .node-content-wrapper.is-dragging-over-disabled { opacity: 0.5 }
-          
-          tree-viewport {
-            -webkit-tap-highlight-color: transparent;
-            height: 100%;
-            overflow: auto;
-            display: block;
-          }
-          .tree-children { padding-left: 20px }
-          .empty-tree-drop-slot .node-drop-slot { height: 20px; min-width: 100px }
-          .angular-tree-component {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;	
-            font-size: 12px;	
-            color: white;
-            width: 100%;
-            position:relative;
-            display: inline-block;
-            cursor: pointer;
-            -webkit-touch-callout: none; /* iOS Safari */
-            -webkit-user-select: none;   /* Chrome/Safari/Opera */
-            -khtml-user-select: none;    /* Konqueror */
-            -moz-user-select: none;      /* Firefox */
-            -ms-user-select: none;       /* IE/Edge */
-            user-select: none;           /* non-prefixed version, currently not supported by any browser */
-          }
-          
-          tree-root .angular-tree-component-rtl {
-            direction: rtl;
-          }
-          tree-root .angular-tree-component-rtl .toggle-children-wrapper-collapsed .toggle-children {
-            transform: rotate(180deg) !important;
-          }
-          tree-root .angular-tree-component-rtl .tree-children {
-            padding-right: 20px;
-            padding-left: 0;
-          }
-          
-          tree-node-checkbox {
-            padding: 1px;
-          }
-          '
 ↓JointStyles [ngx.components.UIStyle-1588406512685]: 
   styleContent: 
     - xmlizable: 
       - ↑classname: com.twinsoft.convertigo.beans.common.FormatedContent
       - com.twinsoft.convertigo.beans.common.FormatedContent: 
         →: |
-          '//svg g g g ellipse[fill="none"] {
+          'html body div div div div div div div ion-grid ion-row ion-col div div div svg g g g image {
+          	width: 32px !important;
+          	height: 32px !important;
+          	transform:matrix(1,0,0,1,19,19) !important;
+          }
+          /* /html/body/div[3]/div/div[3]/div[1]/div[2]/div/div/ion-grid/ion-row[1]/ion-col/div/div[1]/div/svg/g/g[1]/g[3]/path[2] */
+          html body div div div div div div div ion-grid ion-row ion-col div div div svg g g g path {
+          	stroke-width: 10px !important;
+          }
+          html body div div div div div div div ion-grid ion-row ion-col div div div svg defs marker path {
+              stroke: none;
+              fill: rgb(60, 66, 96);
+              transform: rotate(180deg);
+              d: path("M 0 -10 L -10 0 L 0 10 Z") !important;
+          }
+          
+          .html-element {
+              position: absolute;
+              background: #3498DB;
+              /* Make sure events are propagated to the JointJS element so, e.g. dragging works.*/
+              pointer-events: none;
+              -webkit-user-select: none;
+              border-radius: 4px;
+              border: 2px solid #2980B9;
+              box-shadow: inset 0 0 5px black, 2px 2px 1px gray;
+              padding: 5px;
+              box-sizing: border-box;
+              z-index: 2;
+          }
+          .html-element select,
+          .html-element input,
+          .html-element button {
+              /* Enable interacting with inputs only. */
+              pointer-events: auto;
+          }
+          .html-element button.delete {
+              color: white;
+              border: none;
+              background-color: #C0392B;
+              border-radius: 20px;
+              width: 15px;
+              height: 15px;
+              line-height: 15px;
+              text-align: middle;
+              position: absolute;
+              top: -15px;
+              left: -15px;
+              padding: 0;
+              margin: 0;
+              font-weight: bold;
+              cursor: pointer;
+          }
+          .html-element button.delete:hover {
+              width: 20px;
+              height: 20px;
+              line-height: 20px;
+          }
+          .html-element select {
+              position: absolute;
+              right: 2px;
+              bottom: 28px;
+          }
+          .html-element input {
+              position: absolute;
+              bottom: 0;
+              left: 0;
+              right: 0;
+              border: none;
+              color: #333;
+              padding: 5px;
+              height: 16px;
+          }
+          .html-element label {
+              color: #333;
+              text-shadow: 1px 0 0 lightgray;
+              font-weight: bold;
+          }
+          .html-element span {
+              position: absolute;
+              top: 2px;
+              right: 9px;
+              color: white;
+              font-size: 10px;
+          }
+          
+          //svg g g g ellipse[fill="none"] {
           //  fill: white !important;
           //  fill-opacity: 0 !important;
           //  transform-origin: 50% 50% !important;
@@ -831,7 +820,7 @@ tplProjectName: C8oStudio
           //}
           #flowContainer {
           	width: 100%;
-          	max-height: 300px !important;
+          //	max-height: 300px !important;
           	overflow-x: scroll !important;
           	overflow-y: scroll !important;
           }
@@ -1242,6 +1231,102 @@ tplProjectName: C8oStudio
           }
           /*  Links  */
           '
+↓AngularTreeStyle [ngx.components.UIStyle-1587969303224]: 
+  styleContent: 
+    - xmlizable: 
+      - ↑classname: com.twinsoft.convertigo.beans.common.FormatedContent
+      - com.twinsoft.convertigo.beans.common.FormatedContent: 
+        →: |
+          '/* All the angular Treeview */
+          .tree-children.tree-children-no-padding { padding-left: 0 }
+          .tree-children { padding-left: 20px; overflow: hidden }
+          .node-drop-slot { display: block; height: 2px }
+          .node-drop-slot.is-dragging-over { background: #ddffee; height: 20px; border: 2px dotted #888; }
+          .toggle-children-wrapper-expanded .toggle-children { transform: rotate(90deg) }
+          .toggle-children-wrapper-collapsed .toggle-children { transform: rotate(0); }
+          .toggle-children-wrapper {
+            padding: 2px 3px 5px 1px;
+          }
+          /* tslint:disable */
+          .toggle-children {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns=''http://www.w3.org/2000/svg'' width=''512'' height=''512'' viewBox=''0 0 512 512''%3E%3Ctitle%3Eionicons-v5-b%3C/title%3E%3Cpath d=''M190.06,414,353.18,274.22a24,24,0,0,0,0-36.44L190.06,98c-15.57-13.34-39.62-2.28-39.62,18.22V395.82C150.44,416.32,174.49,427.38,190.06,414Z''/%3E%3C/svg%3E");
+            filter: invert(100%);
+            height: 10px;
+            width: 10px;
+            background-size: contain;
+            display: inline-block;
+            position: relative;
+            top: 1px;
+            background-repeat: no-repeat;
+            background-position: center;
+          }
+          .toggle-children-placeholder {
+            display: inline-block;
+            height: 10px;
+            width: 10px;
+            position: relative;
+            top: 1px;
+            padding-right: 3px;
+          }
+          .node-content-wrapper {
+            display: inline-block;
+            padding: 2px 5px;
+            border-radius: 2px;
+            transition: background-color .15s,box-shadow .15s;
+          }
+          .node-wrapper {display: flex; align-items: flex-start;}
+          .node-content-wrapper-active,
+          .node-content-wrapper.node-content-wrapper-active:hover,
+          .node-content-wrapper-active.node-content-wrapper-focused {
+            background: #4a5154;
+          }
+          .node-content-wrapper-focused { background: #e7f4f9 }
+          .node-content-wrapper:hover { background: #8080ff }
+          .node-content-wrapper-active, .node-content-wrapper-focused, .node-content-wrapper:hover {
+            box-shadow: inset 0 0 1px #999;
+          }
+          .node-content-wrapper.is-dragging-over { background: #ddffee; box-shadow: inset 0 0 1px #999; }
+          .node-content-wrapper.is-dragging-over-disabled { opacity: 0.5 }
+          
+          tree-viewport {
+            -webkit-tap-highlight-color: transparent;
+            height: 100%;
+            overflow: auto;
+            display: block;
+          }
+          .tree-children { padding-left: 20px }
+          .empty-tree-drop-slot .node-drop-slot { height: 20px; min-width: 100px }
+          .angular-tree-component {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;	
+            font-size: 12px;	
+            color: white;
+            width: 100%;
+            position:relative;
+            display: inline-block;
+            cursor: pointer;
+            -webkit-touch-callout: none; /* iOS Safari */
+            -webkit-user-select: none;   /* Chrome/Safari/Opera */
+            -khtml-user-select: none;    /* Konqueror */
+            -moz-user-select: none;      /* Firefox */
+            -ms-user-select: none;       /* IE/Edge */
+            user-select: none;           /* non-prefixed version, currently not supported by any browser */
+          }
+          
+          tree-root .angular-tree-component-rtl {
+            direction: rtl;
+          }
+          tree-root .angular-tree-component-rtl .toggle-children-wrapper-collapsed .toggle-children {
+            transform: rotate(180deg) !important;
+          }
+          tree-root .angular-tree-component-rtl .tree-children {
+            padding-right: 20px;
+            padding-left: 0;
+          }
+          
+          tree-node-checkbox {
+            padding: 1px;
+          }
+          '
 ↓PaletteStyles [ngx.components.UIStyle-1589698075738]: 
   styleContent: 
     - xmlizable: 
@@ -1314,4 +1399,61 @@ tplProjectName: C8oStudio
           
           .log-level-trace {
           	color: #f0ff00 !important;
+          }'
+↓flowViewverStyle [ngx.components.UIStyle-1603111719710]: 
+  styleContent: 
+    - xmlizable: 
+      - ↑classname: com.twinsoft.convertigo.beans.common.FormatedContent
+      - com.twinsoft.convertigo.beans.common.FormatedContent: 
+        →: |
+          '/*
+          #222222
+          #484848
+          #727272
+          #9E9E9E
+          #CECECE
+          
+          #0CBBE7 bleu c8o
+          */
+          
+          
+          .flowToolsBar {
+          	width: 35px;
+          	position: fixed; 
+          	z-index: 1;
+          	top: 18%;
+          	right: 25px;
+          	background-color:#484848;
+          	overflow-x: hidden;
+          	padding-left: 7px;
+          	padding-bottom: 10px;
+          	margin: 0 0 0 0;
+          	box-shadow: 0px 0px 10px 0px #CECECE; // #CECECE
+          	border-radius: 10px 10px 10px 10px;
+          	border: 1px solid #0CBBE7;
+          }
+          
+          .flowToolsBar ion-icon {
+          //  padding: 8px 8px 8px 8px;
+            	text-decoration: none;
+            	font-size: 20px;
+            	display: block;
+          	color:#E7FDFF; //  #9E9E9E
+          	padding-top: 10px;
+          	margin: 0 0 0 0;
+          }
+          
+          .flowToolsBar ion-icon:hover {
+          	cursor: pointer;
+          }
+          
+          .flowToolsBar hr {
+          	background-color: #0CBBE7;
+          	margin-right: 5px;
+          }
+          
+          .textScaleView {
+          	font-size: 9px;
+          	color: white;
+          	padding-top: 10px;
           }'

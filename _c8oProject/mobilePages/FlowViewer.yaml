@@ -16,6 +16,7 @@ scriptContent:
         	paperMiniMap : joint.dia.Paper
         	scale : number = 10
         	miniMapScale = 0.2
+        	scaleView = 100;
         	dragStartPosition = null;
         	dragStartPositionMiniMap = null;
         	isHorizontal = true;
@@ -25,7 +26,7 @@ scriptContent:
           		minX: 0,
           		minY: 0,
           		maxX: 500,
-          		maxY: 250,
+          		maxY: 300,
         	};
         	
         	strStep = ''com.twinsoft.convertigo.beans.steps.''
@@ -104,7 +105,7 @@ scriptContent:
         	    }],
         	    attrs: {
         	        line: {
-        	            stroke: ''#3c4260''
+        	            stroke: ''#3c4260'',
         	        }
         		},
         //	    label: {
@@ -127,7 +128,7 @@ scriptContent:
         						text: label
         					}
         				}
-        			})
+        	})
         	link.addTo(this.graph)
         //	    var link = new joint.shapes.standard.Link();
         //        link.source(source, {
@@ -298,52 +299,50 @@ scriptContent:
         //        });
         
         
-        //var inscribedImage = new joint.shapes.standard.InscribedImage();
-        //inscribedImage.resize(70, 70);
-        //inscribedImage.position(position.x, position.y);
-        //// inscribedImage.attr(''root/tabindex'', 11);
-        //inscribedImage.attr(''root/title'', ''joint.shapes.standard.InscribedImage'');
-        //inscribedImage.attr(''label/text'', text);
-        //inscribedImage.attr(''label/fill'', ''#fff'');
-        //inscribedImage.attr(''root'', { class: ''pulsar'' });
-        //inscribedImage.attr(''background/fill'', ''#fe854f'');
-        //inscribedImage.attr(''background/fillOpacity'', 0.5);
-        //inscribedImage.attr(''border/stroke'', ''#fe854f'');
-        //// inscribedImage.attr(''root/style'', '' @keyframes pulse { from { stroke-width: 3px; stroke-opacity: 1; transform-origin: center; transform: scale(0.3); } to { stroke-width: 0; stroke-opacity: 0; transform-origin: center; transform: scale(0.5); } } animation: pulse 2s infinite'');
-        //inscribedImage.attr(''image'', {
-        //	xlinkHref: this.c8o.endpoint + ''/.bin?__sequence=GetIcon&className='' + className + ''&large=false&__nolog=true'',
-        //	});
-        //inscribedImage.attr(''image/width'', 16);
-        //inscribedImage.attr(''image/height'', 16);
-        //inscribedImage.prop(''qname'', qname);
-        //inscribedImage.prop(''className'', className);
-        ////console.log(" I AM SHAPE " + JSON.stringify(inscribedImage));
-        ////	                    width: 32,
-        ////	                    height: 32,
-        ////	                    ref: ''rect'',
-        ////	                    refY: ''0.27'',
-        ////	                    refX: ''0.27''
-        //inscribedImage.addTo(this.graph);
-        //this.setX(position.x + 70 + this.horizontalSpace)
-        //this.setY(position.y + 70 + this.verticalSpace)
+        var inscribedImage = new joint.shapes.standard.InscribedImage();
+        inscribedImage.resize(70, 70);
+        inscribedImage.position(position.x, position.y);
+        // inscribedImage.attr(''root/tabindex'', 11);
+        inscribedImage.attr(''root/title'', ''joint.shapes.standard.InscribedImage'');
+        inscribedImage.attr(''label/text'', text);
+        inscribedImage.attr(''label/fill'', ''#fff'');
+        inscribedImage.attr(''root'', { class: ''pulsar'' });
+        inscribedImage.attr(''background/fill'', ''#fe854f'');
+        inscribedImage.attr(''background/fillOpacity'', 0.5);
+        inscribedImage.attr(''border/stroke'', ''#fe854f'');
+        // inscribedImage.attr(''root/style'', '' @keyframes pulse { from { stroke-width: 3px; stroke-opacity: 1; transform-origin: center; transform: scale(0.3); } to { stroke-width: 0; stroke-opacity: 0; transform-origin: center; transform: scale(0.5); } } animation: pulse 2s infinite'');
+        inscribedImage.attr(''image'', {
+        	xlinkHref: this.c8o.endpoint + ''/.bin?__sequence=GetIcon&className='' + className + ''&large=true&__nolog=true'',
+        	});
+        inscribedImage.prop(''qname'', qname);
+        inscribedImage.prop(''className'', className);
+        //console.log(" I AM SHAPE " + JSON.stringify(inscribedImage));
+        //	                    width: 32,
+        //	                    height: 32,
+        //	                    ref: ''rect'',
+        //	                    refY: ''0.27'',
+        //	                    refX: ''0.27''
+        inscribedImage.addTo(this.graph);
+        this.setX(position.x + 70 + this.horizontalSpace)
+        this.setY(position.y + 70 + this.verticalSpace)
         
-        var headeredRectangle = new joint.shapes.standard.HeaderedRectangle();
-        headeredRectangle.resize(100, 100);
-        headeredRectangle.position(position.x, position.y);
-        headeredRectangle.attr(''root/tabindex'', 12);
-        headeredRectangle.attr(''root/title'', ''joint.shapes.standard.HeaderedRectangle'');
-        headeredRectangle.attr(''header/fill'', ''#000000'');
-        headeredRectangle.attr(''header/fillOpacity'', 1);
-        headeredRectangle.attr(''headerText/text'', text);
-        headeredRectangle.attr(''headerText/fill'', "#FFFFFF");
-        headeredRectangle.attr(''body/fill'', ''#fe854f'');
-        headeredRectangle.attr(''body/fillOpacity'', 1);
-        //headeredRectangle.attr(''bodyText/text'', ''Headered\nRectangle'');
-        headeredRectangle.prop(''qname'', qname);
-        headeredRectangle.prop(''className'', className);
-        headeredRectangle.addTo(this.graph);
-        this.setX(position.x + 100 + this.horizontalSpace)
-        this.setY(position.y + 100 + this.verticalSpace)
+        //var headeredRectangle = new joint.shapes.standard.HeaderedRectangle();
+        //headeredRectangle.resize(100, 100);
+        //headeredRectangle.position(position.x, position.y);
+        //headeredRectangle.attr(''root/tabindex'', 12);
+        //headeredRectangle.attr(''root/title'', ''joint.shapes.standard.HeaderedRectangle'');
+        //headeredRectangle.attr(''header/fill'', ''#000000'');
+        //headeredRectangle.attr(''header/fillOpacity'', 1);
+        //headeredRectangle.attr(''headerText/text'', text);
+        //headeredRectangle.attr(''headerText/fill'', "#FFFFFF");
+        //headeredRectangle.attr(''body/fill'', ''#fe854f'');
+        //headeredRectangle.attr(''body/fillOpacity'', 1);
+        ////headeredRectangle.attr(''bodyText/text'', ''Headered\nRectangle'');
+        //headeredRectangle.prop(''qname'', qname);
+        //headeredRectangle.prop(''className'', className);
+        //headeredRectangle.addTo(this.graph);
+        //this.setX(position.x + 100 + this.horizontalSpace)
+        //this.setY(position.y + 100 + this.verticalSpace)
         
         //joint.shapes.devs.Model = joint.shapes.devs.Model.extend({
         //
@@ -399,7 +398,47 @@ scriptContent:
         				rect.attr(''./display'', ''none'')
                 
         //        rect.addTo(this.graph);
-                return headeredRectangle
+        //        return headeredRectangle
+        		  return inscribedImage;
+        	}
+        	
+        	getFlowScale() {
+        		var scale = this.paper.scale();
+        		var scaleNbr = scale.sx;
+        		return scaleNbr;
+        	}
+        	
+        	/*
+        		We need to multiply by 100 because the calcul is not good in JS with float number
+        	*/
+        	zoomOutFlow() {
+        		var currentScale = this.getFlowScale();
+        		currentScale = currentScale * 100;
+        		console.log(''currentScale : '' + currentScale)
+        		if(currentScale == 10) {
+        			this.getInstance(Events).publish("scaleView", "Zoom min");
+        		} else {
+        			var newScale = currentScale - 10
+        			if(newScale == 0)
+        				newScale = 10; // we can go under 0.1 otherwise graph disappears
+        			console.log(''newScale : '' + newScale)
+        			this.paper.scale(newScale / 100)
+        			this.scaleView = newScale;
+        		}
+        	}
+        	
+        	zoomInFlow() {
+        		var currentScale = this.getFlowScale();
+        		currentScale = currentScale * 100;
+        		console.log(''currentScale : '' + currentScale)
+        		if(currentScale == 100) {
+        			this.getInstance(Events).publish("scaleView","Zoom max");
+        		} else {
+        			var newScale = currentScale + 10
+        			console.log(''newScale : '' + newScale)
+        			this.paper.scale(newScale / 100)
+        			this.scaleView = newScale;
+        		}
         	}
         	
         	getAndDisplayStepChilds(cellView: joint.dia.CellView) {
@@ -1202,7 +1241,8 @@ scriptContent:
         	    /**
         	     * TODO : Implement Drag & Drop from palette see : https://codepen.io/fxaeberard/pen/reGvjm
         	     * 
-        	     */    
+        	     */
+        		this.global.miniMapIsHidden = false;    
         	    let element = this.flowID as ElementRef
                 this.paper = new joint.dia.Paper({
                     el: element.nativeElement,
@@ -1412,6 +1452,43 @@ title: Title for FlowViewer
                 - ↑value: '@types/backbone'
               - java.lang.String: 
                 - ↑value: 1.4.1
+  ↓initDagreAndGraphLib [ngx.components.UICustomAction-1603285635817]: 
+    package_dependencies: 
+      - xmlizable: 
+        - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+        - com.twinsoft.convertigo.beans.common.XMLVector: 
+          - xmlizable: 
+            - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+            - com.twinsoft.convertigo.beans.common.XMLVector: 
+              - java.lang.String: 
+                - ↑value: dagre
+              - java.lang.String: 
+                - ↑value: 0.8.5
+          - xmlizable: 
+            - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+            - com.twinsoft.convertigo.beans.common.XMLVector: 
+              - java.lang.String: 
+                - ↑value: graphlib
+              - java.lang.String: 
+                - ↑value: 2.1.8
+    page_ts_imports: 
+      - xmlizable: 
+        - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+        - com.twinsoft.convertigo.beans.common.XMLVector: 
+          - xmlizable: 
+            - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+            - com.twinsoft.convertigo.beans.common.XMLVector: 
+              - java.lang.String: 
+                - ↑value: '* as dagre'
+              - java.lang.String: 
+                - ↑value: dagre
+          - xmlizable: 
+            - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+            - com.twinsoft.convertigo.beans.common.XMLVector: 
+              - java.lang.String: 
+                - ↑value: '* as graphlib'
+              - java.lang.String: 
+                - ↑value: graphlib
 ↓Subscribe_Handler [ngx.components.UIEventSubscriber-1588686865663]: 
   topic: dboFocus
   ↓CallSequence [ngx.components.UIDynamicAction-1588686924736]: 
@@ -1513,6 +1590,12 @@ title: Title for FlowViewer
                   - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
                   - MobileSmartSourceType: plain:onMouseMove($event)
               isEnabled: false
+          ↓Attr [ngx.components.UIAttribute-1603209802305]: 
+            attrName: style
+            attrValue: 
+              - xmlizable: 
+                - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+                - MobileSmartSourceType: 'script:(this.global.miniMapIsHidden) ? ''height: 600px;'' : ''height: 300px;'''
         ↓Style [ngx.components.UIStyle-1600961212571]: 
           styleContent: 
             - xmlizable: 
@@ -1537,6 +1620,89 @@ title: Title for FlowViewer
                   //--ion-grid-columns	//The number of total Columns in the Grid
                   max-height:300px !important;
                   '
+        ↓divToolsBar [ngx.components.UIDynamicElement-1603111118345]: 
+          beanData: '{"ionBean":"DivTag"}'
+          tagName: div
+          ↓Attr [ngx.components.UIAttribute-1603111139643]: 
+            attrName: class
+            attrValue: 
+              - xmlizable: 
+                - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+                - MobileSmartSourceType: plain:flowToolsBar
+          ↓zoomInIcon [ngx.components.UIDynamicElement-1603111200661]: 
+            beanData: |
+              '{
+               "ionBean": "Icon",
+               "IconName": "plain:add-circle",
+               "IonSize": "plain:default"
+              }'
+            tagName: ion-icon
+            ↓Event [ngx.components.UIControlEvent-1603117358116]: 
+              ↓zoomIn [ngx.components.UICustomAction-1603117367900]: 
+                actionValue: 
+                  - xmlizable: 
+                    - ↑classname: com.twinsoft.convertigo.beans.common.FormatedContent
+                    - com.twinsoft.convertigo.beans.common.FormatedContent: 
+                      →: |
+                        '		page.c8o.log.debug(''[MB] ''+ props.actionFunction +'': ''+ props.actionName);
+                        		this.zoomInFlow();
+                        		resolve();
+                        '
+          ↓zoomOutIcon [ngx.components.UIDynamicElement-1603111451351]: 
+            beanData: |
+              '{
+               "ionBean": "Icon",
+               "IconName": "plain:remove-circle",
+               "IonSize": "plain:default"
+              }'
+            tagName: ion-icon
+            ↓Event [ngx.components.UIControlEvent-1603116289649]: 
+              ↓zoomOut [ngx.components.UICustomAction-1603116361860]: 
+                actionValue: 
+                  - xmlizable: 
+                    - ↑classname: com.twinsoft.convertigo.beans.common.FormatedContent
+                    - com.twinsoft.convertigo.beans.common.FormatedContent: 
+                      →: |
+                        '		page.c8o.log.debug(''[MB] ''+ props.actionFunction +'': ''+ props.actionName);
+                        		this.zoomOutFlow();
+                        		resolve();
+                        '
+          ↓TextItem [ngx.components.UIDynamicElement-1603122489195]: 
+            beanData: '{"ionBean":"TextItem"}'
+            tagName: ion-text
+            ↓Text [ngx.components.UIText-1603121618903]: 
+              textValue: 
+                - xmlizable: 
+                  - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+                  - MobileSmartSourceType: script:[scaleView] + " %"
+            ↓Attr [ngx.components.UIAttribute-1603122609751]: 
+              attrName: class
+              attrValue: 
+                - xmlizable: 
+                  - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+                  - MobileSmartSourceType: plain:textScaleView
+          ↓Tag [ngx.components.UIElement-1603121593293]: 
+            selfClose: true
+            tagName: hr
+          ↓miniMapIcon [ngx.components.UIDynamicElement-1603114846786]: 
+            beanData: '{"ionBean":"Icon","IconName":"plain:map"}'
+            tagName: ion-icon
+            ↓Event [ngx.components.UIControlEvent-1603207192700]: 
+              ↓showOrHideMiniMap [ngx.components.UICustomAction-1603207209276]: 
+                actionValue: 
+                  - xmlizable: 
+                    - ↑classname: com.twinsoft.convertigo.beans.common.FormatedContent
+                    - com.twinsoft.convertigo.beans.common.FormatedContent: 
+                      →: |
+                        '		page.c8o.log.debug(''[MB] ''+ props.actionFunction +'': ''+ props.actionName);
+                        		if(this.global.miniMapIsHidden) {
+                        			this.global.miniMapIsHidden = false;
+                        		} else {
+                        			this.global.miniMapIsHidden = true;
+                        			this.paper.setDimensions(''100%'', ''600px'');
+                        		}
+                        		resolve();
+                        '
       ↓Style [ngx.components.UIStyle-1600961167941]: 
         styleContent: 
           - xmlizable: 
@@ -1658,3 +1824,18 @@ title: Title for FlowViewer
           - xmlizable: 
             - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
             - MobileSmartSourceType: plain:minimap-container
+      ↓Attr1 [ngx.components.UIAttribute-1603206788743]: 
+        attrName: style
+        attrValue: 
+          - xmlizable: 
+            - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+            - MobileSmartSourceType: 'script:(this.global.miniMapIsHidden) ? ''visibility: hidden;'' : ''visibility: visible;'''
+↓Subscribe_Handler1 [ngx.components.UIEventSubscriber-1603124103143]: 
+  topic: scaleView
+  ↓Toast [ngx.components.UIDynamicAction-1603124134840]: 
+    beanData: |
+      '{
+       "ionBean": "ToastAction",
+       "message": "script:out",
+       "position": "plain:middle"
+      }'
