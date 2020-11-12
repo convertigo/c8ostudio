@@ -30,10 +30,10 @@
                 "input": "../../DisplayObjects/mobile/assets",
                 "output": "assets"
               },
-              {
+			  {
                 "glob": "**/*",
-                "input": "../../Flashupdate",
-                "output": "/"
+                "input": "node_modules/ngx-monaco-editor/assets/monaco",
+                "output": "assets/monaco"
               },
               {
                 "glob": "cordova.js",
