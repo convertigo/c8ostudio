@@ -13,6 +13,7 @@ scriptContent:
         /*Begin_c8o_PageDeclaration*/
         	graph = new joint.dia.Graph;
         	paper : joint.dia.Paper
+        	cells = [];
         	paperMiniMap : joint.dia.Paper
         	scale : number = 10
         	miniMapScale = 0.2
@@ -28,9 +29,7 @@ scriptContent:
           		maxX: 500,
           		maxY: 300,
         	};
-        	
         	strStep = ''com.twinsoft.convertigo.beans.steps.''
-        	cdinalStepsList = [''IfThenElseStep'', ''ThenStep'', ''ElseStep'']
         	/*End_c8o_PageDeclaration*/
         /*Begin_c8o_PageConstructor*/		
         		this.local.maxX = 0
@@ -52,6 +51,14 @@ scriptContent:
         		}
         	}
         
+        	pushToCells(el) {
+        		this.cells.push(el);
+        	}
+        	
+        	getCells() {
+        		return this.cells;
+        	}
+        	
         	onMouseMove(event) {
         		console.log("I AM EVENT " + JSON.stringify(event));
         		 if (this.dragStartPosition != null) {
@@ -79,329 +86,107 @@ scriptContent:
                         event.offsetY - this.dragStartPositionMiniMap.y);
         		}
         	}
-        
-        	addLink(source, dest, isHorizontal, label) {
+        	
+        	makeLink(source, target, label) {
+                var link = new joint.shapes.standard.ShadowLink({
+        		    source: source,
+        		    target: target,
+        		    markup: [{
+        		        tagName: ''path'',
+        		        selector: ''shadow'',
+        		        attributes: {
+        		            ''fill'': ''none''
+        		        }
+        		    }, {
+        		        tagName: ''path'',
+        		        selector: ''line'',
+        		        attributes: {
+        		            ''fill'': ''none''
+        		        }
+        		    }, {
+        		        tagName: ''text'',
+        		        selector: ''label''
+        		    }],
+        		    attrs: {
+        		        line: {
+        		            stroke: ''#3c4260'',
+        		        }
+        			},
+        			text: {
+        				text: label
+        			}
+        		});
         		
-        	var link = new joint.shapes.standard.ShadowLink({
-        	    source: source,
-        	    target: dest,
-        //	    vertices: [{ x: 150, y: 350 }, { x: 300, y: 280 }],
-        //	    smooth: true,
-        	    markup: [{
-        	        tagName: ''path'',
-        	        selector: ''shadow'',
-        	        attributes: {
-        	            ''fill'': ''none''
-        	        }
-        	    }, {
-        	        tagName: ''path'',
-        	        selector: ''line'',
-        	        attributes: {
-        	            ''fill'': ''none''
-        	        }
-        	    }, {
-        	        tagName: ''text'',
-        	        selector: ''label''
-        	    }],
-        	    attrs: {
-        	        line: {
-        	            stroke: ''#3c4260'',
-        	        }
-        		},
-        //	    label: {
-        //	      textPath: {
-        //	      	selector: ''line'',
-        //	        startOffset: ''50%''
-        //	      },
-        //	      textAnchor: ''middle'',
-        //	      textVerticalAnchor: ''middle'',
-        //	      text: '''',
-        //	      fill: ''#f6f6f6'',
-        //	      fontSize: 15,
-        //	      fontWeight: ''bold'',
-        //	      fontFamily: ''fantasy''
-        //	    }
-        	});
-        	link.appendLabel({
-        				attrs : {
-        					text: {
-        						text: label
-        					}
-        				}
-        	})
-        	link.addTo(this.graph)
-        //	    var link = new joint.shapes.standard.Link();
-        //        link.source(source, {
-        //            anchor: {
-        //                name: (isHorizontal) ? ''center'' : ''bottom''
-        //            }
-        //        })
-        //        
-        //        link.target(dest, {
-        //            anchor: {
-        //                name: (isHorizontal) ? ''center'' : ''top''
-        //            }
-        //        })
-        //
-        //		if(isHorizontal) {
-        //			link.appendLabel({
-        //				attrs : {
-        //					text: {
-        //						text: label
-        //					}
-        //				}
-        //			})
-        //		}
-        //        
-        //        link.attr(''line/stroke'', ''white'');
-        //        link.connector(''jumpover'', { size: 10 });	
-        //        link.addTo(this.graph);
-        	}
-        	
-        	addStep(position, size, text:string, hasChildren:boolean, qname: string, className: string, isStarting: boolean, isHidden: boolean) {
-        	   
-        let rect; // custom diamond shape for logical nodes 
-        //	    if(className.includes("If")) {
-        //	        rect = new joint.shapes.basic.Path({
-        //				markup: ''<path /><image /><text />'',
-        //// 				markup: ''<g class="rotatable"><g class="scalable"><path/></g><image /><text/></g>'',
-        //	            position: position,
-        //	            size: { width: 70, height: 70 },
-        //	            ports: {
-        //	                groups: {
-        //	                    ''source'': {
-        //	                        position: ''right'',
-        //	                        attrs: {
-        //	                            ''.joint-port-body'' : {
-        //	                                fill: ''orange'',
-        //	                                magnet: true
-        //	                            }
-        //	                        }
-        //	                    },
-        //	                    ''dest'': {
-        //	                        position: ''left'',
-        //	                        attrs: {
-        //	                            ''.joint-port-body'' : {
-        //	                                fill: ''green'',
-        //	                                magnet: true
-        //	                            }
-        //	                        }
-        //	                    }
-        //	                },
-        //	                items: [{
-        //	                    group: ''source'',
-        //	                    args: {}, // extra arguments for the port layout function, see `layout.Port` section
-        //	                },
-        //	                {
-        //	                    group: ''dest'',
-        //	                    args: {}, // extra arguments for the port layout function, see `layout.Port` section
-        //	                }]
-        //	            },
-        //	            attrs: {
-        //	                path: { 
-        //	                    // d: ''M 30 0 L 60 30 30 60 0 30 z'',
-        //						d: ''M 0 0 a 1 1 0 0 0 10 0 A 1 1 0 0 0 0 0'', 
-        //	                    fill: ''blue'' 
-        //	                },
-        //	                ''text'': { 
-        //	                    text: text, 
-        //	                    fill: ''white'' 
-        //	               },
-        //					image: {
-        //	                    ''xlink:href'': this.c8o.endpoint + ''/.bin?__sequence=GetIcon&className='' + className + ''&large=true&__nolog=true'',
-        //	                    width: 32,
-        //	                    height: 32,
-        //	                    ref: ''rect'',
-        //	                    refY: ''0.27'',
-        //	                    refX: ''0.27''
-        //                	}
-        //	            },
-        //	            qname: qname,
-        //	            className: className,
-        //	            isStarting: isStarting
-        //	         })
-        //
-        //			if(isHidden)
-        //				rect.attr(''./display'', ''none'')
-        				
-        //	    } else {
-        	       
-        //        rect = new joint.shapes.basic.Circle( { 
-        //            markup: ''<g class="rotatable"><g class="scalable"><circle class="circle"/></g><image/><text/></g>'',
-        //            position: position,
-        //            size: size,
-        //            ports: {
-        //                groups: {
-        //                    ''source'': {
-        //                        position: ''right'',
-        //                        attrs: {
-        //                            ''.joint-port-body'' : {
-        //                                fill: ''orange'',
-        //                                magnet: true
-        //                            }
-        //                        }
-        //                    },
-        //                    ''dest'': {
-        //                        position: ''left'',
-        //                        attrs: {
-        //                            ''.joint-port-body'' : {
-        //                                fill: ''green'',
-        //                                magnet: true
-        //                            }
-        //                        }
-        //                    }
-        //                },
-        //                items: [{
-        //                    group: ''source'',
-        //                    args: {}, // extra arguments for the port layout function, see `layout.Port` section
-        //                },
-        //                {
-        //                    group: ''dest'',
-        //                    args: {}, // extra arguments for the port layout function, see `layout.Port` section
-        //                }]
-        //            },            
-        //            attrs: {
-        //                circle: {
-        //					r: 50,
-        //					cx: 50,
-        //                    fill: hasChildren ? ''#222222'' : ''blue'',
-        //                    strokeDasharray: 2,
-        //                    strokeWidth: 2,
-        //                    stroke: hasChildren ? ''white'' : null 
-        //                },
-        //// 				path: { 
-        ////	                    d: ''M 0 0 a 1 1 0 0 0 10 0 A 1 1 0 0 0 0 0'', 
-        ////	                    fill: ''blue'' 
-        ////	                },
-        //                text: {
-        //                    text: text,
-        //                    fill: ''white'',
-        //                    ref:''rect'',
-        //                    refY: ''.7''
-        //                  },
-        ////                text:
-        ////                {
-        ////                    text: text,
-        ////                    fill: ''white''
-        ////                },
-        //                image: {
-        //                    ''xlink:href'': this.c8o.endpoint + ''/.bin?__sequence=GetIcon&className='' + className + ''&large=true&__nolog=true'',
-        //                    width: 32,
-        //                    height: 32,
-        //                    ref: ''rect'',
-        //                    refY: ''0.27'',
-        //                    refX: ''0.27''
-        //                }
-        //            },
-        //            qname: qname,
-        //            className: className,
-        //            isStarting: isStarting
-        //        });
+        		link.addTo(this.graph)
+            }
         
-        
-        var inscribedImage = new joint.shapes.standard.InscribedImage();
-        inscribedImage.resize(70, 70);
-        inscribedImage.position(position.x, position.y);
-        // inscribedImage.attr(''root/tabindex'', 11);
-        inscribedImage.attr(''root/title'', ''joint.shapes.standard.InscribedImage'');
-        inscribedImage.attr(''label/text'', text);
-        inscribedImage.attr(''label/fill'', ''#fff'');
-        inscribedImage.attr(''root'', { class: ''pulsar'' });
-        inscribedImage.attr(''background/fill'', ''#fe854f'');
-        inscribedImage.attr(''background/fillOpacity'', 0.5);
-        inscribedImage.attr(''border/stroke'', ''#fe854f'');
-        // inscribedImage.attr(''root/style'', '' @keyframes pulse { from { stroke-width: 3px; stroke-opacity: 1; transform-origin: center; transform: scale(0.3); } to { stroke-width: 0; stroke-opacity: 0; transform-origin: center; transform: scale(0.5); } } animation: pulse 2s infinite'');
-        inscribedImage.attr(''image'', {
-        	xlinkHref: this.c8o.endpoint + ''/.bin?__sequence=GetIcon&className='' + className + ''&large=true&__nolog=true'',
-        	});
-        inscribedImage.prop(''qname'', qname);
-        inscribedImage.prop(''className'', className);
-        //console.log(" I AM SHAPE " + JSON.stringify(inscribedImage));
-        //	                    width: 32,
-        //	                    height: 32,
-        //	                    ref: ''rect'',
-        //	                    refY: ''0.27'',
-        //	                    refX: ''0.27''
-        inscribedImage.addTo(this.graph);
-        this.setX(position.x + 70 + this.horizontalSpace)
-        this.setY(position.y + 70 + this.verticalSpace)
-        
-        //var headeredRectangle = new joint.shapes.standard.HeaderedRectangle();
-        //headeredRectangle.resize(100, 100);
-        //headeredRectangle.position(position.x, position.y);
-        //headeredRectangle.attr(''root/tabindex'', 12);
-        //headeredRectangle.attr(''root/title'', ''joint.shapes.standard.HeaderedRectangle'');
-        //headeredRectangle.attr(''header/fill'', ''#000000'');
-        //headeredRectangle.attr(''header/fillOpacity'', 1);
-        //headeredRectangle.attr(''headerText/text'', text);
-        //headeredRectangle.attr(''headerText/fill'', "#FFFFFF");
-        //headeredRectangle.attr(''body/fill'', ''#fe854f'');
-        //headeredRectangle.attr(''body/fillOpacity'', 1);
-        ////headeredRectangle.attr(''bodyText/text'', ''Headered\nRectangle'');
-        //headeredRectangle.prop(''qname'', qname);
-        //headeredRectangle.prop(''className'', className);
-        //headeredRectangle.addTo(this.graph);
-        //this.setX(position.x + 100 + this.horizontalSpace)
-        //this.setY(position.y + 100 + this.verticalSpace)
-        
-        //joint.shapes.devs.Model = joint.shapes.devs.Model.extend({
-        //
-        //  markup: ''<g class="rotatable"><g class="scalable"><circle class="body"/></g><text class="label"/><g class="inPorts"/><g class="outPorts"/></g>'',
-        //  portMarkup: ''<g class="port port<%= id %>"><rect class="port-body"/><text class="port-label"/></g>'',
-        //
-        //  defaults: joint.util.deepSupplement({
-        //
-        //    type: ''devs.CircleModel'',
-        //    attrs: {
-        //      ''.body'': {
-        //        r: 50,
-        //        cx: 50,
-        //        stroke: ''blue'',
-        //        fill: ''lightblue''
-        //      },
-        //      ''.label'': {
-        //        text: ''Circle Model'',
-        //        ''ref-y'': 0.5,
-        //        ''y-alignment'': ''middle''
-        //      },
-        //      ''.port-body'': {
-        //        width: 10,
-        //        height: 10,
-        //        x: -5,
-        //        stroke: ''gray'',
-        //        fill: ''lightgray'',
-        //        magnet: ''active''
-        //      }
-        //    }
-        //
-        //  }, joint.shapes.devs.Model.prototype.defaults)
-        //});
-        //
-        //
-        //
-        //var circleModel = new joint.shapes.devs.Model({
-        //  position: {
-        //    x: 150,
-        //    y: 100
-        //  },
-        //  size: {
-        //    width: 100,
-        //    height: 100
-        //  },
-        //  inPorts: [''a''],
-        //  outPorts: [''b'']
-        //});
-        //circleModel.addTo(this.graph)
-        //	    }
-        
-        			if(isHidden)
-        				rect.attr(''./display'', ''none'')
+        	makeElement(position, text: string, qname: string, className: string, isComplex: boolean, isEmbedded: boolean, refIdEmbed: string) {
                 
-        //        rect.addTo(this.graph);
-        //        return headeredRectangle
-        		  return inscribedImage;
+        		var element;
+        		if(!isComplex) {
+        			console.log("makeElement isComplex logical node : " + isComplex + ", element concerned is :" + text)
+        			element = new joint.shapes.standard.InscribedImage;
+        			
+        			element.resize(70, 70);
+        			element.position(position.x, position.y);
+        			element.attr(''root/title'', ''joint.shapes.standard.element'');
+        			element.attr(''label/text'', text);
+        			element.attr(''label/fill'', ''#fff'');
+        			element.attr(''root'', { class: ''pulsar'' });
+        			element.attr(''background/fill'', ''#fe854f'');
+        			element.attr(''background/fillOpacity'', 0.5);
+        			element.attr(''border/stroke'', ''#fe854f'');
+        			element.attr(''image'', {
+        				xlinkHref: this.c8o.endpoint + ''/.bin?__sequence=GetIcon&className='' + className + ''&large=true&__nolog=true'',
+        			});
+        			element.prop(''qname'', qname);
+        			element.prop(''className'', className);
+        			element.prop(''displayName'', text);
+        			element.prop(''isComplex'', isComplex);
+        			element.prop(''isEmbedded'', isEmbedded);
+        			element.prop(''refIdEmbed'', refIdEmbed);
+        		} else {
+        			element = this.makeComplexElement(position, text, qname, className, isComplex, isEmbedded, refIdEmbed);
+        		}
+        
+        		
+        		element.addTo(this.graph);
+        		this.setX(position.x + 70 + this.horizontalSpace)
+        		this.setY(position.y + 70 + this.verticalSpace)
+        		
+        		return element;
+            }
+        
+        	makeComplexElement(position, text: string, qname: string, className: string, isComplex: boolean, isEmbedded: boolean, refIdEmbed: string) {
+        		
+        		let element = new joint.shapes.basic.Rect({
+        	        position: {
+        				x: position.x, 
+        				y: position.y
+        			},
+        	        size: { 
+        				width: 70, 
+        				height: 70
+        			},
+        	        attrs: { 
+        				rect: { 
+        					fill: ''#E74C3C'' 
+        				}, 
+        				text: { 
+        					text: text 
+        				},	
+        			},
+        			''qname'': qname,
+        			''className'': className,
+        			''displayName'': text,
+        			''isComplex'': isComplex, 
+        			''isEmbedded'': isEmbedded,
+        			''refIdEmbed'': refIdEmbed
+            	});
+        		
+        		return element;
         	}
-        	
+        
         	getFlowScale() {
         		var scale = this.paper.scale();
         		var scaleNbr = scale.sx;
@@ -441,487 +226,6 @@ scriptContent:
         		}
         	}
         	
-        	getAndDisplayStepChilds(cellView: joint.dia.CellView) {
-        	    this.c8o.callJsonObject(".GetChildren", {
-        	        qname: cellView.model.attributes["qname"]
-        	    }).then((response, parameters) => {
-        	        let previous = null;
-        	        let y = 0;
-        	        let x = 0;
-        			let col = 1;
-        			let row = 1;
-        	        
-        			let parent = cellView
-        			
-        			let cells = this.graph.getCells();
-        //	        let ancestor = parent.model.getAncestors()
-        	        for (let i=0; i < response["array"].length; i++) {
-        	            let element = response["array"][i]
-        	            
-        	            let stepClassName = element.className.substring(this.strStep.length)
-        	            let parentClassName = parent.model.attributes[''className''].substring(this.strStep.length)
-        //	            if(elementIndex == 1) {
-        //	                let x = 500
-        //	            } else {
-        //	                let x = 250
-        //	            }
-        	            
-        				if(!this.isHorizontal) {
-        		            // calculate in case it is the first box we are opening
-        		            if(i == 0) {
-        		                if(previous == null && parentClassName == "IfThenElseStep" && stepClassName == "ThenStep") {
-        		                    y = parent.model.attributes.position.y + this.verticalSpace
-        	                        x = parent.model.attributes.position.x + this.horizontalSpace
-        		                } else if (previous == null && parentClassName == "IfThenElseStep" && stepClassName == "ElseStep") {
-        		                    y = parent.model.attributes.position.y + this.verticalSpace
-        	                        x = parent.model.attributes.position.x
-        		                } else if(previous == null && parentClassName == "ElseStep" || parentClassName == "ThenStep") {
-        	                        y = parent.model.attributes.position.y + this.verticalSpace
-        	                        x = parent.model.attributes.position.x
-        	                    } else if(parentClassName == "SimpleIteratorStep") {
-        	                        y = parent.model.attributes.position.y + this.verticalSpace
-        	                        x = parent.model.attributes.position.x
-        	                    } else if(parent.model.attributes[''isStarting''] == true){
-        	                        y = parent.model.attributes.position.y + this.verticalSpace
-        	                        x = parent.model.attributes.position.x + this.horizontalSpace
-        	                    } else {
-        	                        y = parent.model.attributes.position.y + this.verticalSpace
-        	                        x = parent.model.attributes.position.x
-        	                    }
-        		            } else if(previous != null){
-        		                // positioning Then box
-        		                if(stepClassName == "ThenStep") {
-        		                    y = parent.model.attributes.position.y
-        		                    x = parent.model.attributes.position.x + this.horizontalSpace
-        		                    
-        		                // positioning Else box
-        		                } else if (stepClassName == "ElseStep") {
-        		                    y = parent.model.attributes.position.y + this.verticalSpace
-        		                    x = parent.model.attributes.position.x
-        		                    
-        		                    // positioning Then''s or Else''s children compared to their parent 
-        		                } else if (parentClassName == "ElseStep" || parentClassName == "ThenStep") {
-        		                    y = parent.model.attributes.position.y + this.verticalSpace
-        		                    x = parent.model.attributes.position.x
-        		                } else {
-        		                    y = previous.attributes.position.y + this.verticalSpace
-        		                    x = previous.attributes.position.x
-        		                }
-        		            } else {
-        		            }
-        	
-        					// if a cell is already on points we move it vertically
-        	                if (this.graph.findModelsFromPoint({ x: x, y: y }).length > 0) {
-        	                    let elementToMove = this.graph.findModelsFromPoint({ x: x, y: y })
-        	                    elementToMove[0].set(''position'', {x: x, y: y + this.verticalSpace})
-        	                }
-        	
-        					// if a box is opened and a new branch created, we move down vertically cells from the main branch
-        					// condition checks if there is any cell on left of the current cell
-        	                if(this.graph.findModelsFromPoint({x: x - this.horizontalSpace, y: y }).length > 0){
-        		
-        						// if there is, incrementing col
-        						col = col +1;
-        						
-        						// previous col
-        						if(this.graph.findModelsFromPoint({x: x - (this.horizontalSpace * col), y: y})) {
-        							// getting the element to move
-        							let elementToMove = this.graph.findModelsFromPoint({ x: x - (this.horizontalSpace * col), y: y})
-        							if(elementToMove.length > 0)
-        								elementToMove[0].set(''position'', {x: x - (this.horizontalSpace * col), y: y + this.verticalSpace})
-        						}
-        						
-        						// 2 col before 
-        						if(this.graph.findModelsFromPoint({x: x - (this.horizontalSpace * (col + 1)), y: y})) {
-        							// getting the element to move
-        							let elementToMove = this.graph.findModelsFromPoint({ x: x - (this.horizontalSpace * (col + 1)), y: y})
-        							if(elementToMove.length > 0)
-        								elementToMove[0].set(''position'', {x: x - (this.horizontalSpace * (col + 1)), y: y + this.verticalSpace})
-        						}
-        						
-        						
-        	                    
-        	                    // getting element to move
-        	                    let elementToMove = this.graph.findModelsFromPoint({ x: x - this.horizontalSpace, y: y})
-        	                    elementToMove[0].set(''position'', {x: x - this.horizontalSpace, y: y + this.verticalSpace })
-        	                    
-        	                    // getting its successors
-        	                    let successors = this.graph.getSuccessors(elementToMove[0]);
-        	                    
-        	                    for(var j = 0; j < successors.length; j++) {
-        	                        // if it''s the first successor no need to move it more than the vertical space
-        	                        if(j == 0) {
-        	                            successors[j].set(''position'', {x: successors[j].attributes.position.x, y : elementToMove[0].attributes.position.y + this.verticalSpace})
-        	                        } else {
-        	                            successors[j].set(''position'', {x: successors[j].attributes.position.x, y : elementToMove[0].attributes.position.y + this.verticalSpace * (j +1)})
-        	                        }
-        	                        
-        	                    }
-        	                }
-        				
-        	            
-        	            
-        	            let step = this.addStep({
-        //                        x: cellView.getBBox().topLeft().x + x,
-        //                        y: cellView.getBBox().topLeft().y      
-        	                      x: x,
-        	                      y: y
-                            }, 
-                            {
-                                width: 70,
-                                height: 70              
-                            }, 
-                            element.displayName,
-                            element.hasChildren,
-                            element.qname,
-                            element.className,
-                            false,
-        					false
-                        )
-                        
-                        // cellView.model.embed(step)
-                        
-                        if(i == 0)
-                            this.addLink(cellView.model, step, this.isHorizontal, stepClassName)
-                        
-                        if (previous != null && stepClassName != "ElseStep") 
-                            this.addLink(previous, step, this.isHorizontal, stepClassName)
-                            
-                        if (stepClassName == "ElseStep")
-                            this.addLink(cellView.model, step, this.isHorizontal, stepClassName)
-                        
-                        previous = step
-                        
-                        
-        
-                        /*
-                        if (element.hasChildren) {
-                            this.getAndDisplayStepChilds(step.findView(this.paper)) 
-                        }
-                        */
-        			} 
-        			
-        			/* case we display flow horizontally
-        			***************
-        			*/
-        			else {
-        				// calculate in case it is the first box we are opening
-        		            if(i == 0) {
-        		                if(previous == null && parentClassName == "IfThenElseStep" && stepClassName == "ThenStep") {
-        							this.c8o.callJsonObject(".GetChildren", {
-        	        					qname: element.qname
-        	    					}).then((resp, param) => {
-        									let elem = resp[''array''][0];
-        									y = parent.model.attributes.position.y
-        	                        		x = parent.model.attributes.position.x + this.horizontalSpace
-        									// if a cell is already on points we move it horizontally
-        					                if (this.graph.findModelsFromPoint({ x: x, y: y }).length > 0) {
-        					                    let elementToMove = this.graph.findModelsFromPoint({ x: x, y: y })
-        					                    elementToMove[0].set(''position'', {x: x + this.horizontalSpace, y: y})
-        // getting its successors
-        	                    let successors = this.graph.getSuccessors(elementToMove[0]);
-        	                    
-        	                    for(var j = 0; j < successors.length; j++) {
-        	                        // if it''s the first successor no need to move it more than the horizonal space
-        	                        if(j == 0) {
-        	                            successors[j].set(''position'', {x: successors[j].attributes.position.x + this.horizontalSpace, y : elementToMove[0].attributes.position.y})
-        	                        } else {
-        	                            successors[j].set(''position'', {x: successors[j].attributes.position.x + this.horizontalSpace * (j+1), y : elementToMove[0].attributes.position.y})
-        	                        }
-        	                         
-        	                    }					                
-        }
-        
-        									let step = this.addStep(
-        										{
-        										x: x,
-        										y: y
-        										},
-        										{
-        											width: 70,
-        											height: 70 	
-        										},
-        										elem.displayName,
-        					                    elem.hasChildren,
-        					                    elem.qname,
-        					                    elem.className,
-        					                    false,
-        										false	
-        									)
-        									
-        									this.addLink(cellView.model, step, this.isHorizontal, "true")
-        									this.c8o.log.debug("Then async x :" + x)
-        									this.c8o.log.debug("Then async y :" + y)
-        								return null;
-        							});
-        		                } else if(previous == null && parentClassName == "ElseStep" || parentClassName == "ThenStep") {
-        	                        y = parent.model.attributes.position.y
-        	                        x = parent.model.attributes.position.x + this.horizontalSpace
-        	                    } else if(parentClassName == "SimpleIteratorStep") {
-        	                        y = parent.model.attributes.position.y 
-        	                        x = parent.model.attributes.position.x + this.horizontalSpace
-        	                    } else if(parent.model.attributes[''isStarting''] == true){
-        	                        y = parent.model.attributes.position.y
-        	                        x = parent.model.attributes.position.x + this.horizontalSpace
-        	                    } else {
-        	                        y = parent.model.attributes.position.y
-        	                        x = parent.model.attributes.position.x + this.horizontalSpace
-        	                    }
-        		            } else if(previous != null){
-        		                // positioning Then box
-        		                if(stepClassName == "ThenStep") {
-        		                    y = parent.model.attributes.position.y
-        		                    x = parent.model.attributes.position.x + this.horizontalSpace
-        		                    
-        		                // positioning Else box
-        		                } else if (stepClassName == "ElseStep") {
-        		                    y = parent.model.attributes.position.y + this.verticalSpace
-        		                    x = parent.model.attributes.position.x + this.horizontalSpace
-        		                    // positioning Then''s or Else''s children compared to their parent 
-        		                } else if (parentClassName == "ElseStep" || parentClassName == "ThenStep") {
-        		                    y = parent.model.attributes.position.y 
-        		                    x = parent.model.attributes.position.x + this.horizontalSpace
-        		                } else {
-        		                    y = previous.attributes.position.y
-        		                    x = previous.attributes.position.x + this.horizontalSpace
-        		                }
-        		            } else {
-        						if (parentClassName == "IfThenElseStep" && stepClassName == "ElseStep") {			
-        										this.c8o.callJsonObject(".GetChildren", {
-        				        					qname: element.qname
-        				    					}).then((resp, param) => {
-        												let elem = resp[''array''][0];
-        												y = parent.model.attributes.position.y + this.verticalSpace
-        				                        		x = parent.model.attributes.position.x
-        												let step = this.addStep(
-        													{
-        													x: x,
-        													y: y
-        													},
-        													{
-        														width: 70,
-        														height: 70 	
-        													},
-        													elem.displayName,
-        								                    elem.hasChildren,
-        								                    elem.qname,
-        								                    elem.className,
-        								                    false,
-        													false	
-        												)
-        												
-        												
-        												this.addLink(cellView.model, step, this.isHorizontal, "false")
-        												this.c8o.log.debug("Else async x :" + x)
-        												this.c8o.log.debug("Else async y :" + y)
-        											return null;
-        										});
-        							}
-        		            }
-        
-        
-        				// if a cell is already on points we move it horizontally
-        	                if (this.graph.findModelsFromPoint({ x: x, y: y }).length > 0) {
-        	                    let elementToMove = this.graph.findModelsFromPoint({ x: x, y: y })
-        	                    elementToMove[0].set(''position'', {x: x + this.horizontalSpace, y: y})
-        
-        						let successors = this.graph.getSuccessors(elementToMove[0]);
-        	                    
-        	                    for(var j = 0; j < successors.length; j++) {
-        	                        // if it''s the first successor no need to move it more than the horizonal space
-        	                        if(j == 0) {
-        	                            successors[j].set(''position'', {x: successors[j].attributes.position.x + this.horizontalSpace, y : elementToMove[0].attributes.position.y})
-        	                        } else {
-        	                            successors[j].set(''position'', {x: successors[j].attributes.position.x + this.horizontalSpace * (j+1), y : elementToMove[0].attributes.position.y})
-        	                        }
-        	                        
-        	                    }
-        	                }
-        
-        					
-        
-        					// condition checks if there is any cell upper of the current cell
-        	                if(this.graph.findModelsFromPoint({x: x, y: y - (this.verticalSpace * row)}).length > 0){
-        		
-        						
-        						// previous row
-        						if(this.graph.findModelsFromPoint({x: x, y: y + (this.verticalSpace * row)})) {
-        							// getting the element to move
-        							let elementToMove = this.graph.findModelsFromPoint({ x: x, y: y + (this.verticalSpace * row)})
-        							if(elementToMove.length > 0)
-        								elementToMove[0].set(''position'', {x: x + (this.horizontalSpace * row), y: y + this.verticalSpace})
-        						}
-        						
-        //						// 2 col before 
-        //						if(this.graph.findModelsFromPoint({x: x - (this.horizontalSpace * (col + 1)), y: y})) {
-        //							// getting the element to move
-        //							let elementToMove = this.graph.findModelsFromPoint({ x: x - (this.horizontalSpace * (col + 1)), y: y})
-        //							if(elementToMove.length > 0)
-        //								elementToMove[0].set(''position'', {x: x - (this.horizontalSpace * (col + 1)), y: y + this.verticalSpace})
-        //						}
-        //						
-        //						
-        //	                    
-        	                    // getting element to move
-        	                    let elementToMove = this.graph.findModelsFromPoint({ x: x, y: y - (this.verticalSpace * row)})
-        	                    elementToMove[0].set(''position'', {x: x + this.horizontalSpace * row, y: y - this.verticalSpace })
-        	                    
-        	                    // getting its successors
-        	                    let successors = this.graph.getSuccessors(elementToMove[0]);
-        
-        						this.setSuccessorsPosition(elementToMove[0], successors);
-        //	                    
-        //	                    for(var j = 0; j < successors.length; j++) {
-        //		
-        //						if(this.checkElementOnPoint(successors[j].attributes.position.x + this.horizontalSpace, elementToMove[0].attributes.position.y)) {
-        //							let element = this.graph.findModelsFromPoint({x: successors[j].attributes.position.x + this.horizontalSpace, y: elementToMove[0].attributes.position.y})
-        //							element[0].set(''position'', {x: element[0].attributes.position.x + this.horizontalSpace, y: element[0].attributes.position.y})
-        //						}
-        //						successors[j].set(''position'', {x: successors[j].attributes.position.x + this.horizontalSpace, y : elementToMove[0].attributes.position.y})
-        ////	                        // if it''s the first successor no need to move it more than the horizontal space
-        ////	                        if(j == 0) {
-        ////	                            successors[j].set(''position'', {x: successors[j].attributes.position.x + this.horizontalSpace, y : elementToMove[0].attributes.position.y})
-        ////	                        } else {
-        ////	                            successors[j].set(''position'', {x: successors[j].attributes.position.x + this.horizontalSpace * j, y : elementToMove[0].attributes.position.y})
-        ////	                        }
-        //	                        
-        //	                    }
-        
-        						// if there is, incrementing row
-        						row = row +1;
-        	                }
-        
-        			 
-        		if(stepClassName != "ThenStep" && stepClassName != "ElseStep") {
-        			let step = this.addStep({
-        //                        x: cellView.getBBox().topLeft().x + x,
-        //                        y: cellView.getBBox().topLeft().y      
-        	                      x: x,
-        	                      y: y
-                            }, 
-                            {
-                                width: 70,
-                                height: 70              
-                            }, 
-                            element.displayName,
-                            element.hasChildren,
-                            element.qname,
-                            element.className,
-                            false,
-        					false
-                        )
-        
-        				if(i == 0)
-                            this.addLink(cellView.model, step, this.isHorizontal, "")
-                        
-                        if (previous != null && stepClassName != "ElseStep") 
-                            this.addLink(previous, step, this.isHorizontal, "")
-                            
-                        if (stepClassName == "ElseStep")
-                            this.addLink(cellView.model, step, this.isHorizontal, "")
-                        
-                        previous = step
-        		}
-        
-        				
-        //			if(stepClassName == "ThenStep" || stepClassName == "ElseStep") {
-        //				// getting parent element, to be able to get current''s element object (so we are getting IfThenElseStep element)
-        //	            let elementToMove = this.graph.findModelsFromPoint({ x: parent.model.attributes.position.x, y: parent.model.attributes.position.y})
-        //	            
-        //				
-        //				// getting its successors
-        //	            let successors = this.graph.getSuccessors(step, {deep: true});
-        //				let toto = successors
-        //			}	
-        
-        //			if(parentClassName == "ThenStep" || parentClassName == "ElseStep") {
-        //				// getting then or else box
-        //	            let elementToMove = this.graph.findModelsFromPoint({ x: parent.model.attributes.position.x, y: parent.model.attributes.position.y})
-        //	            
-        //				elementToMove[0].attr(''./display'', ''none'')
-        //				// getting its successors
-        ////	            let successors = this.graph.getSuccessors(elementToMove[0]);
-        ////				let toto = successors
-        //			}	
-        
-        //			 let step = this.addStep({
-        ////                        x: cellView.getBBox().topLeft().x + x,
-        ////                        y: cellView.getBBox().topLeft().y      
-        //	                      x: x,
-        //	                      y: y
-        //                    }, 
-        //                    {
-        //                        width: 70,
-        //                        height: 70              
-        //                    }, 
-        //                    element.displayName,
-        //                    element.hasChildren,
-        //                    element.qname,
-        //                    element.className,
-        //                    false,
-        //					false
-        //                )
-        
-        //                if(i == 0)
-        //                    this.addLink(cellView.model, step, this.isHorizontal, stepClassName)
-        //                
-        //                if (previous != null && stepClassName != "ElseStep") 
-        //                    this.addLink(previous, step, this.isHorizontal, stepClassName)
-        //                    
-        //                if (stepClassName == "ElseStep")
-        //                    this.addLink(cellView.model, step, this.isHorizontal, stepClassName)
-        //                
-        //                previous = step
-        
-        			} // endelse
-        			
-        			
-                        
-                        // cellView.model.embed(step)
-                        
-        	        } // end for
-        	        
-        //	        /**
-        //	         * Get the top most ancestor and ask it to resize itslef to fit all embeds 
-        //	         */
-        //            let ancestors = cellView.model["getAncestors"]()
-        //            let resizeToFit = (ancestors.length == 0 ? cellView.model: ancestors[ancestors.length-1]) as joint.shapes.basic.Rect
-        //            
-        //            /**
-        //             * Get the the bottom left position before resize
-        //             */
-        //            let bottomY = resizeToFit.getBBox().bottomLeft().y
-        //            let bottomX = resizeToFit.getBBox().bottomLeft().x
-        //
-        //            /* Now Resize to fit all embedded */
-        //            resizeToFit["fitEmbeds"]({
-        //                deep: true,
-        //                padding: 20
-        //            })
-        //            
-        //            /* get the new bottom left position of the resized box, and compute deltas */ 
-        //            let deltaY = resizeToFit.getBBox().bottomLeft().y - bottomY
-        //            let deltaX = resizeToFit.getBBox().bottomLeft().x - bottomX
-        //            
-        //            /* Reposition resized Box by deltaX on the right */
-        //            resizeToFit.translate(-deltaX, 0)
-        //
-        //            /* Now, walk all boxes and find only the ones that are lower than the non resized box and push them down by deltaY */ 
-        //            for (let element of this.paper.model.getElements()) {
-        //                if (element instanceof joint.shapes.basic.Rect) {
-        //                    /* Only for non embedded boxes */ 
-        //                    if (element.getParentCell() != resizeToFit)
-        //                        if (element.getBBox().topLeft().y > bottomY)
-        //                            element.translate(0, deltaY)
-        //                }
-        //            }
-                    return null;
-        	    })
-        		.fail((error:any)=>{
-        			console.log(error);
-        		})
-        	}
-        	
         	checkElementOnPoint(x: number, y: number) {
         		 if (this.graph.findModelsFromPoint({ x: x, y: y }).length > 0)
         			return true;
@@ -929,314 +233,192 @@ scriptContent:
         			return false;
         	}
         	
-        	setSuccessorsPosition(element: any, successors: Array<any>) {
-        		for(var j = 0; j < successors.length; j++) {
-        			if(this.checkElementOnPoint(successors[j].attributes.position.x + this.horizontalSpace, element.attributes.position.y)) {
-        				let elmt = this.graph.findModelsFromPoint({x: successors[j].attributes.position.x + this.horizontalSpace, y: element.attributes.position.y})
-        				elmt[0].set(''position'', {x: elmt[0].attributes.position.x + this.horizontalSpace, y: elmt[0].attributes.position.y})
-        				
-        				if(this.checkElementOnPoint(elmt[0].attributes.position.x, elmt[0].attributes.position.y)) {
-        					let children = this.graph.getSuccessors(elmt[0]);
-        					this.setSuccessorsPosition(elmt[0], children)
-        				}
-        			}
-        			
-        			successors[j].set(''position'', {x: successors[j].attributes.position.x + this.horizontalSpace, y : element.attributes.position.y})
-        //		    // if it''s the first successor no need to move it more than the horizontal space
-        //		    if(j == 0) {
-        //		    	successors[j].set(''position'', {x: successors[j].attributes.position.x + this.horizontalSpace, y : element.attributes.position.y})
-        //		    } else {
-        //		        successors[j].set(''position'', {x: successors[j].attributes.position.x + this.horizontalSpace * j, y : element.attributes.position.y})
-        //		    }
-        	    }
-        	}
-        	
-        	// nodeObject : GetGraph.array
-        	walkChildren(nodeObject: any, previous = null) {
-        //		let x = 30;
-        //		let y = 30;
-        		let isHidden = false
-        		let tmpThenStep;
-        		let tmpElseStep;
-        		// let previous = null;
+        	walkChildren(nodeObject: any, previous = null, refId) {
+        		// refid = id du complex
+        		var x;
+        		var y;
+        		var parent = previous
+        		var complexElement;
         		
         		for (var i=0; i < nodeObject.length; i++) {
+        			
+        			// variablizing data
         			let stepClassName = nodeObject[i].dbo.className.substring(this.strStep.length)
-        	//		console.log("I AM PREVIOUS " + JSON.stringify(previous));
-        //			if(stepClassName == "ThenStep" || stepClassName == "ElseStep")
-        //				isHidden = true
+        			let displayName = nodeObject[i].dbo.displayName
+        			let parentClassName = parent.attributes[''className''].substring(this.strStep.length)
         			
-        //			console.log(JSON.stringify(previous));
-        //			console.log("previous i" + i)
-        //			if (this.checkElementOnPoint(x, y + this.verticalSpace * i)) {
-        //	        	let elementToMove = this.graph.findModelsFromPoint({ x: x, y: y + this.verticalSpace * i})
-        //	            
-        //				x = elementToMove[0].attributes.position.x + this.horizontalSpace;
-        //				y = elementToMove[0].attributes.position.y;
-        //
-        //	        }
-        
-        //			if(nodeObject[i].dbo.isStarting) {
-        //				y = y + this.verticalSpace;
-        //				let step = this.addStep({
-        ////                        x: cellView.getBBox().topLeft().x + x,
-        ////                        y: cellView.getBBox().topLeft().y      
-        //	                      x: x,
-        //	                      y: y
-        //                    }, 
-        //                    {
-        //                        width: 70,
-        //                        height: 70              
-        //                    }, 
-        //                    nodeObject[i].dbo.displayName,
-        //                    false,
-        //                    nodeObject[i].dbo.qname,
-        //                    nodeObject[i].dbo.className,
-        //                    nodeObject[i].dbo.isStarting,
-        //					false
-        //                )
-        //
-        ////				previous = step;
-        //				
-        //			}
-        
+        			let isComplex = previous.attributes.isComplex;
+        			let previousX = previous.attributes.position.x;
+        			let previousY = previous.attributes.position.y;
         			
-        			if(previous != null)  { 
-        	        	let parentClassName = previous.attributes[''className''].substring(this.strStep.length)
+        			if(previous != null) {
         				
-        				var x = previous.attributes.position.x
-        				var y = previous.attributes.position.y
-        				
-        				
-        				if (this.checkElementOnPoint(x, y)) {
-        		        	let elementToMove = this.graph.findModelsFromPoint({ x: x, y: y})
-        		            
-        				//	console.log("i am element to move " + JSON.stringify(elementToMove[0]))
-        					x = elementToMove[0].attributes.position.x + this.horizontalSpace;
-        					y = elementToMove[0].attributes.position.y;
-        
-        	        	} 
-        				if (this.checkElementOnPoint(x, y + this.verticalSpace)) {
-        		        	let elementToMove = this.graph.findModelsFromPoint({ x: x, y: y + this.verticalSpace})
-        		            elementToMove[0].set(''position'', {x: elementToMove[0].attributes.position.x, y: elementToMove[0].attributes.position.y + this.verticalSpace})
-        				//	console.log("i am element to move " + JSON.stringify(elementToMove[0]))
-        //					x = elementToMove[0].attributes.position.x + this.horizontalSpace;
-        //					y = elementToMove[0].attributes.position.y;
-        					
-        	        	}
-        
-        				if(parentClassName == "IfThenElseStep" && stepClassName == "ThenStep") {
-        		             y = previous.attributes.position.y
-        		             x = previous.attributes.position.x + this.horizontalSpace
-        //
-        //					var firstChild = nodeObject[i].dbo.children[0];
-        //					let step = this.addStep({
-        //		//                        x: cellView.getBBox().topLeft().x + x,
-        //		//                        y: cellView.getBBox().topLeft().y      
-        //			                      x: x,
-        //			                      y: y
-        //		                    }, 
-        //		                    {
-        //		                        width: 70,
-        //		                        height: 70              
-        //		                    }, 
-        //		                    firstChild.dbo.displayName,
-        //		                    false,
-        //		                   	firstChild.dbo.qname,
-        //		                    firstChild.dbo.className,
-        //		                    firstChild.dbo.isStarting,
-        //							isHidden
-        //		                )
-        //
-        //					this.addLink(previous, step, this.isHorizontal, "Then")
-        //					previous = step
-        //					 if (this.checkElementOnPoint(x, y)) {
-        //			        	let elementToMove = this.graph.findModelsFromPoint({ x: x, y: y})
-        //						elementToMove[0].set(''position'', {x: x + this.horizontalSpace, y: y})
-        //			            let successors = this.graph.getSuccessors(elementToMove[0]);
-        //			            if(successors.length > 0) {
-        //							this.setSuccessorsPosition(previous, successors);
-        //						}
-        					//	console.log("i am element to move " + JSON.stringify(elementToMove[0]))
-        //						x = elementToMove[0].attributes.position.x + this.horizontalSpace;
-        //						y = elementToMove[0].attributes.position.y;
-        	
-        //		        	}
-        
-        		                    
-        		        // positioning Else box
-        		        } else if (parentClassName == "IfThenElseStep" && stepClassName == "ElseStep") {
-        		            y = previous.attributes.position.y + this.verticalSpace
-        		            x = previous.attributes.position.x
-        		       // positioning Then''s or Else''s children compared to their parent 
-        		       } else {
-        			
-        			   }
-        
-        //			if (this.checkElementOnPoint(x, y)) {
-        //				let elementToMove = this.graph.findModelsFromPoint({ x: x, y: y})
-        //				elementToMove[0].set(''position'', {x: elementToMove[0].attributes.position.x + this.horizontalSpace, y: y})
-        //				let successors = this.graph.getSuccessors(elementToMove[0]);
-        //			    if(successors.length > 0) {
-        //					this.setSuccessorsPosition(previous, successors);
+        //				if(!previous.attributes.isComplex) {
+        //					x = previous.attributes.position.x + this.horizontalSpace
+        //					y = previous.attributes.position.y 
         //				}
-        //					//	console.log("i am element to move " + JSON.stringify(elementToMove[0]))
-        ////						x = elementToMove[0].attributes.position.x + this.horizontalSpace;
-        ////						y = elementToMove[0].attributes.position.y;
-        //	
-        //		     }
-        
-        // si pstepClassName == "ThenStep"
-        // 	alors
-        // 		firstChild = nodeObject[i].dbo.children[0]
-        //		x = previous.attributes.position.x + horizontalSpace
-        //		y = previous.attributes.position.y
-        // si stepClassName == "ElseStep"
-        //	alors 
-        // 	 	firstChild = nodeObject[i].dbo.children[0]
-        // 		x = previous.attributes.position.x
-        // 		y = previous.attributes.position.y + verticalSpace
-        //
-        //
-        // 
-        
-        				if(parentClassName == "IfThenElseStep" && stepClassName == "ElseStep") {
+        				
+        				if(stepClassName == "ElseStep") {
+        					x = previous.attributes.position.x 
         					y = previous.attributes.position.y + this.verticalSpace
-        		            x = previous.attributes.position.x
-        					var firstChild = nodeObject[i].dbo.children[0];
-        					let step = this.addStep({
-        		//                        x: cellView.getBBox().topLeft().x + x,
-        		//                        y: cellView.getBBox().topLeft().y      
-        			                      x: x,
-        			                      y: y
-        		                    }, 
-        		                    {
-        		                        width: 70,
-        		                        height: 70              
-        		                    }, 
-        		                    firstChild.dbo.displayName,
-        		                    false,
-        		                   	firstChild.dbo.qname,
-        		                    firstChild.dbo.className,
-        		                    firstChild.dbo.isStarting,
-        							isHidden
-        		                )
-        
-        					this.addLink(previous, step, this.isHorizontal, "Else")
-        					
-        //					if(this.graph.findModelsFromPoint({x: x + this.horizontalSpace, y: y})) {
-        //							// getting the element to move
-        //							let elementToMove = this.graph.findModelsFromPoint({ x: x + this.horizontalSpace, y: y})
-        //							console.log("i am elementToMove x before setting" + elementToMove[0].attributes.position.x)
-        //							if(elementToMove.length > 0)
-        //								elementToMove[0].set(''position'', {x: elementToMove[0].attributes.position.x  + (this.horizontalSpace * 2), y: y})
-        //							
-        //							// console.log("i am step x " + step.attributes.position.x)
-        //							console.log("i am elementToMove x after setting" + elementToMove[0].attributes.position.x)					
-        //					}
-        					console.log("i am typeof " + typeof step)
-        //					step.highlight(null/* defaults to cellView.el */, {
-        //					    highlighter: {
-        //					        name: ''addClass'',
-        //					        options: {
-        //					            className: ''pulsar''
-        //					        }
-        //					    }
-        //					});
-        					
-        					previous = step
-        
+        				} else if (isComplex) {
+        					x = previousX;
+        					y = previousY;
+        				} else {
+        					x = previous.attributes.position.x + this.horizontalSpace
+        					y = previous.attributes.position.y 
         				}
-        				if(stepClassName != "ThenStep" && stepClassName != "ElseStep") {
-        					let step = this.addStep({
-        		//                        x: cellView.getBBox().topLeft().x + x,
-        		//                        y: cellView.getBBox().topLeft().y      
-        			                      x: x,
-        			                      y: y
-        		                    }, 
-        		                    {
-        		                        width: 70,
-        		                        height: 70              
-        		                    }, 
-        		                    nodeObject[i].dbo.displayName,
-        		                    false,
-        		                    nodeObject[i].dbo.qname,
-        		                    nodeObject[i].dbo.className,
-        		                    nodeObject[i].dbo.isStarting,
-        							isHidden
-        		                )
-        
-        					if (previous != null && stepClassName == "ThenStep") 
-                            	this.addLink(previous, step, this.isHorizontal, stepClassName)
-        					if (previous != null && stepClassName == "ElseStep") 
-                            	this.addLink(previous, step, this.isHorizontal, stepClassName)
-        					if(previous != null) {
-        						if(this.graph.findModelsFromPoint({ x: x - this.horizontalSpace, y: y}).length > 0) {
-        							let element = this.graph.findModelsFromPoint({ x: x - this.horizontalSpace, y: y})
-        							if(element[0].attributes.className.substring(this.strStep.length) == "IfThenElseStep") {
-        								this.addLink(previous, step, this.isHorizontal, "Then")
-        							} else {
-        								this.addLink(previous, step, this.isHorizontal, "")
-        							}
-        						} else {
-        							this.addLink(previous, step, this.isHorizontal, "")
-        						}
-        						//this.addLink(previous, step, this.isHorizontal, "")
-        					}
-        					
-        //					if(previous != null && parentClassName == "ThenStep") {
-        //						this.addLink(previous, step, this.isHorizontal, "Then")
-        //					}
-        	//	
-        					previous = step;
+        				
         			}
-        				if(nodeObject[i].dbo.children != undefined && nodeObject[i].dbo.children.length > 0) {
-        					this.walkChildren(nodeObject[i].dbo.children, previous);
-        				} // endif
-        			} 
         			
-        //			this.minimapNavigatorPosition.maxX = (this.local.maxX * this.miniMapScale) + 150;
-        //			this.minimapNavigatorPosition.maxY = (this.local.maxY * this.miniMapScale) + 150;
+        			// getting ref complex id 
+        			if(previous.attributes.isComplex) {
+        				refId = previous.id
+        			}
         			
-        //			if(previous != null && stepClassName == "ThenStep") {
-        //		    	y = previous.model.attributes.position.y + this.verticalSpace
-        //	            x = previous.model.attributes.position.x + this.horizontalSpace
-        //		    }
-        //			let step = this.addStep({
-        ////                        x: cellView.getBBox().topLeft().x + x,
-        ////                        y: cellView.getBBox().topLeft().y      
-        //	                      x: x,
-        //	                      y: y
-        //                    }, 
-        //                    {
-        //                        width: 70,
-        //                        height: 70              
-        //                    }, 
-        //                    nodeObject[i].dbo.displayName,
-        //                    false,
-        //                    nodeObject[i].dbo.qname,
-        //                    nodeObject[i].dbo.className,
-        //                    nodeObject[i].dbo.isStarting,
-        //					false
-        //                )
-        //
-        //			previous = step;
+        			var el = this.makeElement({
+        					x : x,
+        					y: y
+        				}, 
+        				nodeObject[i].dbo.displayName,
+        				nodeObject[i].dbo.qname,
+        				nodeObject[i].dbo.className,
+        				nodeObject[i].dbo.isComplex,
+        				nodeObject[i].dbo.isEmbedded,
+        				refId
+        			)
         
-        //			console.log("walkChildren displayName " + nodeObject[i].displayName)
-        //			console.log("walkChildren qname " + nodeObject[i].qname)
-        //			console.log("walkChildren className" + nodeObject[i].qname)
-        //			
-        //			console.log("walkChildren children " + JSON.stringify(nodeObject[i].children))
+        			if(previous.attributes.isComplex) {
+        				previous.embed(el)
+        				previous.fitEmbeds({
+        					deep: true,
+        					padding: ''10px''
+        				})
+        				var complexElement = previous;
+        //				previous.resize(500, 500)
+        //				previous.fitEmbeds({
+        //					deep: true,
+        //					padding: ''50px''
+        //				})
+        
+        			}
+        			 
+        			if(previous.attributes.isComplex == false && el.attributes.isEmbedded == true) {
+        				// on chope l''id de référence au quel il faut embedder
+        				// on embed l''élément à l''élément de'' l''id
+        				// on resize
+        				var complex = this.graph.getCell(el.attributes.refIdEmbed);
+        //				var complexView = this.paper.findViewByModel(complex);
+        				complex.embed(el);
+        				
+        //				var originalPosition = complex.get(''position'');
+        //        		var originalSize = complex.get(''size'');
+        //
+        //				var newX = originalPosition.x;
+        //	        	var newY = originalPosition.y;
+        //	        	var newCornerX = originalPosition.x + originalSize.width;
+        //	        	var newCornerY = originalPosition.y + originalSize.height;
+        //
+        //				_.each(complex.getEmbeddedCells(), function(child) {
+        //		
+        //		            var childBbox = child.getBBox();
+        //		
+        //		            if (childBbox.x < newX) { newX = childBbox.x; }
+        //		            if (childBbox.y < newY) { newY = childBbox.y; }
+        //		            if (childBbox.corner().x > newCornerX) { newCornerX = childBbox.corner().x; }
+        //		            if (childBbox.corner().y > newCornerY) { newCornerY = childBbox.corner().y; }
+        //
+        //			        complex.set({
+        //			            position: { x: newX, y: newY },
+        //			            size: { width: newCornerX - newX, height: newCornerY - newY }
+        //			        });
+        //	        	});
+        
+        			// Note that we also pass a flag so that we know we shouldn''t adjust the
+        	        // `originalPosition` and `originalSize` in our handlers as a reaction
+        	        // on the following `set()` call.
+        
+        //				complex.set({ size: {width: previous.attributes.position.x, height: previous.attributes.position.y + 75 }})	
+        //				if(complexElement != undefined)
+        //					complexElement.fitEmbeds({
+        //						deep: true,
+        //						padding: ''250px''
+        //					})
+        				
+        			}
         			
-        //			if(nodeObject[i].dbo.children != undefined && nodeObject[i].dbo.children.length > 0) {
-        //				this.walkChildren(nodeObject[i].dbo.children, previous);
-        //			}
+        			if(previous != null && !previous.attributes.isComplex)
+        				var link = this.makeLink(previous, el, "")
+        				
+        			previous = el
+        			
+        			var allComplexElements = this.graph.getElements().filter(element => element.attributes.isComplex == true)
+        			var tmpComplexElement = [];
+        			_.each(allComplexElements, (element) => {
+        				
+        				console.log("I am element: " + element.attributes.qname)
+        				var elementBBox = element.getBBox()
+        				
+        				var elementX = elementBBox.x;
+        				var elementY = elementBBox.y;
+        				var elementW = elementBBox.width;
+        				var elementH = elementBBox.height;
+        				
+        				var area = {
+        					x: elementX,
+        					y: elementY,
+        					width: elementW,
+        					height: elementH
+        				}
+        				
+        				var modelsInArea = this.graph.findModelsInArea(area).filter(model => model.attributes.isComplex && model.attributes.isEmbedded && model.attributes.id != element.attributes.id);
+        				
+        				_.each(modelsInArea, (model) =>  {
+        					//console.log("I AM unique model: " + JSON.stringify(model));
+        					var modelBBox = model.getBBox();
+        					if(modelBBox.intersect(elementBBox)) {
+        						console.log("INTERSECT elementQname :" + element.attributes.qname + " modelQname " + model.attributes.qname)
+        						
+        						// choper top left de l''élément (ce qui est au dessus, z-index le plus fort)
+        						// choper bottom left du model (ce qui est en dessous, z-index < z-index elem)
+        						
+        						// notes pour le 13/11/2020
+        						// au départ c''était elementTopLeftY mais finalement tu as inversé et tu gardes le TopLeftX just in case
+        						var elementBottomLeftY = elementBBox.bottomLeft().y;
+        						var elementTopLeftX = elementBBox.topLeft().x;
+        						
+        						var modelTopLeftY = modelBBox.topLeft().y;
+        						var modelBottomLeftX = modelBBox.bottomLeft().x;
+        						
+        									
+        						if(modelTopLeftY < elementBottomLeftY)
+        //							console.log("deltaY: " + deltaY)
+        							element.position(element.attributes.position.x, element.attributes.position.y + this.verticalSpace)
+        //							element.translate(element.attributes.position.x, 500)
+        						
+        						console.log("INTERSECT modelTopLeftY: " + modelTopLeftY + " elementBottomLeftY: " + elementBottomLeftY)
+        					}
+        				});
+        		
+        				element.fitEmbeds({
+        					deep: true,
+        					padding: { 
+        						top: 20,
+        						left: 10, 
+        						right: 10, 
+        						bottom: 20 
+        					}
+        				});
+        
+        			});
+        			
+        			if(nodeObject[i].dbo.children != undefined && nodeObject[i].dbo.children.length > 0) {
+        					this.walkChildren(nodeObject[i].dbo.children, previous, refId);
+        			}
+        
         		}
-        		
-        		
-        		
         	}
-        	
+        
         	ngAfterViewInit() {
         	    /**
         	     * TODO : Implement Drag & Drop from palette see : https://codepen.io/fxaeberard/pen/reGvjm
@@ -1244,14 +426,16 @@ scriptContent:
         	     */
         		this.global.miniMapIsHidden = false;    
         	    let element = this.flowID as ElementRef
+        
                 this.paper = new joint.dia.Paper({
                     el: element.nativeElement,
-                    width: ''600px'',
-                    height: ''300px'',
+                    width: ''100%'',
+                    height: ''600px'',
                     model: this.graph,
                     gridSize: 10,
-                        defaultLink: new joint.dia.Link({
-                        attrs: {
+        			embeddingMode: true,
+                    defaultLink: new joint.dia.Link({
+                    	attrs: {
                             ''.connection'' : {
                                 stroke: ''orange'',
                                 strokeWidth: 2
@@ -1279,7 +463,7 @@ scriptContent:
                     }
                 });
         
-        	// minimap paper view
+        		// minimap paper view
         		let miniMap = document.getElementById(''paper-multiple-papers-small'')
         	    var paperMiniMap = new joint.dia.Paper({
         	        el: miniMap,
@@ -1377,6 +561,52 @@ scriptContent:
         		  }
         		});
            
+        
+        		this.paper.on(''change:position'', function(cell, newPosition, opt) {
+        			
+        			// if we manipulate a complex box
+        			if (cell.get(''embeds'') && cell.get(''embeds'').length) {
+        	            // If we''re manipulating a parent element, let''s store
+        	            // it''s original position to a special property so that
+        	            // we can shrink the parent element back while manipulating
+        	            // its children.
+        	            cell.set(''originalPosition'', cell.get(''position''));
+                	}
+        
+        			var parentId = cell.get(''parent'');
+                	if (!parentId) return;
+        			
+        			var parent = this.graph.getCell(parentId);
+        			
+        			if (!parent.get(''originalPosition'')) parent.set(''originalPosition'', parent.get(''position''));
+                	if (!parent.get(''originalSize'')) parent.set(''originalSize'', parent.get(''size''));
+        
+        			var originalPosition = parent.get(''originalPosition'');
+                	var originalSize = parent.get(''originalSize'');
+        
+        	        var newX = originalPosition.x;
+        	        var newY = originalPosition.y;
+        	        var newCornerX = originalPosition.x + originalSize.width;
+        	        var newCornerY = originalPosition.y + originalSize.height;
+        
+        			_.each(parent.getEmbeddedCells(), function(child) {
+        	
+        	            var childBbox = child.getBBox();
+        	
+        	            if (childBbox.x < newX) { newX = childBbox.x; }
+        	            if (childBbox.y < newY) { newY = childBbox.y; }
+        	            if (childBbox.corner().x > newCornerX) { newCornerX = childBbox.corner().x; }
+        	            if (childBbox.corner().y > newCornerY) { newCornerY = childBbox.corner().y; }
+                	});
+        
+        			// Note that we also pass a flag so that we know we shouldn''t adjust the
+        	        // `originalPosition` and `originalSize` in our handlers as a reaction
+        	        // on the following `set()` call.
+        	        parent.set({
+        	            position: { x: newX, y: newY },
+        	            size: { width: newCornerX - newX, height: newCornerY - newY }
+        	        }, { skipParentHandler: true });
+        		});
         //        this.paper.on(''blank:pointerdown'', (event, x, y) => {
         //            this.c8o.log.debug("Mouse Start")
         //            this.dragStartPosition = { x: x * this.scale / 10, y: y * this.scale / 10};
@@ -1410,7 +640,7 @@ scriptContent:
         //                    cell.attributes.attrs[''.label''].refY = -80 * (i + 1.5);
         //                }
         //            }
-                    this.getAndDisplayStepChilds(cellView)
+                   // this.getAndDisplayStepChilds(cellView)
                 })
                 
         	}
@@ -1453,6 +683,7 @@ title: Title for FlowViewer
               - java.lang.String: 
                 - ↑value: 1.4.1
   ↓initDagreAndGraphLib [ngx.components.UICustomAction-1603285635817]: 
+    isEnabled: false
     package_dependencies: 
       - xmlizable: 
         - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
@@ -1506,34 +737,43 @@ title: Title for FlowViewer
                   		this.graph.clear();
               // 			console.log("I AM VARS FLOW" + JSON.stringify(vars.flow));
                   		let previous = null
-              
+              			var isComplex = false;
+              			var refIdEmbed = '''';
                   		for (var i=0; i < vars.flow.length ; i++) {
-                  		    let step = this.addStep({
-                      		        x: 30,
-                      		        y: 30 + this.verticalSpace * i		        
-                      		    }, 
-                      		    {
-                                      width: 70,
-                                      height: 70              
-                                  }, 
-                                  vars.flow[i].dbo.displayName,
-                                  vars.flow[i].dbo.hasChildren,
-                                  vars.flow[i].dbo.qname,
-                                  vars.flow[i].dbo.className,
-              					true,
-              					false
-                  		    )
-                  		    
-                  		    if (previous != null)
-                  		        this.addLink(previous, step, this.isHorizontal, vars.flow[i].dbo.className)
-                  		    previous = step
+              				let stepClassName = vars.flow[i].dbo.className.substring(this.strStep.length)
+              				console.log("DisplayFlow - stepClassName : " + stepClassName)
               				
+              				isComplex = (stepClassName == "XMLComplexStep") ? true : false
+              
+              				var step = this.makeElement({
+              						x: 30 + this.horizontalSpace * i,
+              						y: 70
+              					},
+              					vars.flow[i].dbo.displayName,
+              					vars.flow[i].dbo.qname,
+              					vars.flow[i].dbo.className,
+              					isComplex,
+              					false,
+              					''''
+              				)
+              				
+              				if(stepClassName == "XMLComplexStep")
+              					refIdEmbed = step.id
+              				
+              				console.log("DisplayFlow - element created: " + JSON.stringify(step))
+              				
+              				if(previous != null)
+              					var link = this.makeLink(previous, step, "")
+              
+              				previous = step
+              
               				if(vars.flow[i].dbo.children != undefined && vars.flow[i].dbo.children.length > 0) {
-              					this.walkChildren(vars.flow[i].dbo.children, previous)
-              //					console.log("I AM SETDIMENSIONS : " + this.local.maxX + '' '' + this.local.maxY)
+              					this.walkChildren(vars.flow[i].dbo.children, previous, refIdEmbed)
               					this.paper.setDimensions(this.local.maxX, this.local.maxY)
               				}
+              
                   		}
+              
               //			this.walkChildren(vars.flow, null)
                   		resolve();
               '
@@ -1831,6 +1071,7 @@ title: Title for FlowViewer
             - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
             - MobileSmartSourceType: 'script:(this.global.miniMapIsHidden) ? ''visibility: hidden;'' : ''visibility: visible;'''
 ↓Subscribe_Handler1 [ngx.components.UIEventSubscriber-1603124103143]: 
+  isEnabled: false
   topic: scaleView
   ↓Toast [ngx.components.UIDynamicAction-1603124134840]: 
     beanData: |

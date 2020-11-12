@@ -147,23 +147,23 @@
                     beanSubstr = "" + item.getClass().getName().substring(strBean.length)
                     
                     if(elementsToNotDisplayByClassName.indexOf(beanSubstr) == -1) {
+                    	isComplex = (beanSubstr == "steps.XMLComplexStep") ? true : false
+                    
                     	context.addTextNode(dboNode.item(0), "qname", item.getFullQName());
                     	context.addTextNode(dboNode.item(0), "displayName", item.getName());
                     	context.addTextNode(dboNode.item(0), "className", item.getClass().getName());
                     	context.addTextNode(dboNode.item(0), "isStarting", true);
+                    	
+                    	var isEmbeddedNode = context.addTextNode(dboNode.item(0), "isEmbedded", false);
+                    	isEmbeddedNode.setAttribute("type", "boolean");
+                    	
+                    	var isComplexNode = context.addTextNode(dboNode.item(0), "isComplex", isComplex);
+                    	isComplexNode.setAttribute("type", "boolean");
+                    	
                     	parentQName = item.getFullQName();
                     
                     	walkChildren(dboNode.item(0), parentQName);
                     }
-                    //context.addTextNode(dboNode.item(0), "qname", item.getFullQName());
-                    //context.addTextNode(dboNode.item(0), "displayName", item.getName());
-                    //context.addTextNode(dboNode.item(0), "className", item.getClass().getName());
-                    //context.addTextNode(dboNode.item(0), "isStarting", true);
-                    
-                    //parentQName = item.getFullQName();
-                    //
-                    //walkChildren(dboNode.item(0), parentQName);
-                    
                     
                     function walkChildren(parentNode, parentQName) {
                     	
@@ -171,20 +171,35 @@
                     	var dbo = com.twinsoft.convertigo.engine.Engine.theApp.databaseObjectsManager.getDatabaseObjectByQName(parentQName);
                     	var child = dbo.getDatabaseObjectChildren();
                     	
+                    	var nodeList = parentNode.getChildNodes(); /* return all nodes under parentNode */
+                    	var parentIsEmbedded = nodeList.item(5).getTextContent(); /* return bool */
+                    	var parentIsComplex = parentNode.getLastChild().getTextContent(); /* return bool */
+                    	var isEmbedded = (parentIsComplex == "true" || parentIsEmbedded == "true") ? true : false;
+                    
+                    	for(var j = 0; j < nodeList.length; j++)
+                    		log.warn("STEP IS : " + nodeList.item(j))
+                    		
+                    	log.warn(''parentIsEmbedded :'' + parentIsEmbedded)
+                    	log.warn("parentIsComplex : " + parentIsComplex)
+                    	log.warn("isEmbedded : " + isEmbedded)
+                    	
+                    	
                     	if(!child.isEmpty() && elementsToNotDisplayByClassName.indexOf(beanSubstr) == -1) {
                     		
                     		// creating children node in parent''s node
                     		var childNode = context.addTextNode(parentNode, "children", "");
                     		childNode.setAttribute("type", "array");
-                    
+                    		
                     		// for each children 
                     		for (var i = 0; i < child.size(); i++) {
                     			var childQName = child.get(i).getFullQName();
                     			var childDisplayName = child.get(i).getName();
                     			var childClassName = child.get(i).getClass().getName();
                     			var beanSubstr = "" + childClassName.substring(strBean.length)
-                    		
+                    
                     			if(elementsToNotDisplayByClassName.indexOf(beanSubstr) == -1) {
+                    				isComplex = (beanSubstr == "steps.XMLComplexStep") ? true : false
+                    
                     				// creating new dbo''s node for children
                     				var dboChildNode = context.addTextNode(childNode, "dbo", "");
                     				context.addTextNode(dboChildNode, "qname", '''' + childQName);
@@ -192,7 +207,11 @@
                     				context.addTextNode(dboChildNode, "className", '''' + childClassName);
                     				context.addTextNode(dboChildNode, "isStarting", false)
                     				
+                    				var isEmbeddedNode = context.addTextNode(dboChildNode, "isEmbedded", isEmbedded);
+                    				isEmbeddedNode.setAttribute("type", "boolean");
                     				
+                    				var isComplexNode = context.addTextNode(dboChildNode, "isComplex", isComplex);
+                    				isComplexNode.setAttribute("type", "boolean");
                     				// getting children of children
                     				walkChildren(dboChildNode, childQName)
                     			}
