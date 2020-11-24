@@ -13,11 +13,12 @@ scriptContent:
         /*Begin_c8o_PageDeclaration*/
         	graph = new joint.dia.Graph;
         	paper : joint.dia.Paper
-        	cells = [];
+        	miniMapsArray = [];
         	paperMiniMap : joint.dia.Paper
         	scale : number = 10
         	miniMapScale = 0.2
         	scaleView = 100;
+        	levelCount: number = 0;
         	dragStartPosition = null;
         	dragStartPositionMiniMap = null;
         	isHorizontal = true;
@@ -36,27 +37,19 @@ scriptContent:
         		this.local.maxY = 0
         		/*End_c8o_PageConstructor*/
         /*Begin_c8o_PageFunction*/
-        	onGridSizeChanged() {
-        	    this.paper.scale(this.scale / 10)
+        	
+        	createGraph() {
+        		var graph = new joint.dia.Graph;
+        		return graph;
         	}
         	
-        	setX(x){
-        		if(this.local.maxX < x){
-        			this.local.maxX = x;
-        		}
-        	}
-        	setY(y){
-        		if(this.local.maxY < y){
-        			this.local.maxY = y;
-        		}
+        	createPaper(opts: Object) {
+        		var paper = new joint.dia.Paper(opts);
+        		return paper;
         	}
         
-        	pushToCells(el) {
-        		this.cells.push(el);
-        	}
-        	
-        	getCells() {
-        		return this.cells;
+        	onGridSizeChanged() {
+        	    this.paper.scale(this.scale / 10)
         	}
         	
         	onMouseMove(event) {
@@ -72,22 +65,8 @@ scriptContent:
         			)
         		}
             }
-        
-        	onMouseMoveMiniMap(event) {
-        		if(this.dragStartPositionMiniMap != null) {
-        			console.log("EVENT x: "+ event.offsetX + " y: "+event.offsetY);
-        			console.log(JSON.stringify(this.dragStartPositionMiniMap))
-        			this.paperMiniMap.translate(
-        				event.offsetX - this.dragStartPositionMiniMap.x * this.miniMapScale,
-        				event.offsetY - this.dragStartPositionMiniMap.y * this.miniMapScale
-        			);
-        			this.paper.translate(
-                        event.offsetX - this.dragStartPositionMiniMap.x, 
-                        event.offsetY - this.dragStartPositionMiniMap.y);
-        		}
-        	}
         	
-        	makeLink(source, target, label) {
+        	makeLink(source, target, label, graph: joint.dia.Graph) {
                 var link = new joint.shapes.standard.ShadowLink({
         		    source: source,
         		    target: target,
@@ -117,10 +96,10 @@ scriptContent:
         			}
         		});
         		
-        		link.addTo(this.graph)
+        		link.addTo(graph)
             }
         
-        	makeElement(position, text: string, qname: string, className: string, isComplex: boolean, isEmbedded: boolean, refIdEmbed: string) {
+        	makeElement(position, text: string, qname: string, className: string, isComplex: boolean, isEmbedded: boolean, refIdEmbed: string, graph: joint.dia.Graph) {
                 
         		var element;
         		if(!isComplex) {
@@ -150,9 +129,7 @@ scriptContent:
         		}
         
         		
-        		element.addTo(this.graph);
-        		this.setX(position.x + 70 + this.horizontalSpace)
-        		this.setY(position.y + 70 + this.verticalSpace)
+        		element.addTo(graph);
         		
         		return element;
             }
@@ -233,7 +210,12 @@ scriptContent:
         			return false;
         	}
         	
-        	walkChildren(nodeObject: any, previous = null, refId) {
+        	updateGraph(graph: joint.dia.Graph, cellsToAdd) {
+        		graph.clear();
+        		graph.addCells(cellsToAdd);
+        	}
+        	
+        	walkChildren(nodeObject: any, previous = null, refId, graph) {
         		// refid = id du complex
         		var x;
         		var y;
@@ -285,7 +267,8 @@ scriptContent:
         				nodeObject[i].dbo.className,
         				nodeObject[i].dbo.isComplex,
         				nodeObject[i].dbo.isEmbedded,
-        				refId
+        				refId,
+        				graph
         			)
         
         			if(previous.attributes.isComplex) {
@@ -310,45 +293,10 @@ scriptContent:
         				var complex = this.graph.getCell(el.attributes.refIdEmbed);
         //				var complexView = this.paper.findViewByModel(complex);
         				complex.embed(el);
-        				
-        //				var originalPosition = complex.get(''position'');
-        //        		var originalSize = complex.get(''size'');
-        //
-        //				var newX = originalPosition.x;
-        //	        	var newY = originalPosition.y;
-        //	        	var newCornerX = originalPosition.x + originalSize.width;
-        //	        	var newCornerY = originalPosition.y + originalSize.height;
-        //
-        //				_.each(complex.getEmbeddedCells(), function(child) {
-        //		
-        //		            var childBbox = child.getBBox();
-        //		
-        //		            if (childBbox.x < newX) { newX = childBbox.x; }
-        //		            if (childBbox.y < newY) { newY = childBbox.y; }
-        //		            if (childBbox.corner().x > newCornerX) { newCornerX = childBbox.corner().x; }
-        //		            if (childBbox.corner().y > newCornerY) { newCornerY = childBbox.corner().y; }
-        //
-        //			        complex.set({
-        //			            position: { x: newX, y: newY },
-        //			            size: { width: newCornerX - newX, height: newCornerY - newY }
-        //			        });
-        //	        	});
-        
-        			// Note that we also pass a flag so that we know we shouldn''t adjust the
-        	        // `originalPosition` and `originalSize` in our handlers as a reaction
-        	        // on the following `set()` call.
-        
-        //				complex.set({ size: {width: previous.attributes.position.x, height: previous.attributes.position.y + 75 }})	
-        //				if(complexElement != undefined)
-        //					complexElement.fitEmbeds({
-        //						deep: true,
-        //						padding: ''250px''
-        //					})
-        				
         			}
         			
         			if(previous != null && !previous.attributes.isComplex)
-        				var link = this.makeLink(previous, el, "")
+        				var link = this.makeLink(previous, el, "", graph)
         				
         			previous = el
         			
@@ -413,7 +361,7 @@ scriptContent:
         			});
         			
         			if(nodeObject[i].dbo.children != undefined && nodeObject[i].dbo.children.length > 0) {
-        					this.walkChildren(nodeObject[i].dbo.children, previous, refId);
+        					this.walkChildren(nodeObject[i].dbo.children, previous, refId, graph);
         			}
         
         		}
@@ -424,16 +372,19 @@ scriptContent:
         	     * TODO : Implement Drag & Drop from palette see : https://codepen.io/fxaeberard/pen/reGvjm
         	     * 
         	     */
-        		this.global.miniMapIsHidden = false;    
-        	    let element = this.flowID as ElementRef
         
-                this.paper = new joint.dia.Paper({
-                    el: element.nativeElement,
+        	    let graphDomElement = this.graphDomElement as ElementRef
+        		let paperOpts = {
+                    el: graphDomElement.nativeElement,
                     width: ''100%'',
-                    height: ''600px'',
+                    height: ''100%'',
                     model: this.graph,
                     gridSize: 10,
         			embeddingMode: true,
+        			origin: {
+        				x: 300,
+        				y: 50
+        			},
                     defaultLink: new joint.dia.Link({
                     	attrs: {
                             ''.connection'' : {
@@ -461,188 +412,113 @@ scriptContent:
                         else
                             return true
                     }
+                }
+                this.paper = this.createPaper(paperOpts);
+        
+        		/**
+        	     * The next two events are to be able to drag on the graph
+        	     * 
+        	     */
+        		this.paper.on(''cell:pointerup blank:pointerup'', (cellView, x, y) => {
+                	this.c8o.log.debug("Mouse Up")
+                    this.dragStartPosition = null
                 });
         
-        		// minimap paper view
-        		let miniMap = document.getElementById(''paper-multiple-papers-small'')
-        	    var paperMiniMap = new joint.dia.Paper({
-        	        el: miniMap,
-        	        model: this.graph,
-        	        width: ''100%'',
-        	        height: ''300'',
-        	        gridSize: 5,
-        	        interactive: { elementMove: false },
-        //			drawGrid: {
-        //				name: ''mesh'',
-        //				args: {
-        //					color: ''white''
-        //				}
-        //			}
-        	    });
-        		this.paperMiniMap = paperMiniMap;
-        	    paperMiniMap.scale(this.miniMapScale);
-        		/*miniMap.addEventListener(''mousemove'', e => {
-        			// console.log("i am minimap event " + JSON.stringify(e));
-        			if (this.dragStartPositionMiniMap != null) {
-        				console.log("i am minimap dragPosition " + JSON.stringify(this.dragStartPositionMiniMap));
-                    paperMiniMap.translate(
-                        e.offsetX - this.dragStartPositionMiniMap.x, 
-                        e.offsetY - this.dragStartPositionMiniMap.y);
-        	    }
-        		})
-        		*/
-        //paperSmall.$el.css(''pointer-events'', ''none'');
+        		this.paper.on(''blank:pointerdown'', (event, x, y) => {
+                	this.c8o.log.debug("Mouse Start")
+                    this.dragStartPosition = { x: x * this.scale / 10, y: y * this.scale / 10};
+                });
         
-        		$(''#minimap-navigator'').width(215);
-        		$(''#minimap-navigator'').height(108);
-        		
-        		// Bind container scrolling
-        		$(''#flowContainer'').scroll( e => {
-        		  $(''#minimap-navigator'').css(
-        		    ''top'',
-        		    this.minimapNavigatorPosition.minY + e.target.scrollTop * this.miniMapScale
-        		  );
-        		  $(''#minimap-navigator'').css(
-        		    ''left'',
-        		    this.minimapNavigatorPosition.minX + e.target.scrollLeft * this.miniMapScale
-        		  );
-        		}); 
-        		
-        		// Bind minimap navigator drag
-        		var dragFlag = false;
-        		var x = 0;
-        		var y = 0;
-        		var initialOffset = { x: 0, y: 0 };
-        		$(''#minimap-navigator'').mousedown( e => {
-        		  dragFlag = true;
-        		  x = e.clientX;
-        		  y = e.clientY;
-        		  initialOffset.x = e.target.offsetLeft;
-        		  initialOffset.y = e.target.offsetTop;
-        		 console.log("initialOffsetX : " + initialOffset.x + '' initialOffsetY : '' + initialOffset.y)
-        		});
-        		$(''#minimap-navigator'').mouseup( () => {
-        		  dragFlag = false;
-        		});
-        		$(''#minimap-container'').mouseleave( () =>  {
-        		  dragFlag = false;
-        		});
-        		$(''#minimap-navigator'').mousemove( e => {
-        		  if (dragFlag) {
+        		this.paper.on(''cell:pointerdblclick'', (cellView, event, x, y) => {
         			
-        		    var newX = initialOffset.x + e.clientX - x;
-        		    var newY = initialOffset.y + e.clientY - y;
-        			console.log(''eClientX : '' + e.clientX + '' eClientY : '' + e.clientY)
-        			console.log(''x : '' + x + '' y : '' + y)
-        			console.log("newX : " + newX + '' newY:'' + newY)
-        		    /*if (this.minimapNavigatorPosition.minY > newY) {
-        		      newY = this.minimapNavigatorPosition.minY;
-        		    }
-        		    if (this.minimapNavigatorPosition.minX > newX) {
-        		      newX = this.minimapNavigatorPosition.minX;
-        		    }
-        		    if (this.minimapNavigatorPosition.maxY < newY) {
-        		      newY = this.minimapNavigatorPosition.maxY;
-        		    }
-        		    if (this.minimapNavigatorPosition.maxX < newX) {
-        		      newX = this.minimapNavigatorPosition.maxX;
-        		    }*/
-        		console.log("newX : " + newX + '' newY:'' + newY)
-        		    //$(''#minimap-navigator'').css(''top'', newY);
-        		    //$(''#minimap-navigator'').css(''left'', newX);
-        			// newX / this.miniMapScale
-        			console.log(" i am calcul : " + newX *((this.scale/10) / this.miniMapScale))
-        			$(''#flowContainer'').scrollLeft(newX *((this.scale/10) / this.miniMapScale));
-        		    $(''#flowContainer'').scrollTop(newY *((this.scale/10) / this.miniMapScale));
-        			/*
-        		    $(''#flowContainer'').scrollLeft((newX - this.minimapNavigatorPosition.maxX) / this.miniMapScale);
-        		    $(''#flowContainer'').scrollTop((newY - this.minimapNavigatorPosition.maxY)  / this.miniMapScale);
-        */
-        		  }
-        		});
-           
-        
-        		this.paper.on(''change:position'', function(cell, newPosition, opt) {
+        			// getting element
+        			var element = cellView;
+        			var elementQName = cellView.model.attributes.qname;
+        			var elementDisplayName = cellView.model.attributes.displayName;
         			
-        			// if we manipulate a complex box
-        			if (cell.get(''embeds'') && cell.get(''embeds'').length) {
-        	            // If we''re manipulating a parent element, let''s store
-        	            // it''s original position to a special property so that
-        	            // we can shrink the parent element back while manipulating
-        	            // its children.
-        	            cell.set(''originalPosition'', cell.get(''position''));
-                	}
-        
-        			var parentId = cell.get(''parent'');
-                	if (!parentId) return;
-        			
-        			var parent = this.graph.getCell(parentId);
-        			
-        			if (!parent.get(''originalPosition'')) parent.set(''originalPosition'', parent.get(''position''));
-                	if (!parent.get(''originalSize'')) parent.set(''originalSize'', parent.get(''size''));
-        
-        			var originalPosition = parent.get(''originalPosition'');
-                	var originalSize = parent.get(''originalSize'');
-        
-        	        var newX = originalPosition.x;
-        	        var newY = originalPosition.y;
-        	        var newCornerX = originalPosition.x + originalSize.width;
-        	        var newCornerY = originalPosition.y + originalSize.height;
-        
-        			_.each(parent.getEmbeddedCells(), function(child) {
+        			// pushing data to array to retrieve the correct dom element
+        			this.levelCount++;
+        			var newGraph = this.createGraph();
+        			this.miniMapsArray.push({
+        				id: ''level-'' + this.levelCount,
+        				displayName: elementDisplayName,
+        				graph: newGraph 
+        			});
         	
-        	            var childBbox = child.getBBox();
-        	
-        	            if (childBbox.x < newX) { newX = childBbox.x; }
-        	            if (childBbox.y < newY) { newY = childBbox.y; }
-        	            if (childBbox.corner().x > newCornerX) { newCornerX = childBbox.corner().x; }
-        	            if (childBbox.corner().y > newCornerY) { newCornerY = childBbox.corner().y; }
-                	});
+        			setTimeout(() => {
+        				var el = document.getElementById("level-"+this.levelCount)
+        				console.log("element: " + el)
+        							//var newGraph = this.createGraph();
+        				var paperOpts = {
+        		            el: el,
+        		            width: ''100%'',
+        		            height: ''100%'',
+        		            model: newGraph,
+        		            gridSize: 10,
+        					embeddingMode: false,
+        					interactive: false,
+        		            defaultLink: new joint.dia.Link({
+        		            	attrs: {
+        		                    ''.connection'' : {
+        		                        stroke: ''orange'',
+        		                        strokeWidth: 2
+        		                    }
+        		                }                
+        		            }),
+        					drawGrid: {
+        						name: ''dot'',
+        						args: {
+        							color: ''white''
+        						}
+        					},
+        		            defaultRouter: {
+        		                name: ''manhattan''
+        		            },
+        		            defaultConnector: {
+        		                name: ''rounded''
+        		            },
+        		            validateConnection: function(cellViewS, magnetS, cellViewT, magnetT, end, linkView) {
+        		                // Prevent connections if not on Magnets from ports
+        		                if (magnetT == undefined|| magnetS ==undefined)
+        		                    return false
+        		                else
+        		                    return true
+        		            }
+        		        }
+        			
+        				var paper = this.createPaper(paperOpts);
+        				paper.scale(0.2);
+        			
+        				this.c8o.callJsonObject(''.GetGraph'', {
+        					qname: elementQName,
+        					level: 2
+        				}).then((resp, param) => {
+        					this.graph.clear();
         
-        			// Note that we also pass a flag so that we know we shouldn''t adjust the
-        	        // `originalPosition` and `originalSize` in our handlers as a reaction
-        	        // on the following `set()` call.
-        	        parent.set({
-        	            position: { x: newX, y: newY },
-        	            size: { width: newCornerX - newX, height: newCornerY - newY }
-        	        }, { skipParentHandler: true });
-        		});
-        //        this.paper.on(''blank:pointerdown'', (event, x, y) => {
-        //            this.c8o.log.debug("Mouse Start")
-        //            this.dragStartPosition = { x: x * this.scale / 10, y: y * this.scale / 10};
-        //        });
-        //        
-        //        this.paper.on(''cell:pointerup blank:pointerup'', (cellView, x, y) => {
-        //            this.c8o.log.debug("Mouse Up")
-        //            this.dragStartPosition = null
-        //        });
-        //
-        //		this.paperMiniMap.on(''blank:pointerdown'', (event, x, y) => {
-        //            this.c8o.log.debug("Mouse Start")
-        //            this.dragStartPositionMiniMap = { x: x , y: y };
-        //        });
-        //        
-        //        this.paperMiniMap.on(''cell:pointerup blank:pointerup'', (cellView, x, y) => {
-        //            this.c8o.log.debug("Mouse Up")
-        //            this.dragStartPositionMiniMap = null
-        //        });
-                
-                this.paper.on(''cell:pointerclick'',  (cellView) => {
-                    this.c8o.log.debug("Step clicked !!!")
-        //            cellView.model.attributes.attrs[''.label''].refY = -80
-        //            let parents = cellView.model.getAncestors();
-        //            
-        //            this.c8o.log.debug("I AM LENGTH : " + parents.length)
-        //            if(parents.length !== 0) {
-        //                for(let i = 0; i < parents.length ; i++) {
-        //                    let id = parents[i].id;
-        //                    let cell = this.graph.getCell(id);
-        //                    cell.attributes.attrs[''.label''].refY = -80 * (i + 1.5);
-        //                }
-        //            }
-                   // this.getAndDisplayStepChilds(cellView)
-                })
-                
+        					var previous = null;
+        					_.each(resp[''array''], newElement => {
+        						var el = this.makeElement({x: 30, y: 30}, newElement.dbo.displayName, newElement.dbo.qname, newElement.dbo.className, newElement.dbo.isComplex, newElement.dbo.isEmbedded, '''', this.graph)
+        						
+        						if(previous != null)
+        							var link = this.makeLink(previous, el, '''', this.graph)
+        						previous = el
+        						
+        						if(newElement.dbo.children != undefined && newElement.dbo.children.length > 0) 
+        							this.walkChildren(newElement.dbo.children, previous, '''', this.graph)
+        					})
+        
+        					
+        					var cellsToAdd = this.graph.getCells();
+        					this.updateGraph(newGraph, cellsToAdd);
+        					
+        					return null;
+        				}).fail((error: any) => {
+        					console.log(error)
+        				});
+        					console.log(element)
+        				})
+        			}, 0o400); // = 0.4s
+        
         	}
         	/*End_c8o_PageFunction*/
         '
@@ -724,6 +600,80 @@ title: Title for FlowViewer
   topic: dboFocus
   ↓CallSequence [ngx.components.UIDynamicAction-1588686924736]: 
     beanData: '{"ionBean":"CallSequenceAction","requestable":"plain:C8oStudio.GetGraph"}'
+    ↓createFirstPaperAndPushGraphToArray [ngx.components.UICustomAction-1605878512148]: 
+      actionValue: 
+        - xmlizable: 
+          - ↑classname: com.twinsoft.convertigo.beans.common.FormatedContent
+          - com.twinsoft.convertigo.beans.common.FormatedContent: 
+            →: |
+              '		page.c8o.log.debug(''[MB] ''+ props.actionFunction +'': ''+ props.actionName);
+              
+              		this.levelCount++;
+              		this.global.firstGraphInColumn = this.createGraph();
+              		this.miniMapsArray.push({
+              			id: ''level-'' + this.levelCount,
+              			displayName: '''',
+              			graph: this.global.firstGraphInColumn
+              		})
+              		
+              		console.log(this.miniMapsArray);
+              		setTimeout(() => {
+              			var el = document.getElementById("level-"+this.levelCount)
+              			console.log(''el:'' + el);
+              			let paperOpts = {
+              	            el: el,
+              	            width: ''100%'',
+              	            height: ''100%'',
+              	            model: this.global.firstGraphInColumn,
+              	            gridSize: 10,
+              				embeddingMode: false,
+              				interactive: false,
+              	            defaultLink: new joint.dia.Link({
+              	            	attrs: {
+              	                    ''.connection'' : {
+              	                        stroke: ''orange'',
+              	                        strokeWidth: 2
+              	                    }
+              	                }                
+              	            }),
+              				drawGrid: {
+              					name: ''dot'',
+              					args: {
+              						color: ''white''
+              					}
+              				},
+              	            defaultRouter: {
+              	                name: ''manhattan''
+              	            },
+              	            defaultConnector: {
+              	                name: ''rounded''
+              	            },
+              	            validateConnection: function(cellViewS, magnetS, cellViewT, magnetT, end, linkView) {
+              	                // Prevent connections if not on Magnets from ports
+              	                if (magnetT == undefined|| magnetS ==undefined)
+              	                    return false
+              	                else
+              	                    return true
+              	            }
+              	        }
+              	        var paper = this.createPaper(paperOpts);
+              			paper.scale(0.2)
+              		}, 0o400) // = 0.4s
+              
+              		resolve();
+              '
+    ↓qname [ngx.components.UIControlVariable-1589811848532]: 
+      comment: new variable
+      varValue: 
+        - xmlizable: 
+          - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+          - MobileSmartSourceType: script:out
+    ↓level [ngx.components.UIControlVariable-1598523209744]: 
+      comment: new variable
+      varValue: 
+        - xmlizable: 
+          - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+          - MobileSmartSourceType: plain:100
     ↓DisplayFlow [ngx.components.UICustomAction-1588687209815]: 
       actionValue: 
         - xmlizable: 
@@ -754,7 +704,8 @@ title: Title for FlowViewer
               					vars.flow[i].dbo.className,
               					isComplex,
               					false,
-              					''''
+              					'''',
+              					this.graph
               				)
               				
               				if(stepClassName == "XMLComplexStep")
@@ -763,17 +714,18 @@ title: Title for FlowViewer
               				console.log("DisplayFlow - element created: " + JSON.stringify(step))
               				
               				if(previous != null)
-              					var link = this.makeLink(previous, step, "")
+              					var link = this.makeLink(previous, step, "", this.graph)
               
               				previous = step
               
-              				if(vars.flow[i].dbo.children != undefined && vars.flow[i].dbo.children.length > 0) {
-              					this.walkChildren(vars.flow[i].dbo.children, previous, refIdEmbed)
-              					this.paper.setDimensions(this.local.maxX, this.local.maxY)
-              				}
+              //				if(vars.flow[i].dbo.children != undefined && vars.flow[i].dbo.children.length > 0) {
+              //					this.walkChildren(vars.flow[i].dbo.children, previous, refIdEmbed)
+              //					this.paper.setDimensions(this.local.maxX, this.local.maxY)
+              //				}
               
                   		}
-              
+              				var cellsToAdd = this.graph.getCells();
+              				this.updateGraph(this.global.firstGraphInColumn, cellsToAdd);
               //			this.walkChildren(vars.flow, null)
                   		resolve();
               '
@@ -782,54 +734,183 @@ title: Title for FlowViewer
           - xmlizable: 
             - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
             - MobileSmartSourceType: source:{"filter":"Sequence","project":"C8oStudio","input":"listen(['C8oStudio.GetChildren'])?.array","model":{"data":[{"sequence":"C8oStudio.GetGraph","marker":""}],"path":"?.array","prefix":"","suffix":"","custom":"","useCustom":false}}
-    ↓qname [ngx.components.UIControlVariable-1589811848532]: 
-      comment: new variable
-      varValue: 
-        - xmlizable: 
-          - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
-          - MobileSmartSourceType: script:out
-    ↓level [ngx.components.UIControlVariable-1598523209744]: 
-      comment: new variable
-      varValue: 
-        - xmlizable: 
-          - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
-          - MobileSmartSourceType: plain:100
 ↓Grid [ngx.components.UIDynamicElement-1588228737881]: 
   beanData: '{"ionBean":"Grid","Height":"plain:"}'
   tagName: ion-grid
-  ↓GridRow [ngx.components.UIDynamicElement-1588228741415]: 
+  ↓rowLevelAndGraph [ngx.components.UIDynamicElement-1588228741415]: 
     beanData: |
       '{
        "ionBean": "GridRow",
        "Width": "plain:100%",
-       "Height": "plain:300px"
+       "Height": "plain:600px"
       }'
     tagName: ion-row
-    ↓GridCol [ngx.components.UIDynamicElement-1588228746957]: 
-      beanData: '{"ionBean":"GridCol","SizeXl":"plain:12"}'
+    ↓colLevel [ngx.components.UIDynamicElement-1605868481333]: 
+      beanData: '{"ionBean":"GridCol","SizeXl":"plain:3"}'
+      identifier: levelDomElement
       tagName: ion-col
-      ↓Div [ngx.components.UIDynamicElement-1600960364621]: 
+      ↓Style [ngx.components.UIStyle-1605869875828]: 
+        styleContent: 
+          - xmlizable: 
+            - ↑classname: com.twinsoft.convertigo.beans.common.FormatedContent
+            - com.twinsoft.convertigo.beans.common.FormatedContent: 
+              →: |
+                '/**
+                 * Custom properties (sometimes referred to as CSS variables or cascading variables)
+                 * are entities defined by CSS authors that contain specific values to be reused throughout a document.
+                 * They are set using custom property notation, e.g.: --main-color: black;
+                 * and are accessed using the var() function, e.g.: color: var(--main-color);
+                 * You can find below your component''s properties you can customize within the page.
+                 * If you''d like to make some customizations for whole app, please see your app Style & Theme components.
+                 * For more informations see https://ionicframework.com/docs/theming.
+                **/
+                //--ion-grid-column-padding	//Padding for the Column
+                //--ion-grid-column-padding-lg	//Padding for the Column on lg screens and up
+                //--ion-grid-column-padding-md	//Padding for the Column on md screens and up
+                //--ion-grid-column-padding-sm	//Padding for the Column on sm screens and up
+                //--ion-grid-column-padding-xl	//Padding for the Column on xl screens and up
+                //--ion-grid-column-padding-xs	//Padding for the Column on xs screens and up
+                //--ion-grid-columns	//The number of total Columns in the Grid
+                
+                background-color: rgba(45,52,54,1);
+                overflow-y: scroll;
+                max-height: 600px !important;
+                '
+      ↓Attr [ngx.components.UIAttribute-1605870962361]: 
+        attrName: id
+        attrValue: 
+          - xmlizable: 
+            - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+            - MobileSmartSourceType: plain:flow-level-column
+      ↓rowButtonSet [ngx.components.UIDynamicElement-1606214946988]: 
+        beanData: '{"ionBean":"GridRow","Height":"plain"}'
+        tagName: ion-row
+        ↓colButtonSet [ngx.components.UIDynamicElement-1606214965909]: 
+          beanData: '{"ionBean":"GridCol","SizeXl":"plain:12"}'
+          tagName: ion-col
+          ↓ButtonSet [ngx.components.UIDynamicElement-1606215006350]: 
+            beanData: '{"ionBean":"ButtonSet"}'
+            tagName: ion-buttons
+            ↓ClearAll [ngx.components.UIDynamicElement-1606215006353]: 
+              beanData: '{"ionBean":"Button"}'
+              tagName: ion-button
+              ↓Icon [ngx.components.UIDynamicElement-1606215006356]: 
+                beanData: '{"ionBean":"Icon","IconName":"plain:trash-outline"}'
+                tagName: ion-icon
+              ↓Event [ngx.components.UIControlEvent-1606215006359]: 
+                ↓clearAllCards [ngx.components.UICustomAction-1606215096239]: 
+                  actionValue: 
+                    - xmlizable: 
+                      - ↑classname: com.twinsoft.convertigo.beans.common.FormatedContent
+                      - com.twinsoft.convertigo.beans.common.FormatedContent: 
+                        →: |
+                          '		page.c8o.log.debug(''[MB] ''+ props.actionFunction +'': ''+ props.actionName);
+                          		this.miniMapsArray = [];
+                          		this.levelCount = 0;
+                          		this.graph.clear()
+                          		resolve();
+                          '
+              ↓Attr [ngx.components.UIAttribute-1606215006374]: 
+                attrName: title
+                attrValue: 
+                  - xmlizable: 
+                    - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+                    - MobileSmartSourceType: plain:Clear all
+      ↓Directive [ngx.components.UIControlDirective-1606208676802]: 
+        directiveItemName: item
+        directiveSource: 
+          - xmlizable: 
+            - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+            - MobileSmartSourceType: script:this.miniMapsArray
+        ↓CardContainer [ngx.components.UIDynamicElement-1606208727643]: 
+          beanData: '{"ionBean":"Card","Button":"plain:true"}'
+          tagName: ion-card
+          ↓CardHeader [ngx.components.UIDynamicElement-1606208746524]: 
+            beanData: '{"ionBean":"CardHeader"}'
+            tagName: ion-card-header
+            ↓CardTitle [ngx.components.UIDynamicElement-1606212056425]: 
+              beanData: '{"ionBean":"CardTitle"}'
+              tagName: ion-card-title
+              ↓Text [ngx.components.UIText-1606212143678]: 
+                textValue: 
+                  - xmlizable: 
+                    - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+                    - MobileSmartSourceType: script:item.displayName
+            ↓Style [ngx.components.UIStyle-1606213767733]: 
+              styleContent: 
+                - xmlizable: 
+                  - ↑classname: com.twinsoft.convertigo.beans.common.FormatedContent
+                  - com.twinsoft.convertigo.beans.common.FormatedContent: 
+                    →: |
+                      '	padding: 2px 2px 2px 2px;
+                      '
+          ↓CardContent [ngx.components.UIDynamicElement-1606208795686]: 
+            beanData: '{"ionBean":"CardContent"}'
+            tagName: ion-card-content
+            ↓Style [ngx.components.UIStyle-1606211033433]: 
+              styleContent: 
+                - xmlizable: 
+                  - ↑classname: com.twinsoft.convertigo.beans.common.FormatedContent
+                  - com.twinsoft.convertigo.beans.common.FormatedContent: 
+                    →: |
+                      '	min-height: 100px;
+                      '
+            ↓Attr [ngx.components.UIAttribute-1606208856542]: 
+              attrName: id
+              attrValue: 
+                - xmlizable: 
+                  - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+                  - MobileSmartSourceType: script:item.id
+            ↓Event [ngx.components.UIControlEvent-1606214054734]: 
+              ↓updateMainGraph [ngx.components.UICustomAction-1606214078943]: 
+                actionValue: 
+                  - xmlizable: 
+                    - ↑classname: com.twinsoft.convertigo.beans.common.FormatedContent
+                    - com.twinsoft.convertigo.beans.common.FormatedContent: 
+                      →: |
+                        '		page.c8o.log.debug(''[MB] ''+ props.actionFunction +'': ''+ props.actionName);
+                        		var cellsToAdd = vars.graph.getCells();
+                        		this.updateGraph(this.graph, cellsToAdd);
+                        		resolve();
+                        '
+                ↓graph [ngx.components.UIControlVariable-1606214235916]: 
+                  varValue: 
+                    - xmlizable: 
+                      - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+                      - MobileSmartSourceType: script:item.graph
+    ↓colGraph [ngx.components.UIDynamicElement-1588228746957]: 
+      beanData: '{"ionBean":"GridCol","SizeXl":"plain:9"}'
+      tagName: ion-col
+      ↓Div [ngx.components.UIDynamicElement-1588137806849]: 
         beanData: '{"ionBean":"DivTag"}'
+        identifier: graphDomElement
         tagName: div
-        ↓Tag [ngx.components.UIElement-1600959915099]: 
-          tagName: div
+        ↓Attr [ngx.components.UIAttribute-1588238054179]: 
+          attrName: (document:mousemove)
+          attrValue: 
+            - xmlizable: 
+              - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+              - MobileSmartSourceType: plain:onMouseMove($event)
+        ↓Style [ngx.components.UIStyle-1605869247261]: 
+          styleContent: 
+            - xmlizable: 
+              - ↑classname: com.twinsoft.convertigo.beans.common.FormatedContent
+              - com.twinsoft.convertigo.beans.common.FormatedContent: 
+                →: |
+                  '	height: 600px !important;
+                  '
+      ↓divv [ngx.components.UIDynamicElement-1600960364621]: 
+        beanData: '{"ionBean":"DivTag"}'
+        isEnabled: false
+        tagName: div
+        ↓divtoto [ngx.components.UIElement-1600959915099]: 
+          tagName: divtoto
           ↓Attr1 [ngx.components.UIAttribute-1600935208423]: 
             attrName: id
             attrValue: 
               - xmlizable: 
                 - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
                 - MobileSmartSourceType: plain:flowContainer
-          ↓Div [ngx.components.UIDynamicElement-1588137806849]: 
-            beanData: '{"ionBean":"DivTag"}'
-            identifier: flowID
-            tagName: div
-            ↓Attr [ngx.components.UIAttribute-1588238054179]: 
-              attrName: (document:mousemove)
-              attrValue: 
-                - xmlizable: 
-                  - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
-                  - MobileSmartSourceType: plain:onMouseMove($event)
-              isEnabled: false
           ↓Attr [ngx.components.UIAttribute-1603209802305]: 
             attrName: style
             attrValue: 
@@ -944,6 +1025,7 @@ title: Title for FlowViewer
                         		resolve();
                         '
       ↓Style [ngx.components.UIStyle-1600961167941]: 
+        isEnabled: false
         styleContent: 
           - xmlizable: 
             - ↑classname: com.twinsoft.convertigo.beans.common.FormatedContent
@@ -987,6 +1069,7 @@ title: Title for FlowViewer
               - MobileSmartSourceType: plain:onMouseMove($event)
   ↓GridRow1 [ngx.components.UIDynamicElement-1588228813856]: 
     beanData: '{"ionBean":"GridRow","Height":"plain:350"}'
+    isEnabled: false
     tagName: ion-row
     ↓GridCol [ngx.components.UIDynamicElement-1588228819248]: 
       beanData: '{"ionBean":"GridCol"}'
