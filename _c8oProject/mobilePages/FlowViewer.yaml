@@ -265,10 +265,10 @@ scriptContent:
         			
         			if(parentClassName == "IfThenElseStep" && previousThen) {
         				x = parentX + this.horizontalSpace
-        				y = parentY - 105;
+        				y = parentY - 120;
         			} else if (parentClassName == "IfThenElseStep" && previousElse) {
         				x = parentX + this.horizontalSpace
-        				y = parentY + 105
+        				y = parentY + 120
         			}
         			
         			

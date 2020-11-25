@@ -663,7 +663,8 @@ tplProjectName: C8oStudio
       - ↑classname: com.twinsoft.convertigo.beans.common.FormatedContent
       - com.twinsoft.convertigo.beans.common.FormatedContent: 
         →: |
-          'html body div div div div div div div ion-grid ion-row ion-col div div div svg g g g image {
+          '/* /html/body/div[3]/div/div[3]/div[1]/div[2]/div/div/ion-grid/ion-row/ion-col[2]/div/svg/g/g[1]/g[1]/image */
+          html body div div div div div div div ion-grid ion-row ion-col div svg g g g image {
           	width: 32px !important;
           	height: 32px !important;
           	transform:matrix(1,0,0,1,19,19) !important;
@@ -1351,6 +1352,7 @@ tplProjectName: C8oStudio
           
           '
 ↓customJoint [ngx.components.UIStyle-1591619009633]: 
+  isEnabled: false
   styleContent: 
     - xmlizable: 
       - ↑classname: com.twinsoft.convertigo.beans.common.FormatedContent
