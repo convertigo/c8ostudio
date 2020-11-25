@@ -23,7 +23,7 @@ scriptContent:
         	dragStartPositionMiniMap = null;
         	isHorizontal = true;
         	verticalSpace = 170
-        	horizontalSpace = 170
+        	horizontalSpace = 115
         	minimapNavigatorPosition = {
           		minX: 0,
           		minY: 0,
@@ -91,10 +91,16 @@ scriptContent:
         		            stroke: ''#3c4260'',
         		        }
         			},
-        			text: {
-        				text: label
-        			}
+        
         		});
+        		
+        		link.appendLabel({
+            			attrs: {
+                			text: {
+                    			text: label
+                			}
+            		}
+        		})
         		
         		link.addTo(graph)
             }
@@ -170,6 +176,11 @@ scriptContent:
         		return scaleNbr;
         	}
         	
+        	getClassNameFromQName(qname: string) {
+        		var className = qname.substr(this.strStep.length)
+        		return className;
+        	}
+        	
         	/*
         		We need to multiply by 100 because the calcul is not good in JS with float number
         	*/
@@ -215,42 +226,65 @@ scriptContent:
         		graph.addCells(cellsToAdd);
         	}
         	
-        	walkChildren(nodeObject: any, previous = null, refId, graph) {
+        	walkChildren(nodeObject: any, previous = null, previousThen, previousElse, refId, graph) {
         		// refid = id du complex
-        		var x;
-        		var y;
-        		var parent = previous
-        		var complexElement;
+        		let x;
+        		let y;
+        		let parent = previous // parent is the element we get by clicking on one in the graph
         		
+        		let parentClassName = parent.attributes[''className''].substring(this.strStep.length)			
+        		let parentIsComplex = parent.attributes.isComplex;
+        		let parentX = parent.attributes.position.x;
+        		let parentY = parent.attributes.position.y;
+        		
+        		let label;
+        		var previousThen = previousThen;
+        		var previousElse = previousElse;
         		for (var i=0; i < nodeObject.length; i++) {
-        			
+        			//parent = previous;
         			// variablizing data
         			let stepClassName = nodeObject[i].dbo.className.substring(this.strStep.length)
         			let displayName = nodeObject[i].dbo.displayName
-        			let parentClassName = parent.attributes[''className''].substring(this.strStep.length)
         			
-        			let isComplex = previous.attributes.isComplex;
-        			let previousX = previous.attributes.position.x;
-        			let previousY = previous.attributes.position.y;
+        			// this previous is the one inside loop
+        			let previousClassName = this.getClassNameFromQName(previous.attributes.qname)
+        
+        			console.log(''parent: '' + parentClassName);
+        			console.log(''current: '' + displayName)
         			
-        			if(previous != null) {
-        				
-        //				if(!previous.attributes.isComplex) {
-        //					x = previous.attributes.position.x + this.horizontalSpace
-        //					y = previous.attributes.position.y 
-        //				}
-        				
-        				if(stepClassName == "ElseStep") {
-        					x = previous.attributes.position.x 
-        					y = previous.attributes.position.y + this.verticalSpace
-        				} else if (isComplex) {
-        					x = previousX;
-        					y = previousY;
+        			if(parentClassName == "IfStep") {
+        				x = parentX + this.horizontalSpace;
+        				y = parentY - 100;
+        			} else if(stepClassName == "ElseStep") {
+        				x = previous.attributes.position.x 
+        				y = previous.attributes.position.y + this.verticalSpace
+        			} else {
+        				x = previous.attributes.position.x + this.horizontalSpace
+        				y = previous.attributes.position.y 
+        			}
+        			
+        			if(parentClassName == "IfThenElseStep" && previousThen) {
+        				x = parentX + this.horizontalSpace
+        				y = parentY - 105;
+        			} else if (parentClassName == "IfThenElseStep" && previousElse) {
+        				x = parentX + this.horizontalSpace
+        				y = parentY + 105
+        			}
+        			
+        			
+        			
+        			if(this.checkElementOnPoint(x,y)) {
+        				// Last cell might be a link or en element
+        				var lastCell = this.graph.getLastCell();
+        				if(lastCell.attributes.type == "standard.ShadowLink") {
+        					// So if it a link, the true last cell is its target
+        					var lastCellTarget = lastCell.attributes.target
+        					x = lastCellTarget.attributes.position.x + this.horizontalSpace;
+        					y = lastCellTarget.attributes.position.y
         				} else {
-        					x = previous.attributes.position.x + this.horizontalSpace
-        					y = previous.attributes.position.y 
+        					x = lastCell.attributes.position.x + this.horizontalSpace
+        					y = lastCell.attributes.position.y
         				}
-        				
         			}
         			
         			// getting ref complex id 
@@ -258,6 +292,7 @@ scriptContent:
         				refId = previous.id
         			}
         			
+        			if(!parentIsComplex && stepClassName != "ThenStep" && stepClassName != "ElseStep") {
         			var el = this.makeElement({
         					x : x,
         					y: y
@@ -271,97 +306,73 @@ scriptContent:
         				graph
         			)
         
-        			if(previous.attributes.isComplex) {
-        				previous.embed(el)
-        				previous.fitEmbeds({
-        					deep: true,
-        					padding: ''10px''
-        				})
-        				var complexElement = previous;
-        //				previous.resize(500, 500)
+        //			if(previous.attributes.isComplex) {
+        //				previous.embed(el)
         //				previous.fitEmbeds({
         //					deep: true,
-        //					padding: ''50px''
+        //					padding: ''10px''
         //				})
-        
-        			}
+        //				var complexElement = previous;
+        ////				previous.resize(500, 500)
+        ////				previous.fitEmbeds({
+        ////					deep: true,
+        ////					padding: ''50px''
+        ////				})
+        //
+        //			}
         			 
-        			if(previous.attributes.isComplex == false && el.attributes.isEmbedded == true) {
-        				// on chope l''id de référence au quel il faut embedder
-        				// on embed l''élément à l''élément de'' l''id
-        				// on resize
-        				var complex = this.graph.getCell(el.attributes.refIdEmbed);
-        //				var complexView = this.paper.findViewByModel(complex);
-        				complex.embed(el);
+        //			if(previous.attributes.isComplex == false && el.attributes.isEmbedded == true) {
+        //				// on chope l''id de référence au quel il faut embedder
+        //				// on embed l''élément à l''élément de'' l''id
+        //				// on resize
+        //				var complex = this.graph.getCell(el.attributes.refIdEmbed);
+        ////				var complexView = this.paper.findViewByModel(complex);
+        //				complex.embed(el);
+        //			}
+        
+        //			switch(stepClassName) {
+        //				case ''ThenStep'': {
+        //					label = "Then"
+        //					break;
+        //				} 
+        //				case ''ElseStep'': {
+        //					label = "Else"
+        //					break;
+        //				}
+        //				default: {
+        //					label = ''''
+        //					break;
+        //				}			
+        //			}
+        
+        			if(previousThen) {
+        				label = "Then"
+        			} else if (previousElse) {
+        				label = "Else"
+        			} else {
+        				label = '''';
         			}
+        						
+        			if(previous != null) //  && !previous.attributes.isComplex
+        				var link = this.makeLink(previous, el, label, graph)
         			
-        			if(previous != null && !previous.attributes.isComplex)
-        				var link = this.makeLink(previous, el, "", graph)
-        				
         			previous = el
         			
-        			var allComplexElements = this.graph.getElements().filter(element => element.attributes.isComplex == true)
-        			var tmpComplexElement = [];
-        			_.each(allComplexElements, (element) => {
-        				
-        				console.log("I am element: " + element.attributes.qname)
-        				var elementBBox = element.getBBox()
-        				
-        				var elementX = elementBBox.x;
-        				var elementY = elementBBox.y;
-        				var elementW = elementBBox.width;
-        				var elementH = elementBBox.height;
-        				
-        				var area = {
-        					x: elementX,
-        					y: elementY,
-        					width: elementW,
-        					height: elementH
-        				}
-        				
-        				var modelsInArea = this.graph.findModelsInArea(area).filter(model => model.attributes.isComplex && model.attributes.isEmbedded && model.attributes.id != element.attributes.id);
-        				
-        				_.each(modelsInArea, (model) =>  {
-        					//console.log("I AM unique model: " + JSON.stringify(model));
-        					var modelBBox = model.getBBox();
-        					if(modelBBox.intersect(elementBBox)) {
-        						console.log("INTERSECT elementQname :" + element.attributes.qname + " modelQname " + model.attributes.qname)
-        						
-        						// choper top left de l''élément (ce qui est au dessus, z-index le plus fort)
-        						// choper bottom left du model (ce qui est en dessous, z-index < z-index elem)
-        						
-        						// notes pour le 13/11/2020
-        						// au départ c''était elementTopLeftY mais finalement tu as inversé et tu gardes le TopLeftX just in case
-        						var elementBottomLeftY = elementBBox.bottomLeft().y;
-        						var elementTopLeftX = elementBBox.topLeft().x;
-        						
-        						var modelTopLeftY = modelBBox.topLeft().y;
-        						var modelBottomLeftX = modelBBox.bottomLeft().x;
-        						
-        									
-        						if(modelTopLeftY < elementBottomLeftY)
-        //							console.log("deltaY: " + deltaY)
-        							element.position(element.attributes.position.x, element.attributes.position.y + this.verticalSpace)
-        //							element.translate(element.attributes.position.x, 500)
-        						
-        						console.log("INTERSECT modelTopLeftY: " + modelTopLeftY + " elementBottomLeftY: " + elementBottomLeftY)
-        					}
-        				});
-        		
-        				element.fitEmbeds({
-        					deep: true,
-        					padding: { 
-        						top: 20,
-        						left: 10, 
-        						right: 10, 
-        						bottom: 20 
-        					}
-        				});
-        
-        			});
+        			}
         			
-        			if(nodeObject[i].dbo.children != undefined && nodeObject[i].dbo.children.length > 0) {
-        					this.walkChildren(nodeObject[i].dbo.children, previous, refId, graph);
+        			if(stepClassName == "ThenStep") {
+        				previousThen = true
+        				previousElse = false
+        			}  else if(stepClassName == "ElseStep") {
+        				previousElse =  true
+        				previousThen = false				
+        			} else {
+        				previousThen = false
+        				previousElse = false
+        			}
+        		
+        			if(!parentIsComplex && nodeObject[i].dbo.children != undefined && nodeObject[i].dbo.children.length > 0) {
+        					this.walkChildren(nodeObject[i].dbo.children, previous, previousThen, previousElse, refId, graph);
         			}
         
         		}
@@ -381,10 +392,6 @@ scriptContent:
                     model: this.graph,
                     gridSize: 10,
         			embeddingMode: true,
-        			origin: {
-        				x: 300,
-        				y: 50
-        			},
                     defaultLink: new joint.dia.Link({
                     	attrs: {
                             ''.connection'' : {
@@ -414,6 +421,7 @@ scriptContent:
                     }
                 }
                 this.paper = this.createPaper(paperOpts);
+        		this.paper.setOrigin(140, 100)
         
         		/**
         	     * The next two events are to be able to drag on the graph
@@ -435,6 +443,7 @@ scriptContent:
         			var element = cellView;
         			var elementQName = cellView.model.attributes.qname;
         			var elementDisplayName = cellView.model.attributes.displayName;
+        			var elementIsComplex = cellView.model.attributes.isComplex;
         			
         			// pushing data to array to retrieve the correct dom element
         			this.levelCount++;
@@ -446,9 +455,7 @@ scriptContent:
         			});
         	
         			setTimeout(() => {
-        				var el = document.getElementById("level-"+this.levelCount)
-        				console.log("element: " + el)
-        							//var newGraph = this.createGraph();
+        				var el = document.getElementById("level-"+this.levelCount)			
         				var paperOpts = {
         		            el: el,
         		            width: ''100%'',
@@ -496,16 +503,51 @@ scriptContent:
         					this.graph.clear();
         
         					var previous = null;
-        					_.each(resp[''array''], newElement => {
-        						var el = this.makeElement({x: 30, y: 30}, newElement.dbo.displayName, newElement.dbo.qname, newElement.dbo.className, newElement.dbo.isComplex, newElement.dbo.isEmbedded, '''', this.graph)
+        					_.each(resp[''array''], (newElement, i) => {
+        
+        						x = 70 + this.horizontalSpace * parseInt(i);
+        						y = 70;
+        						
+        						var newElementIsComplex = newElement.dbo.isComplex;
+        						var newElementQName = newElement.dbo.qname;
+        						var newElementClassName = this.getClassNameFromQName(newElementQName);
+        						
+        						if(this.checkElementOnPoint(x,y)) {
+        							// Last cell might be a link or en element
+        							var lastCell = this.graph.getLastCell();
+        							if(lastCell.attributes.type == "standard.ShadowLink") {
+        								// So if it a link, the true last cell is its target
+        								var lastCellTarget = lastCell.attributes.target
+        								x = lastCellTarget.attributes.position.x + this.horizontalSpace;
+        								y = lastCellTarget.attributes.position.y
+        							} else {
+        								x = lastCell.attributes.position.x + this.horizontalSpace
+        								y = lastCell.attributes.position.y
+        							}
+        						}
+        						
+        //						if(previous != null) {
+        //							x = previous.atrributes.position.x + this.horizontalSpace;
+        //							y = previous.attributes.position.y
+        //						}
+        
+        						var el = this.makeElement({x: x, y: y}, 
+        							newElement.dbo.displayName, 
+        							newElement.dbo.qname, 
+        							newElement.dbo.className, 
+        							newElement.dbo.isComplex, 
+        							newElement.dbo.isEmbedded, 
+        							'''', 
+        							this.graph)
         						
         						if(previous != null)
         							var link = this.makeLink(previous, el, '''', this.graph)
+        
         						previous = el
         						
-        						if(newElement.dbo.children != undefined && newElement.dbo.children.length > 0) 
-        							this.walkChildren(newElement.dbo.children, previous, '''', this.graph)
-        					})
+        						if(!newElementIsComplex && newElement.dbo.children != undefined && newElement.dbo.children.length > 0) 
+        							this.walkChildren(newElement.dbo.children, previous, false, false, '''', this.graph)
+        					});
         
         					
         					var cellsToAdd = this.graph.getCells();
@@ -774,7 +816,7 @@ title: Title for FlowViewer
                 
                 background-color: rgba(45,52,54,1);
                 overflow-y: scroll;
-                max-height: 600px !important;
+                max-height: 400px !important;
                 '
       ↓Attr [ngx.components.UIAttribute-1605870962361]: 
         attrName: id
@@ -892,12 +934,14 @@ title: Title for FlowViewer
               - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
               - MobileSmartSourceType: plain:onMouseMove($event)
         ↓Style [ngx.components.UIStyle-1605869247261]: 
+          isEnabled: false
           styleContent: 
             - xmlizable: 
               - ↑classname: com.twinsoft.convertigo.beans.common.FormatedContent
               - com.twinsoft.convertigo.beans.common.FormatedContent: 
                 →: |
                   '	height: 600px !important;
+                  	overflow: scroll !important;
                   '
       ↓divv [ngx.components.UIDynamicElement-1600960364621]: 
         beanData: '{"ionBean":"DivTag"}'
@@ -1025,7 +1069,6 @@ title: Title for FlowViewer
                         		resolve();
                         '
       ↓Style [ngx.components.UIStyle-1600961167941]: 
-        isEnabled: false
         styleContent: 
           - xmlizable: 
             - ↑classname: com.twinsoft.convertigo.beans.common.FormatedContent
@@ -1047,8 +1090,15 @@ title: Title for FlowViewer
                 //--ion-grid-column-padding-xl	//Padding for the Column on xl screens and up
                 //--ion-grid-column-padding-xs	//Padding for the Column on xs screens and up
                 //--ion-grid-columns	//The number of total Columns in the Grid
-                max-height:300px !important;
+                	max-height: 400px !important;
+                	overflow: scroll !important;
                 '
+      ↓Attr1 [ngx.components.UIAttribute-1606227992879]: 
+        attrName: id
+        attrValue: 
+          - xmlizable: 
+            - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+            - MobileSmartSourceType: plain:flow-container
     ↓GridCol1 [ngx.components.UIDynamicElement-1600682513448]: 
       beanData: '{"ionBean":"GridCol","SizeXl":"plain:2"}'
       isEnabled: false

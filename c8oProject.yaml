@@ -5,6 +5,7 @@
   version: 2020.11.24.14.51
   ↓void [connectors.SqlConnector]: 🗏 connectors/void.yaml
   ↓Execute [sequences.GenericSequence]: 🗏 sequences/Execute.yaml
+  ↓flowTestSequence [sequences.GenericSequence]: 🗏 sequences/flowTestSequence.yaml
   ↓GetBeanCode [sequences.GenericSequence]: 🗏 sequences/GetBeanCode.yaml
   ↓GetCategorizedPalette [sequences.GenericSequence]: 🗏 sequences/GetCategorizedPalette.yaml
   ↓GetChildren [sequences.GenericSequence]: 🗏 sequences/GetChildren.yaml

@@ -1,0 +1,10 @@
+↓Sequence_JS [steps.SimpleStep-1606228657743]: 
+↓Complex1 [steps.XMLComplexStep-1606228667958]: 
+  nodeName: complex1212123
+  ↓jIf [steps.IfStep-1606228710695]: 
+    ↓Complex2 [steps.XMLComplexStep-1606228717528]: 
+      nodeName: complex2
+    ↓jSimpleSource [steps.SimpleSourceStep-1606228727320]: 
+  ↓Call_Sequence [steps.SequenceStep-1606301775939]: 
+    sourceSequence: C8oStudio.Execute
+↓jIf [steps.IfStep-1606228684326]: 
