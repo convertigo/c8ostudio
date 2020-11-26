@@ -24,6 +24,8 @@ scriptContent:
         	isHorizontal = true;
         	verticalSpace = 170
         	horizontalSpace = 115
+        	graphOriginX = 10
+        	graphOriginY = 50
         	minimapNavigatorPosition = {
           		minX: 0,
           		minY: 0,
@@ -46,6 +48,16 @@ scriptContent:
         	createPaper(opts: Object) {
         		var paper = new joint.dia.Paper(opts);
         		return paper;
+        	}
+        	
+        	compareBranches(jThen: number, jElse: number) {
+        		if(jThen > jElse) {
+        			return jThen
+        		} else if (jElse > jThen) {
+        			return jElse
+        		} else {
+        			return jThen
+        		}	
         	}
         
         	onGridSizeChanged() {
@@ -88,7 +100,8 @@ scriptContent:
         		    }],
         		    attrs: {
         		        line: {
-        		            stroke: ''#3c4260'',
+        		            stroke: ''#77ACA1'', //#3c4260
+        					"stroke-width": 10
         		        }
         			},
         
@@ -118,9 +131,9 @@ scriptContent:
         			element.attr(''label/text'', text);
         			element.attr(''label/fill'', ''#fff'');
         			element.attr(''root'', { class: ''pulsar'' });
-        			element.attr(''background/fill'', ''#fe854f'');
+        			element.attr(''background/fill'', ''#2D433F''); // #fe854f
         			element.attr(''background/fillOpacity'', 0.5);
-        			element.attr(''border/stroke'', ''#fe854f'');
+        			element.attr(''border/stroke'', ''#1E7C6D''); // #1E7C6D #fe854f
         			element.attr(''image'', {
         				xlinkHref: this.c8o.endpoint + ''/.bin?__sequence=GetIcon&className='' + className + ''&large=true&__nolog=true'',
         			});
@@ -153,7 +166,7 @@ scriptContent:
         			},
         	        attrs: { 
         				rect: { 
-        					fill: ''#E74C3C'' 
+        					fill: ''#00CDFF'' //#E74C3C
         				}, 
         				text: { 
         					text: text 
@@ -240,6 +253,8 @@ scriptContent:
         		let label;
         		var previousThen = previousThen;
         		var previousElse = previousElse;
+        		
+        		var nbChildren = 0;
         		for (var i=0; i < nodeObject.length; i++) {
         			//parent = previous;
         			// variablizing data
@@ -249,8 +264,8 @@ scriptContent:
         			// this previous is the one inside loop
         			let previousClassName = this.getClassNameFromQName(previous.attributes.qname)
         
-        			console.log(''parent: '' + parentClassName);
-        			console.log(''current: '' + displayName)
+        //			console.log(''parent: '' + parentClassName);
+        //			console.log(''current: '' + displayName)
         			
         			if(parentClassName == "IfStep") {
         				x = parentX + this.horizontalSpace;
@@ -270,7 +285,7 @@ scriptContent:
         				x = parentX + this.horizontalSpace
         				y = parentY + 120
         			}
-        			
+        	
         			
         			
         			if(this.checkElementOnPoint(x,y)) {
@@ -421,7 +436,7 @@ scriptContent:
                     }
                 }
                 this.paper = this.createPaper(paperOpts);
-        		this.paper.setOrigin(140, 100)
+        		this.paper.setOrigin(this.graphOriginX, this.graphOriginY)
         
         		/**
         	     * The next two events are to be able to drag on the graph
@@ -495,6 +510,10 @@ scriptContent:
         			
         				var paper = this.createPaper(paperOpts);
         				paper.scale(0.2);
+        				var computedSize = paper.getComputedSize();
+        				var originY = (computedSize.height / 2) - 20;
+        			
+        				paper.setOrigin(this.graphOriginX, originY)
         			
         				this.c8o.callJsonObject(''.GetGraph'', {
         					qname: elementQName,
@@ -503,6 +522,12 @@ scriptContent:
         					this.graph.clear();
         
         					var previous = null;
+        					var previousFromSequence = null;
+        					var nbChildren = 0;
+        					var children = {
+        						then: 0,
+        						else: 0	
+        					};
         					_.each(resp[''array''], (newElement, i) => {
         
         						x = 70 + this.horizontalSpace * parseInt(i);
@@ -510,7 +535,42 @@ scriptContent:
         						
         						var newElementIsComplex = newElement.dbo.isComplex;
         						var newElementQName = newElement.dbo.qname;
-        						var newElementClassName = this.getClassNameFromQName(newElementQName);
+        						var newElementClassName = this.getClassNameFromQName(newElement.dbo.className);
+        											
+        						if(previousFromSequence != null)
+        							var previousFromSequenceClassName = this.getClassNameFromQName(previousFromSequence.dbo.className)
+        //						
+        //						if(newElementClassName == "IfThenElseStep") {
+        //							children = {
+        //								then: newElement.dbo.children[0].dbo.children.length,
+        //								else: newElement.dbo.children[1].dbo.children.length
+        //							}
+        //							
+        //							var nbChildren = this.compareBranches(children.then, children.else)
+        //							console.log(''nbChildren: '' + JSON.stringify(children))
+        ////							x = 70 + this.horizontalSpace * nbChildren
+        ////							y = 70;
+        //						}
+        						
+        						var thenNumber = 0;
+        						var elseNumber = 0;
+        						if(previousFromSequence != null && previousFromSequenceClassName != undefined && previousFromSequenceClassName == "IfThenElseStep") {
+        							if(previousFromSequence.dbo.children[0].dbo.children != undefined)
+        								thenNumber = previousFromSequence.dbo.children[0].dbo.children.length
+        							
+        							if(previousFromSequence.dbo.children[1].dbo.children != undefined)
+        								elseNumber = previousFromSequence.dbo.children[1].dbo.children.length
+        								
+        							children = {
+        								then: thenNumber,
+        								else: elseNumber
+        							}
+        							
+        							var nbChildren = this.compareBranches(children.then, children.else)
+        							console.log(''nbChildren: '' + nbChildren)
+        							x = previous.attributes.position.x + (70 + this.horizontalSpace * nbChildren)
+        							y = 70
+        						}
         						
         						if(this.checkElementOnPoint(x,y)) {
         							// Last cell might be a link or en element
@@ -539,11 +599,16 @@ scriptContent:
         							newElement.dbo.isEmbedded, 
         							'''', 
         							this.graph)
-        						
+        
         						if(previous != null)
         							var link = this.makeLink(previous, el, '''', this.graph)
         
         						previous = el
+        						previousFromSequence = newElement;
+        						
+        //						console.log("Element: " + newElement.dbo.displayName + JSON.stringify(this.graph.getPredecessors(el)))
+        //						console.log("Element: " + newElement.dbo.displayName + JSON.stringify(this.graph.getSuccessors(el)));
+        //						console.log("Element: " + newElement.dbo.displayName + JSON.stringify(this.graph.getNeighbors(el)));
         						
         						if(!newElementIsComplex && newElement.dbo.children != undefined && newElement.dbo.children.length > 0) 
         							this.walkChildren(newElement.dbo.children, previous, false, false, '''', this.graph)
@@ -557,7 +622,7 @@ scriptContent:
         				}).fail((error: any) => {
         					console.log(error)
         				});
-        					console.log(element)
+        //					console.log(element)
         				})
         			}, 0o400); // = 0.4s
         
@@ -661,7 +726,6 @@ title: Title for FlowViewer
               		console.log(this.miniMapsArray);
               		setTimeout(() => {
               			var el = document.getElementById("level-"+this.levelCount)
-              			console.log(''el:'' + el);
               			let paperOpts = {
               	            el: el,
               	            width: ''100%'',
@@ -700,6 +764,10 @@ title: Title for FlowViewer
               	        }
               	        var paper = this.createPaper(paperOpts);
               			paper.scale(0.2)
+              			var computedSize = paper.getComputedSize();
+              			var originY = computedSize.height / 2;
+              			
+              			paper.setOrigin(this.graphOriginX, originY)
               		}, 0o400) // = 0.4s
               
               		resolve();
@@ -733,7 +801,7 @@ title: Title for FlowViewer
               			var refIdEmbed = '''';
                   		for (var i=0; i < vars.flow.length ; i++) {
               				let stepClassName = vars.flow[i].dbo.className.substring(this.strStep.length)
-              				console.log("DisplayFlow - stepClassName : " + stepClassName)
+              //				console.log("DisplayFlow - stepClassName : " + stepClassName)
               				
               				isComplex = (stepClassName == "XMLComplexStep") ? true : false
               
@@ -753,7 +821,7 @@ title: Title for FlowViewer
               				if(stepClassName == "XMLComplexStep")
               					refIdEmbed = step.id
               				
-              				console.log("DisplayFlow - element created: " + JSON.stringify(step))
+              //				console.log("DisplayFlow - element created: " + JSON.stringify(step))
               				
               				if(previous != null)
               					var link = this.makeLink(previous, step, "", this.graph)

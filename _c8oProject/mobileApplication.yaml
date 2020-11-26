@@ -674,10 +674,7 @@ tplProjectName: C8oStudio
           	stroke-width: 10px !important;
           }
           html body div div div div div div div ion-grid ion-row ion-col div div div svg defs marker path {
-              stroke: none;
-              fill: rgb(60, 66, 96);
-              transform: rotate(180deg);
-              d: path("M 0 -10 L -10 0 L 0 10 Z") !important;
+          
           }
           
           .html-element {
