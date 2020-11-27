@@ -964,11 +964,73 @@ title: Title for FlowViewer
         ↓colButtonSet [ngx.components.UIDynamicElement-1606214965909]: 
           beanData: '{"ionBean":"GridCol","SizeXl":"plain:12"}'
           tagName: ion-col
+          ↓H4 [ngx.components.UIDynamicElement-1606494247592]: 
+            beanData: '{"ionBean":"Heading4"}'
+            tagName: h4
+            ↓Text [ngx.components.UIText-1606494254856]: 
+              textValue: 
+                - xmlizable: 
+                  - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+                  - MobileSmartSourceType: plain:Flow controls :
           ↓ButtonSet [ngx.components.UIDynamicElement-1606215006350]: 
             beanData: '{"ionBean":"ButtonSet"}'
             tagName: ion-buttons
+            ↓Style [ngx.components.UIStyle-1606494203430]: 
+              styleContent: 
+                - xmlizable: 
+                  - ↑classname: com.twinsoft.convertigo.beans.common.FormatedContent
+                  - com.twinsoft.convertigo.beans.common.FormatedContent: 
+                    →: |
+                      '	color: white;
+                      '
+            ↓ZoomIn [ngx.components.UIDynamicElement-1606494278161]: 
+              beanData: '{"ionBean":"Button","IonSize":"plain:large"}'
+              tagName: ion-button
+              ↓Icon [ngx.components.UIDynamicElement-1606494278164]: 
+                beanData: '{"ionBean":"Icon","IconName":"plain:add-circle-outline"}'
+                tagName: ion-icon
+              ↓Event [ngx.components.UIControlEvent-1606494278167]: 
+                ↓zoomIn [ngx.components.UICustomAction-1606494278170]: 
+                  actionValue: 
+                    - xmlizable: 
+                      - ↑classname: com.twinsoft.convertigo.beans.common.FormatedContent
+                      - com.twinsoft.convertigo.beans.common.FormatedContent: 
+                        →: |
+                          '		page.c8o.log.debug(''[MB] ''+ props.actionFunction +'': ''+ props.actionName);
+                          		this.zoomInFlow();
+                          		resolve();
+                          '
+              ↓Attr [ngx.components.UIAttribute-1606494278173]: 
+                attrName: title
+                attrValue: 
+                  - xmlizable: 
+                    - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+                    - MobileSmartSourceType: plain:Zoom In
+            ↓ZoomOut [ngx.components.UIDynamicElement-1606494392117]: 
+              beanData: '{"ionBean":"Button","IonSize":"plain:large"}'
+              tagName: ion-button
+              ↓Icon [ngx.components.UIDynamicElement-1606494392121]: 
+                beanData: '{"ionBean":"Icon","IconName":"plain:remove-circle-outline"}'
+                tagName: ion-icon
+              ↓Event [ngx.components.UIControlEvent-1606494392124]: 
+                ↓zoomOut [ngx.components.UICustomAction-1606494392127]: 
+                  actionValue: 
+                    - xmlizable: 
+                      - ↑classname: com.twinsoft.convertigo.beans.common.FormatedContent
+                      - com.twinsoft.convertigo.beans.common.FormatedContent: 
+                        →: |
+                          '		page.c8o.log.debug(''[MB] ''+ props.actionFunction +'': ''+ props.actionName);
+                          		this.zoomOutFlow();
+                          		resolve();
+                          '
+              ↓Attr [ngx.components.UIAttribute-1606494392130]: 
+                attrName: title
+                attrValue: 
+                  - xmlizable: 
+                    - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+                    - MobileSmartSourceType: plain:Zoom Out
             ↓ClearAll [ngx.components.UIDynamicElement-1606215006353]: 
-              beanData: '{"ionBean":"Button"}'
+              beanData: '{"ionBean":"Button","IonSize":"plain:large"}'
               tagName: ion-button
               ↓Icon [ngx.components.UIDynamicElement-1606215006356]: 
                 beanData: '{"ionBean":"Icon","IconName":"plain:trash-outline"}'
