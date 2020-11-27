@@ -189,9 +189,42 @@ scriptContent:
         		return scaleNbr;
         	}
         	
-        	getClassNameFromQName(qname: string) {
+        	getClassName(qname: string) {
         		var className = qname.substr(this.strStep.length)
         		return className;
+        	}
+        	
+        	getLastElementsFromBranch(branch) {
+        //		console.log("successors branch is: " + JSON.stringify(branch))
+        		
+        		var successors = this.graph.getSuccessors(branch);
+        		var lastElements = {
+        			jThen: [],
+        			jElse: []
+        		};
+        		
+        		var jThen = [];
+        		var jElse = []
+        		_.each(successors, (successor) => {
+        			var qName = successor.attributes.qname
+        			var displayName = successor.attributes.displayName
+        			var splitStr = qName.split(''.'')
+        			if(splitStr[splitStr.length - 2] == "jThen") {
+        				jThen.push(successor)
+        			}
+        			if(splitStr[splitStr.length - 2] == "jElse") {
+        				jElse.push(successor)
+        			}
+        		});
+        		
+        		lastElements.jThen = jThen;
+        		lastElements.jElse = jElse;
+        		
+        		console.log("lastElements: " + lastElements)
+        		return lastElements;
+        //		console.log("successors" + JSON.stringify(this.graph.getSuccessors(branch)))
+        //		console.log(branch)
+        
         	}
         	
         	/*
@@ -262,7 +295,7 @@ scriptContent:
         			let displayName = nodeObject[i].dbo.displayName
         			
         			// this previous is the one inside loop
-        			let previousClassName = this.getClassNameFromQName(previous.attributes.qname)
+        			let previousClassName = this.getClassName(previous.attributes.qname)
         
         //			console.log(''parent: '' + parentClassName);
         //			console.log(''current: '' + displayName)
@@ -535,10 +568,10 @@ scriptContent:
         						
         						var newElementIsComplex = newElement.dbo.isComplex;
         						var newElementQName = newElement.dbo.qname;
-        						var newElementClassName = this.getClassNameFromQName(newElement.dbo.className);
+        						var newElementClassName = this.getClassName(newElement.dbo.className);
         											
         						if(previousFromSequence != null)
-        							var previousFromSequenceClassName = this.getClassNameFromQName(previousFromSequence.dbo.className)
+        							var previousFromSequenceClassName = this.getClassName(previousFromSequence.dbo.className)
         //						
         //						if(newElementClassName == "IfThenElseStep") {
         //							children = {
@@ -586,6 +619,10 @@ scriptContent:
         							}
         						}
         						
+        						if(previous != null && x < previous.attributes.position.x) {
+        							x = previous.attributes.position.x + this.horizontalSpace
+        						}
+        						
         //						if(previous != null) {
         //							x = previous.atrributes.position.x + this.horizontalSpace;
         //							y = previous.attributes.position.y
@@ -600,14 +637,26 @@ scriptContent:
         							'''', 
         							this.graph)
         
-        						if(previous != null)
+        						if(previous != null && this.getClassName(previous.attributes.className) != "IfThenElseStep")
         							var link = this.makeLink(previous, el, '''', this.graph)
         
+        						
+        						if(previous != null && this.getClassName(previous.attributes.className) == "IfThenElseStep") {
+        							var lastElements = this.getLastElementsFromBranch(previous)
+        							var jThenLastElement = lastElements.jThen[lastElements.jThen.length - 1]
+        							var jElseLastElement = lastElements.jElse[lastElements.jElse.length - 1]
+        							console.log("lastElements: " + lastElements)
+        							console.log(''jThenElement: '' + JSON.stringify(lastElements[lastElements.jThen.length - 1]))
+        							this.makeLink(jThenLastElement, el, '''', this.graph)
+        							this.makeLink(jElseLastElement, el, '''', this.graph)
+        						}
+        						
         						previous = el
         						previousFromSequence = newElement;
         						
+        					
         //						console.log("Element: " + newElement.dbo.displayName + JSON.stringify(this.graph.getPredecessors(el)))
-        //						console.log("Element: " + newElement.dbo.displayName + JSON.stringify(this.graph.getSuccessors(el)));
+        						console.log("Previous element: " + previous.attributes.displayName + JSON.stringify(this.graph.getSuccessors(previous)));
         //						console.log("Element: " + newElement.dbo.displayName + JSON.stringify(this.graph.getNeighbors(el)));
         						
         						if(!newElementIsComplex && newElement.dbo.children != undefined && newElement.dbo.children.length > 0) 

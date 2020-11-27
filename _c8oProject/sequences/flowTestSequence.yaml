@@ -9,7 +9,7 @@
     sourceSequence: C8oStudio.Execute
   ↓jIfThenElse [steps.IfThenElseStep-1606398425655]: 
     ↓jThen [steps.ThenStep-1606398427087]: 
-      ↓Complex [steps.XMLComplexStep-1606398437644]: 
+      ↓Complex [steps.XMLComplexStep-1606471421899]: 
     ↓jElse [steps.ElseStep-1606398427089]: 
       ↓Element [steps.XMLElementStep-1606398445250]: 
       ↓jElement [steps.ElementStep-1606398451698]: 
@@ -17,4 +17,5 @@
   ↓toto [steps.ElementStep-1606398495418]: 
     nodeName: toto
   ↓Sort [steps.XMLSortStep-1606398502644]: 
+  ↓Parallel [steps.ParallelStep-1606470941733]: 
 ↓jIf [steps.IfStep-1606228684326]: 
