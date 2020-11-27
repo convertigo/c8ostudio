@@ -23,7 +23,7 @@ scriptContent:
         	dragStartPositionMiniMap = null;
         	isHorizontal = true;
         	verticalSpace = 170
-        	horizontalSpace = 115
+        	horizontalSpace = 140 //115
         	graphOriginX = 10
         	graphOriginY = 50
         	minimapNavigatorPosition = {
@@ -115,6 +115,14 @@ scriptContent:
             		}
         		})
         		
+        		link.router(''manhattan'', {
+        		    startDirections: [''right''],
+        		    endDirections: [''left'']
+        		});
+        		
+        //		link.router(''orthogonal'')
+        		
+        		console.log(''link: '' + JSON.stringify(link))
         		link.addTo(graph)
             }
         
@@ -179,6 +187,14 @@ scriptContent:
         			''isEmbedded'': isEmbedded,
         			''refIdEmbed'': refIdEmbed
             	});
+        
+        //		var port = {
+        //		    id: ''port2'',
+        //		    position:{
+        //		      name: ''right''
+        //		    },
+        //		    markup: ''<rect width="0"  height="1"/>''
+        //		  };
         		
         		return element;
         	}
@@ -326,10 +342,16 @@ scriptContent:
         				var lastCell = this.graph.getLastCell();
         				if(lastCell.attributes.type == "standard.ShadowLink") {
         					// So if it a link, the true last cell is its target
-        					var lastCellTarget = lastCell.attributes.target
-        					x = lastCellTarget.attributes.position.x + this.horizontalSpace;
-        					y = lastCellTarget.attributes.position.y
-        				} else {
+        					if(lastCell.attributes.target != undefined) {
+        						var lastCellTarget = lastCell.attributes.target
+        						x = lastCellTarget.attributes.position.x + this.horizontalSpace;
+        						y = lastCellTarget.attributes.position.y
+        					}
+        //					var lastCellTarget = lastCell.attributes.target
+        //					x = lastCellTarget.attributes.position.x + this.horizontalSpace;
+        //					y = lastCellTarget.attributes.position.y
+        				} 
+        				else {
         					x = lastCell.attributes.position.x + this.horizontalSpace
         					y = lastCell.attributes.position.y
         				}
@@ -440,14 +462,6 @@ scriptContent:
                     model: this.graph,
                     gridSize: 10,
         			embeddingMode: true,
-                    defaultLink: new joint.dia.Link({
-                    	attrs: {
-                            ''.connection'' : {
-                                stroke: ''orange'',
-                                strokeWidth: 2
-                            }
-                        }                
-                    }),
         			drawGrid: {
         				name: ''dot'',
         				args: {
@@ -455,7 +469,7 @@ scriptContent:
         				}
         			},
                     defaultRouter: {
-                        name: ''manhattan''
+                        name: ''normal''
                     },
                     defaultConnector: {
                         name: ''rounded''
@@ -601,7 +615,7 @@ scriptContent:
         							
         							var nbChildren = this.compareBranches(children.then, children.else)
         							console.log(''nbChildren: '' + nbChildren)
-        							x = previous.attributes.position.x + (70 + this.horizontalSpace * nbChildren)
+        							x = previous.attributes.position.x + (70 + this.horizontalSpace * nbChildren) + 45
         							y = 70
         						}
         						
@@ -645,10 +659,13 @@ scriptContent:
         							var lastElements = this.getLastElementsFromBranch(previous)
         							var jThenLastElement = lastElements.jThen[lastElements.jThen.length - 1]
         							var jElseLastElement = lastElements.jElse[lastElements.jElse.length - 1]
-        							console.log("lastElements: " + lastElements)
-        							console.log(''jThenElement: '' + JSON.stringify(lastElements[lastElements.jThen.length - 1]))
-        							this.makeLink(jThenLastElement, el, '''', this.graph)
-        							this.makeLink(jElseLastElement, el, '''', this.graph)
+        
+        							console.log("jThenLastElement: " + JSON.stringify(jThenLastElement) )
+        							if(jThenLastElement != undefined)
+        								this.makeLink(jThenLastElement, el, '''', this.graph)
+        							
+        							if(jElseLastElement != undefined)
+        								this.makeLink(jElseLastElement, el, '''', this.graph)
         						}
         						
         						previous = el

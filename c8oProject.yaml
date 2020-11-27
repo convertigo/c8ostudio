@@ -2,7 +2,7 @@
 ↓C8oStudio [core.Project]: 
   comment: Convertigo Mobile builder Project
   corsOrigin: =Origin
-  version: 2020.11.25.16.57
+  version: 2020.11.27.17.20
   ↓void [connectors.SqlConnector]: 🗏 connectors/void.yaml
   ↓Execute [sequences.GenericSequence]: 🗏 sequences/Execute.yaml
   ↓flowTestSequence [sequences.GenericSequence]: 🗏 sequences/flowTestSequence.yaml
