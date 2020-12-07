@@ -78,7 +78,7 @@ scriptContent:
         		}
             }
         	
-        	makeLink(source, target, label, graph: joint.dia.Graph) {
+        	makeLink(source, target, label, graph: joint.dia.Graph, previousThen, previousElse) {
                 var link = new joint.shapes.standard.ShadowLink({
         		    source: source,
         		    target: target,
@@ -115,8 +115,10 @@ scriptContent:
             		}
         		})
         		
+        		var startDirection = (previousThen) ? ''top'' : (previousElse) ? ''bottom'': ''right''; 
+        		
         		link.router(''manhattan'', {
-        		    startDirections: [''right''],
+        		    startDirections: [startDirection],
         		    endDirections: [''left'']
         		});
         		
@@ -424,7 +426,7 @@ scriptContent:
         			}
         						
         			if(previous != null) //  && !previous.attributes.isComplex
-        				var link = this.makeLink(previous, el, label, graph)
+        				var link = this.makeLink(previous, el, label, graph, previousThen, previousElse)
         			
         			previous = el
         			
@@ -652,7 +654,7 @@ scriptContent:
         							this.graph)
         
         						if(previous != null && this.getClassName(previous.attributes.className) != "IfThenElseStep")
-        							var link = this.makeLink(previous, el, '''', this.graph)
+        							var link = this.makeLink(previous, el, '''', this.graph, false, false)
         
         						
         						if(previous != null && this.getClassName(previous.attributes.className) == "IfThenElseStep") {
@@ -662,10 +664,10 @@ scriptContent:
         
         							console.log("jThenLastElement: " + JSON.stringify(jThenLastElement) )
         							if(jThenLastElement != undefined)
-        								this.makeLink(jThenLastElement, el, '''', this.graph)
+        								this.makeLink(jThenLastElement, el, '''', this.graph, false, false)
         							
         							if(jElseLastElement != undefined)
-        								this.makeLink(jElseLastElement, el, '''', this.graph)
+        								this.makeLink(jElseLastElement, el, '''', this.graph, false, false)
         						}
         						
         						previous = el
@@ -890,7 +892,7 @@ title: Title for FlowViewer
               //				console.log("DisplayFlow - element created: " + JSON.stringify(step))
               				
               				if(previous != null)
-              					var link = this.makeLink(previous, step, "", this.graph)
+              					var link = this.makeLink(previous, step, "", this.graph, false, false)
               
               				previous = step
               
@@ -922,7 +924,7 @@ title: Title for FlowViewer
       }'
     tagName: ion-row
     ↓colLevel [ngx.components.UIDynamicElement-1605868481333]: 
-      beanData: '{"ionBean":"GridCol","SizeXl":"plain:3"}'
+      beanData: '{"ionBean":"GridCol","SizeXl":"plain:2"}'
       identifier: levelDomElement
       tagName: ion-col
       ↓Style [ngx.components.UIStyle-1605869875828]: 
@@ -1117,7 +1119,7 @@ title: Title for FlowViewer
                       - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
                       - MobileSmartSourceType: script:item.graph
     ↓colGraph [ngx.components.UIDynamicElement-1588228746957]: 
-      beanData: '{"ionBean":"GridCol","SizeXl":"plain:9"}'
+      beanData: '{"ionBean":"GridCol","SizeXl":"plain:10"}'
       tagName: ion-col
       ↓Div [ngx.components.UIDynamicElement-1588137806849]: 
         beanData: '{"ionBean":"DivTag"}'
