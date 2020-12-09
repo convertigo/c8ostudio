@@ -1418,6 +1418,59 @@ tplProjectName: C8oStudio
           	width: 100%;
           	z-index: 1000;
           }
+          
+          
+          .bd_content_2 {
+          	position: absolute;
+            	width: 100%;
+            	float: left;
+            	margin: 20px;
+          //	bottom: 20px;
+          }
+          
+          .bd_content_2 > ul {
+          	list-style-type: none;
+          }
+          
+          .bd_content_2 > ul > li {
+            	position: relative;
+            	float: left;
+            	transform: skewX(-15deg);  
+            	background-color: #000;
+          	z-index: 1;
+          	transition: all 0.5s;
+          	margin-left: 5px;
+          }
+          
+          .bd_content_2 > ul > li:hover {
+          	background-color: #CFD8DC;
+          	cursor: pointer;
+          }
+          
+          .bd_content_2 > ul > li  > a {
+           	display: block;
+            	padding: 10px;
+            	font-size: 15px;
+           	transform: skewX(15deg);
+           	text-decoration:none;
+           	color: #444;
+          	font-weight: 300;
+          }
+          .bd_content_2 > ul > li:last-child {
+            background-color: #78909C;
+          }
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
+          
           .bd_content_1 {
           	position: absolute;
             	width: 100%;
