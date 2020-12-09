@@ -1414,7 +1414,59 @@ tplProjectName: C8oStudio
           
           #0CBBE7 bleu c8o
           */
+          .bd_content {
+          	width: 100%;
+          	z-index: 1000;
+          }
+          .bd_content_1 {
+          	position: absolute;
+            	width: 100%;
+            	float: left;
+            	margin: 20px;
+          	bottom: 20px;
+          }
           
+          .bd_content_1 > ul {
+          	list-style-type: none;
+          }
+          .bd_content_1 > ul > li {
+            	position: relative;
+            	float: left;
+            	transform: skewX(-15deg);  
+            	background-color: #fff;
+          	box-shadow: -2px 0px 20px -6px rgba(0,0,0,0.5);
+          	z-index: 1;
+          	min-width: 50px;
+            	max-width: 100%;
+            	margin-left: -50px;
+          	transition: all 0.5s;
+          }
+          
+          .bd_content_1 > ul > li  > a {
+            	display: block;
+            	padding: 10px;
+            	font-size: 15px;
+           	transform: skewX(15deg);
+           	text-decoration:none;
+           	color: #000;
+          	font-weight: 300;
+          }
+          
+          .bd_content_1 > ul > li:first-child {
+           	margin-left: 0px;
+          }
+          .bd_content_1 > ul > li:hover {
+           	background-color: #CFD8DC;
+          	cursor: pointer;
+          }
+          
+          .bd_content_1 > ul > li:last-child {
+            background-color: #0CBBE7;
+          }
+          
+          .bd_content_1 > ul:hover > li {
+            margin-left: 0px;
+          }
           
           .flowToolsBar {
           	width: 35px;

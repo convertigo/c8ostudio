@@ -11,9 +11,12 @@ scriptContent:
         import * as $ from "jquery";
         /*End_c8o_PageImport*/
         /*Begin_c8o_PageDeclaration*/
+        	ifSteps = ["IfStep", "IfExistStep", "IfFileExistStep", "IsInStep"]
+        	ifThenElseSteps = ["IfThenElseStep","IfExistThenElseStep", "IsInThenElseStep"]
         	graph = new joint.dia.Graph;
         	paper : joint.dia.Paper
         	miniMapsArray = [];
+        	breadcrumb = [];
         	paperMiniMap : joint.dia.Paper
         	scale : number = 10
         	miniMapScale = 0.2
@@ -40,6 +43,10 @@ scriptContent:
         		/*End_c8o_PageConstructor*/
         /*Begin_c8o_PageFunction*/
         	
+        	addToBreadcrumb(breadcrumbObject) {
+        		this.breadcrumb.push(breadcrumbObject)
+        	}
+        	
         	createGraph() {
         		var graph = new joint.dia.Graph;
         		return graph;
@@ -59,7 +66,22 @@ scriptContent:
         			return jThen
         		}	
         	}
-        
+        	
+        	highlightBreadcrumb(id) {
+        		for(var i = 0; i < this.breadcrumb.length; i++) {
+        			if(this.breadcrumb[i].id == id)
+        				this.breadcrumb[i].isSelected = true
+        			else 
+        				this.breadcrumb[i].isSelected = false
+        		}
+        	}
+        	isInArray(array, className) {
+        		if(array.includes(className))
+        			return true
+        		else 
+        			return false
+        	}
+        	
         	onGridSizeChanged() {
         	    this.paper.scale(this.scale / 10)
         	}
@@ -124,7 +146,7 @@ scriptContent:
         		
         //		link.router(''orthogonal'')
         		
-        		console.log(''link: '' + JSON.stringify(link))
+        //		console.log(''link: '' + JSON.stringify(link))
         		link.addTo(graph)
             }
         
@@ -212,7 +234,20 @@ scriptContent:
         		return className;
         	}
         	
-        	getLastElementsFromBranch(branch) {
+        	/*
+        		getting length - 2 because of the search algorithm (see : https://resources.jointjs.com/docs/jointjs/v3.2/joint.html#dia.Graph.prototype.dfs )
+        		using a minus because this function is used once before the next element after logical branch is created (to calculate x position), and once it has been
+        		last array''s element is the one which comes after the branch in logical flow, it is linked from the ''if step'' so it appears as a successors of it
+        	*/
+        	getLastElementFromSimpleBranch(branch, minus) {
+        		var successors = this.graph.getSuccessors(branch)
+        		var lastElement = successors[successors.length - minus]
+        //		console.log(''getLastElementFromSimpleBranch:'' + successors)
+        //		console.log(''getLastElementFromSimpleBranch:'' + JSON.stringify(lastElement))
+        		return lastElement;
+        	}
+        	
+        	getLastElementsFromThenAndElseBranch(branch) {
         //		console.log("successors branch is: " + JSON.stringify(branch))
         		
         		var successors = this.graph.getSuccessors(branch);
@@ -238,11 +273,18 @@ scriptContent:
         		lastElements.jThen = jThen;
         		lastElements.jElse = jElse;
         		
-        		console.log("lastElements: " + lastElements)
+        //		console.log("lastElements: " + lastElements)
         		return lastElements;
         //		console.log("successors" + JSON.stringify(this.graph.getSuccessors(branch)))
         //		console.log(branch)
         
+        	}
+        	
+        	unselectBreadcrumb(breadcrumbID) {
+        		for(var i = 0; i < this.breadcrumb.length; i++) {
+        			if(this.breadcrumb[i].id != breadcrumbID)
+        				this.breadcrumb[i].isSelected = false;
+        		}
         	}
         	
         	/*
@@ -294,16 +336,19 @@ scriptContent:
         		// refid = id du complex
         		let x;
         		let y;
-        		let parent = previous // parent is the element we get by clicking on one in the graph
         		
+        		let parent = previous // parent is the element we get by clicking on one in the graph
         		let parentClassName = parent.attributes[''className''].substring(this.strStep.length)			
         		let parentIsComplex = parent.attributes.isComplex;
         		let parentX = parent.attributes.position.x;
         		let parentY = parent.attributes.position.y;
         		
-        		let label;
+        		let label = '''';
+        		/* flags */
         		var previousThen = previousThen;
         		var previousElse = previousElse;
+        		var previousNodeObject;
+        		var stepIsInBranch = false;
         		
         		var nbChildren = 0;
         		for (var i=0; i < nodeObject.length; i++) {
@@ -313,7 +358,7 @@ scriptContent:
         			let displayName = nodeObject[i].dbo.displayName
         			
         			// this previous is the one inside loop
-        			let previousClassName = this.getClassName(previous.attributes.qname)
+        			let previousClassName = this.getClassName(previous.attributes.className)
         
         //			console.log(''parent: '' + parentClassName);
         //			console.log(''current: '' + displayName)
@@ -329,13 +374,55 @@ scriptContent:
         				y = previous.attributes.position.y 
         			}
         			
-        			if(parentClassName == "IfThenElseStep" && previousThen) {
+        			if(this.isInArray(this.ifThenElseSteps, parentClassName) && previousThen) { // parentClassName == "IfThenElseStep"
         				x = parentX + this.horizontalSpace
         				y = parentY - 120;
-        			} else if (parentClassName == "IfThenElseStep" && previousElse) {
+        			} else if (this.isInArray(this.ifThenElseSteps, parentClassName) && previousElse) { // parentClassName == "IfThenElseStep"
         				x = parentX + this.horizontalSpace
         				y = parentY + 120
         			}
+        			
+        			if(this.isInArray(this.ifSteps, previousClassName)) {
+        				x = previous.attributes.position.x + this.horizontalSpace
+        				y = previous.attributes.position.y - 120			
+        			}
+        			
+        			if(previousNodeObject != undefined && this.isInArray(this.ifSteps, previousClassName)) {
+        				
+        				nbChildren = previousNodeObject.dbo.children.length		
+        //				console.log(''nbChildren: '' + nbChildren)
+        				x = previous.attributes.position.x + (70 + this.horizontalSpace * nbChildren) + 45
+        				y = previous.attributes.position.y
+        				
+        			}
+        		
+        			// walking through branches
+        			
+        			if(previousNodeObject != undefined && this.isInArray(this.ifThenElseSteps, previousClassName)) {
+        				var thenNumber = 0;
+        				var elseNumber = 0;
+        				var children = {
+        					then: 0,
+        					else: 0	
+        				};				
+        				if(previousNodeObject.dbo.children[0].dbo.children != undefined)
+        					thenNumber = previousNodeObject.dbo.children[0].dbo.children.length
+        							
+        				if(previousNodeObject.dbo.children[1].dbo.children != undefined)
+        					elseNumber = previousNodeObject.dbo.children[1].dbo.children.length
+        								
+        					children = {
+        						then: thenNumber,
+        						else: elseNumber
+        					}
+        							
+        					var nbChildren = this.compareBranches(children.then, children.else)
+        //					console.log(''nbChildren: '' + nbChildren)
+        					x = previous.attributes.position.x + (70 + this.horizontalSpace * nbChildren) + 45
+        					y = previous.attributes.position.y
+        			}
+        			
+        
         	
         			
         			
@@ -378,65 +465,51 @@ scriptContent:
         				graph
         			)
         
-        //			if(previous.attributes.isComplex) {
-        //				previous.embed(el)
-        //				previous.fitEmbeds({
-        //					deep: true,
-        //					padding: ''10px''
-        //				})
-        //				var complexElement = previous;
-        ////				previous.resize(500, 500)
-        ////				previous.fitEmbeds({
-        ////					deep: true,
-        ////					padding: ''50px''
-        ////				})
-        //
-        //			}
-        			 
-        //			if(previous.attributes.isComplex == false && el.attributes.isEmbedded == true) {
-        //				// on chope l''id de référence au quel il faut embedder
-        //				// on embed l''élément à l''élément de'' l''id
-        //				// on resize
-        //				var complex = this.graph.getCell(el.attributes.refIdEmbed);
-        ////				var complexView = this.paper.findViewByModel(complex);
-        //				complex.embed(el);
-        //			}
-        
-        //			switch(stepClassName) {
-        //				case ''ThenStep'': {
-        //					label = "Then"
-        //					break;
-        //				} 
-        //				case ''ElseStep'': {
-        //					label = "Else"
-        //					break;
-        //				}
-        //				default: {
-        //					label = ''''
-        //					break;
-        //				}			
-        //			}
-        
         			if(previousThen) {
         				label = "Then"
-        			} else if (previousElse) {
-        				label = "Else"
-        			} else {
-        				label = '''';
+        				stepIsInBranch = true;
         			}
-        						
-        			if(previous != null) //  && !previous.attributes.isComplex
-        				var link = this.makeLink(previous, el, label, graph, previousThen, previousElse)
+        				
+        			if (previousElse) {
+        				label = "Else"
+        				stepIsInBranch = true;
+        			}
+        		
+        			if(previous != null)  //  && !previous.attributes.isComplex
+        				this.makeLink(previous, el, label, graph, previousThen, previousElse)
+        				
+        			if(previousNodeObject != null && this.isInArray(this.ifThenElseSteps, previousClassName)) { // this.getClassName(previous.attributes.className) == "IfThenElseStep"
+        				var lastElements = this.getLastElementsFromThenAndElseBranch(previous)
+        				var jThenLastElement = lastElements.jThen[lastElements.jThen.length - 1]
+        				var jElseLastElement = lastElements.jElse[lastElements.jElse.length - 1]
+        
+        //							console.log("jThenLastElement: " + JSON.stringify(jThenLastElement) )
+        				if(jThenLastElement != undefined)
+        					this.makeLink(jThenLastElement, el, label, this.graph, false, false)
+        							
+        				if(jElseLastElement != undefined)
+        					this.makeLink(jElseLastElement, el, label, this.graph, false, false)
+        								
+        			} else if(previousNodeObject != null && this.isInArray(this.ifSteps, previousClassName)) { // this.getClassName(previous.attributes.className) == "IfStep"
+        				// minus = 2 because element has been created so the successors length got + 1
+        				var lastElementFromSimpleBranch = this.getLastElementFromSimpleBranch(previous, 2)
+        				this.makeLink(lastElementFromSimpleBranch, el, label, this.graph, false, false)
+        			} else {
+        
+        			}
         			
         			previous = el
         			
+        			if(this.isInArray(this.ifThenElseSteps, stepClassName) || this.isInArray(this.ifSteps, stepClassName))
+        				previousNodeObject = nodeObject[i]
+        		
         			}
         			
         			if(stepClassName == "ThenStep") {
         				previousThen = true
         				previousElse = false
         			}  else if(stepClassName == "ElseStep") {
-        				previousElse =  true
+        				previousElse = true
         				previousThen = false				
         			} else {
         				previousThen = false
@@ -515,8 +588,18 @@ scriptContent:
         			this.miniMapsArray.push({
         				id: ''level-'' + this.levelCount,
         				displayName: elementDisplayName,
+        				qname: elementQName,
         				graph: newGraph 
         			});
+        			
+        			this.addToBreadcrumb({
+        				id: ''level-''+ this.levelCount,
+        				displayName: elementDisplayName,
+        				graph: newGraph,
+        				isSelected: true
+        			})
+        		
+        			this.unselectBreadcrumb(this.breadcrumb[this.breadcrumb.length - 1].id);
         	
         			setTimeout(() => {
         				var el = document.getElementById("level-"+this.levelCount)			
@@ -560,7 +643,7 @@ scriptContent:
         				var paper = this.createPaper(paperOpts);
         				paper.scale(0.2);
         				var computedSize = paper.getComputedSize();
-        				var originY = (computedSize.height / 2) - 20;
+        				var originY = (computedSize.height / 2);
         			
         				paper.setOrigin(this.graphOriginX, originY)
         			
@@ -568,15 +651,18 @@ scriptContent:
         					qname: elementQName,
         					level: 2
         				}).then((resp, param) => {
+        					
         					this.graph.clear();
         
         					var previous = null;
         					var previousFromSequence = null;
         					var nbChildren = 0;
+        					
         					var children = {
         						then: 0,
         						else: 0	
         					};
+        					
         					_.each(resp[''array''], (newElement, i) => {
         
         						x = 70 + this.horizontalSpace * parseInt(i);
@@ -588,6 +674,9 @@ scriptContent:
         											
         						if(previousFromSequence != null)
         							var previousFromSequenceClassName = this.getClassName(previousFromSequence.dbo.className)
+        						
+        						if(previous != null)
+        							var previousClassName = this.getClassName(previous.attributes.className)
         //						
         //						if(newElementClassName == "IfThenElseStep") {
         //							children = {
@@ -603,7 +692,7 @@ scriptContent:
         						
         						var thenNumber = 0;
         						var elseNumber = 0;
-        						if(previousFromSequence != null && previousFromSequenceClassName != undefined && previousFromSequenceClassName == "IfThenElseStep") {
+        						if(previousFromSequence != null && previousFromSequenceClassName != undefined && this.isInArray(this.ifThenElseSteps, previousFromSequenceClassName)) { // previousFromSequenceClassName == "IfThenElseStep"
         							if(previousFromSequence.dbo.children[0].dbo.children != undefined)
         								thenNumber = previousFromSequence.dbo.children[0].dbo.children.length
         							
@@ -616,9 +705,14 @@ scriptContent:
         							}
         							
         							var nbChildren = this.compareBranches(children.then, children.else)
-        							console.log(''nbChildren: '' + nbChildren)
+        //							console.log(''nbChildren: '' + nbChildren)
         							x = previous.attributes.position.x + (70 + this.horizontalSpace * nbChildren) + 45
         							y = 70
+        						}
+        						
+        						if(previous != null && this.isInArray(this.ifSteps, previousClassName)) { //previousClassName == "IfStep"
+        							var lastElement = this.getLastElementFromSimpleBranch(previous, 1);
+        							x = lastElement.attributes.position.x + this.horizontalSpace;
         						}
         						
         						if(this.checkElementOnPoint(x,y)) {
@@ -653,21 +747,27 @@ scriptContent:
         							'''', 
         							this.graph)
         
-        						if(previous != null && this.getClassName(previous.attributes.className) != "IfThenElseStep")
+        						if(previous != null && !this.isInArray(this.ifThenElseSteps, previousClassName)) // && previousClassName != "IfThenElseStep"
         							var link = this.makeLink(previous, el, '''', this.graph, false, false)
         
         						
-        						if(previous != null && this.getClassName(previous.attributes.className) == "IfThenElseStep") {
-        							var lastElements = this.getLastElementsFromBranch(previous)
+        						if(previous != null && this.isInArray(this.ifThenElseSteps, previousClassName)) { // this.getClassName(previous.attributes.className) == "IfThenElseStep"
+        							var lastElements = this.getLastElementsFromThenAndElseBranch(previous)
         							var jThenLastElement = lastElements.jThen[lastElements.jThen.length - 1]
         							var jElseLastElement = lastElements.jElse[lastElements.jElse.length - 1]
         
-        							console.log("jThenLastElement: " + JSON.stringify(jThenLastElement) )
+        //							console.log("jThenLastElement: " + JSON.stringify(jThenLastElement) )
         							if(jThenLastElement != undefined)
         								this.makeLink(jThenLastElement, el, '''', this.graph, false, false)
         							
         							if(jElseLastElement != undefined)
         								this.makeLink(jElseLastElement, el, '''', this.graph, false, false)
+        								
+        						}  else if(previous != null && this.isInArray(this.ifSteps, previousClassName)) { // this.getClassName(previous.attributes.className) == "IfStep"
+        							
+        							// minus = 2 because element has been created so the successors length got + 1
+        							var lastElementFromSimpleBranch = this.getLastElementFromSimpleBranch(previous, 2)
+        							this.makeLink(lastElementFromSimpleBranch, el, '''', this.graph, false, false)
         						}
         						
         						previous = el
@@ -675,7 +775,7 @@ scriptContent:
         						
         					
         //						console.log("Element: " + newElement.dbo.displayName + JSON.stringify(this.graph.getPredecessors(el)))
-        						console.log("Previous element: " + previous.attributes.displayName + JSON.stringify(this.graph.getSuccessors(previous)));
+        //						console.log("Previous sequence element: " + JSON.stringify(previousFromSequence));
         //						console.log("Element: " + newElement.dbo.displayName + JSON.stringify(this.graph.getNeighbors(el)));
         						
         						if(!newElementIsComplex && newElement.dbo.children != undefined && newElement.dbo.children.length > 0) 
@@ -782,16 +882,30 @@ title: Title for FlowViewer
           - com.twinsoft.convertigo.beans.common.FormatedContent: 
             →: |
               '		page.c8o.log.debug(''[MB] ''+ props.actionFunction +'': ''+ props.actionName);
-              
+              		console.log("i am out: " + JSON.stringify(vars.qname))
+              		
+              		var qname = vars.qname;
+              		var splitStr = qname.split('':'')
+              		for(var i = 0; i < splitStr.length; i++) {
+              			var str = splitStr[i].split(''.'')
+              		}
+              		var displayName = str;
+              		
               		this.levelCount++;
               		this.global.firstGraphInColumn = this.createGraph();
               		this.miniMapsArray.push({
               			id: ''level-'' + this.levelCount,
-              			displayName: '''',
+              			displayName: displayName,
               			graph: this.global.firstGraphInColumn
               		})
+              		this.addToBreadcrumb({
+              			id: ''level-'' + this.levelCount,
+              			displayName: displayName,
+              			graph: this.global.firstGraphInColumn,
+              			isSelected: true
+              		})
               		
-              		console.log(this.miniMapsArray);
+              //		console.log(this.miniMapsArray);
               		setTimeout(() => {
               			var el = document.getElementById("level-"+this.levelCount)
               			let paperOpts = {
@@ -840,6 +954,11 @@ title: Title for FlowViewer
               
               		resolve();
               '
+      ↓qname [ngx.components.UIControlVariable-1607522458675]: 
+        varValue: 
+          - xmlizable: 
+            - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+            - MobileSmartSourceType: source:{"filter":"Action","project":"C8oStudio","input":"","model":{"data":[{"priority":1588686924736}],"path":"?.in?.vars?.qname","prefix":"","suffix":"","custom":"","useCustom":false}}
     ↓qname [ngx.components.UIControlVariable-1589811848532]: 
       comment: new variable
       varValue: 
@@ -952,7 +1071,8 @@ title: Title for FlowViewer
                 
                 background-color: rgba(45,52,54,1);
                 overflow-y: scroll;
-                max-height: 400px !important;
+                min-height: 500px !important;
+                height: 100% !important;
                 '
       ↓Attr [ngx.components.UIAttribute-1605870962361]: 
         attrName: id
@@ -1046,6 +1166,7 @@ title: Title for FlowViewer
                         →: |
                           '		page.c8o.log.debug(''[MB] ''+ props.actionFunction +'': ''+ props.actionName);
                           		this.miniMapsArray = [];
+                          		this.breadcrumb = [];
                           		this.levelCount = 0;
                           		this.graph.clear()
                           		resolve();
@@ -1111,6 +1232,7 @@ title: Title for FlowViewer
                         '		page.c8o.log.debug(''[MB] ''+ props.actionFunction +'': ''+ props.actionName);
                         		var cellsToAdd = vars.graph.getCells();
                         		this.updateGraph(this.graph, cellsToAdd);
+                        		this.highlightBreadcrumb(vars.id)
                         		resolve();
                         '
                 ↓graph [ngx.components.UIControlVariable-1606214235916]: 
@@ -1118,29 +1240,14 @@ title: Title for FlowViewer
                     - xmlizable: 
                       - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
                       - MobileSmartSourceType: script:item.graph
+                ↓id [ngx.components.UIControlVariable-1607531365748]: 
+                  varValue: 
+                    - xmlizable: 
+                      - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+                      - MobileSmartSourceType: script:item.id
     ↓colGraph [ngx.components.UIDynamicElement-1588228746957]: 
       beanData: '{"ionBean":"GridCol","SizeXl":"plain:10"}'
       tagName: ion-col
-      ↓Div [ngx.components.UIDynamicElement-1588137806849]: 
-        beanData: '{"ionBean":"DivTag"}'
-        identifier: graphDomElement
-        tagName: div
-        ↓Attr [ngx.components.UIAttribute-1588238054179]: 
-          attrName: (document:mousemove)
-          attrValue: 
-            - xmlizable: 
-              - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
-              - MobileSmartSourceType: plain:onMouseMove($event)
-        ↓Style [ngx.components.UIStyle-1605869247261]: 
-          isEnabled: false
-          styleContent: 
-            - xmlizable: 
-              - ↑classname: com.twinsoft.convertigo.beans.common.FormatedContent
-              - com.twinsoft.convertigo.beans.common.FormatedContent: 
-                →: |
-                  '	height: 600px !important;
-                  	overflow: scroll !important;
-                  '
       ↓divv [ngx.components.UIDynamicElement-1600960364621]: 
         beanData: '{"ionBean":"DivTag"}'
         isEnabled: false
@@ -1288,8 +1395,8 @@ title: Title for FlowViewer
                 //--ion-grid-column-padding-xl	//Padding for the Column on xl screens and up
                 //--ion-grid-column-padding-xs	//Padding for the Column on xs screens and up
                 //--ion-grid-columns	//The number of total Columns in the Grid
-                	max-height: 400px !important;
-                	overflow: scroll !important;
+                	height: 100% !important;
+                	min-height: 500px !important;
                 '
       ↓Attr1 [ngx.components.UIAttribute-1606227992879]: 
         attrName: id
@@ -1297,6 +1404,107 @@ title: Title for FlowViewer
           - xmlizable: 
             - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
             - MobileSmartSourceType: plain:flow-container
+      ↓Div [ngx.components.UIDynamicElement-1588137806849]: 
+        beanData: '{"ionBean":"DivTag"}'
+        identifier: graphDomElement
+        tagName: div
+        ↓Attr [ngx.components.UIAttribute-1588238054179]: 
+          attrName: (document:mousemove)
+          attrValue: 
+            - xmlizable: 
+              - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+              - MobileSmartSourceType: plain:onMouseMove($event)
+        ↓Style [ngx.components.UIStyle-1605869247261]: 
+          isEnabled: false
+          styleContent: 
+            - xmlizable: 
+              - ↑classname: com.twinsoft.convertigo.beans.common.FormatedContent
+              - com.twinsoft.convertigo.beans.common.FormatedContent: 
+                →: |
+                  '	height: 600px !important;
+                  	overflow: scroll !important;
+                  '
+      ↓divBreadcrumb [ngx.components.UIDynamicElement-1607519331636]: 
+        beanData: '{"ionBean":"DivTag"}'
+        tagName: div
+        ↓c [ngx.components.UIAttribute-1607524852840]: 
+          attrName: class
+          attrValue: 
+            - xmlizable: 
+              - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+              - MobileSmartSourceType: plain:bd_content
+        ↓Div [ngx.components.UIDynamicElement-1607527427834]: 
+          beanData: '{"ionBean":"DivTag"}'
+          tagName: div
+          ↓c [ngx.components.UIAttribute-1607527436200]: 
+            attrName: class
+            attrValue: 
+              - xmlizable: 
+                - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+                - MobileSmartSourceType: plain:bd_content_1
+          ↓Tag [ngx.components.UIElement-1607524911818]: 
+            tagName: ul
+            ↓Directive [ngx.components.UIControlDirective-1607524246437]: 
+              directiveItemName: item
+              directiveSource: 
+                - xmlizable: 
+                  - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+                  - MobileSmartSourceType: script:this.breadcrumb
+              ↓Tag [ngx.components.UIElement-1607524946513]: 
+                tagName: li
+                ↓Tag [ngx.components.UIElement-1607527870608]: 
+                  tagName: a
+                  ↓Text [ngx.components.UIText-1607524962800]: 
+                    textValue: 
+                      - xmlizable: 
+                        - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+                        - MobileSmartSourceType: script:item.displayName
+                ↓Event [ngx.components.UIControlEvent-1607528509568]: 
+                  ↓updateMainGraphAndUnselectBreadcrumb [ngx.components.UICustomAction-1607528509571]: 
+                    actionValue: 
+                      - xmlizable: 
+                        - ↑classname: com.twinsoft.convertigo.beans.common.FormatedContent
+                        - com.twinsoft.convertigo.beans.common.FormatedContent: 
+                          →: |
+                            '		page.c8o.log.debug(''[MB] ''+ props.actionFunction +'': ''+ props.actionName);
+                            		var cellsToAdd = vars.breadcrumbObject.graph.getCells();
+                            		this.updateGraph(this.graph, cellsToAdd);
+                            		
+                            		if(!vars.breadcrumbObject.isSelected)
+                            			vars.breadcrumbObject.isSelected = true
+                            			
+                            		this.unselectBreadcrumb(vars.breadcrumbObject.id);
+                            		resolve();
+                            '
+                    ↓graph [ngx.components.UIControlVariable-1607528509574]: 
+                      isEnabled: false
+                      varValue: 
+                        - xmlizable: 
+                          - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+                          - MobileSmartSourceType: script:item.graph
+                    ↓id [ngx.components.UIControlVariable-1607529980049]: 
+                      isEnabled: false
+                      varValue: 
+                        - xmlizable: 
+                          - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+                          - MobileSmartSourceType: script:item.id
+                    ↓isSelected [ngx.components.UIControlVariable-1607530405202]: 
+                      isEnabled: false
+                      varValue: 
+                        - xmlizable: 
+                          - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+                          - MobileSmartSourceType: script:item.isSelected
+                    ↓breadcrumbObject [ngx.components.UIControlVariable-1607530489792]: 
+                      varValue: 
+                        - xmlizable: 
+                          - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+                          - MobileSmartSourceType: script:item
+                ↓Attr [ngx.components.UIAttribute-1607529673831]: 
+                  attrName: style
+                  attrValue: 
+                    - xmlizable: 
+                      - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+                      - MobileSmartSourceType: 'script:(item.isSelected) ? ''background-color: #0CBBE7;''  : ''background-color: #fff; '' '
     ↓GridCol1 [ngx.components.UIDynamicElement-1600682513448]: 
       beanData: '{"ionBean":"GridCol","SizeXl":"plain:2"}'
       isEnabled: false

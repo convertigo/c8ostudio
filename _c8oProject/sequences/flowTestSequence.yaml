@@ -18,4 +18,27 @@
     nodeName: toto
   ↓Sort [steps.XMLSortStep-1606398502644]: 
   ↓Parallel [steps.ParallelStep-1606470941733]: 
+  ↓g [steps.IfStep-1607340235081]: 
+    ↓IfExist [steps.IfExistStep-1607340252376]: 
+      ↓IfExistThenElse [steps.IfExistThenElseStep-1607340261242]: 
+        ↓jThen [steps.ThenStep-1607340261759]: 
+          ↓Element [steps.XMLElementStep-1607355121513]: 
+            nodeName: true
+        ↓jElse [steps.ElseStep-1607340261761]: 
+          ↓Element [steps.XMLElementStep-1607355150545]: 
+            nodeName: false
+      ↓IfFileExists [steps.IfFileExistStep-1607340270896]: 
+        ↓Element [steps.XMLElementStep-1607355176459]: 
+          nodeName: true
+      ↓IfIsIn [steps.IsInStep-1607340279651]: 
+        ↓Element [steps.XMLElementStep-1607355178776]: 
+          nodeName: true
+      ↓IfIsInThenElse [steps.IsInThenElseStep-1607340289521]: 
+        ↓jThen [steps.ThenStep-1607340289991]: 
+          ↓Element [steps.XMLElementStep-1607355166454]: 
+            nodeName: true
+        ↓jElse [steps.ElseStep-1607340289993]: 
+          ↓Element [steps.XMLElementStep-1607355169869]: 
+            nodeName: false
+    ↓Element [steps.XMLElementStep-1607428073693]: 
 ↓jIf [steps.IfStep-1606228684326]: 
