@@ -75,6 +75,7 @@ scriptContent:
         				this.breadcrumb[i].isSelected = false
         		}
         	}
+        	
         	isInArray(array, className) {
         		if(array.includes(className))
         			return true
@@ -1374,6 +1375,7 @@ title: Title for FlowViewer
                         		resolve();
                         '
       ↓Style [ngx.components.UIStyle-1600961167941]: 
+        isEnabled: false
         styleContent: 
           - xmlizable: 
             - ↑classname: com.twinsoft.convertigo.beans.common.FormatedContent
@@ -1404,179 +1406,249 @@ title: Title for FlowViewer
           - xmlizable: 
             - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
             - MobileSmartSourceType: plain:flow-container
-      ↓Div [ngx.components.UIDynamicElement-1588137806849]: 
-        beanData: '{"ionBean":"DivTag"}'
-        identifier: graphDomElement
-        tagName: div
-        ↓Attr [ngx.components.UIAttribute-1588238054179]: 
-          attrName: (document:mousemove)
-          attrValue: 
-            - xmlizable: 
-              - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
-              - MobileSmartSourceType: plain:onMouseMove($event)
-        ↓Style [ngx.components.UIStyle-1605869247261]: 
-          isEnabled: false
+      ↓GridRow [ngx.components.UIDynamicElement-1607594507693]: 
+        beanData: '{"ionBean":"GridRow"}'
+        isEnabled: false
+        tagName: ion-row
+        ↓GridCol [ngx.components.UIDynamicElement-1607594543134]: 
+          beanData: '{"ionBean":"GridCol"}'
+          tagName: ion-col
+          ↓divBreadcrumb [ngx.components.UIDynamicElement-1607519331636]: 
+            beanData: '{"ionBean":"DivTag"}'
+            tagName: div
+            ↓c [ngx.components.UIAttribute-1607524852840]: 
+              attrName: class
+              attrValue: 
+                - xmlizable: 
+                  - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+                  - MobileSmartSourceType: plain:bd_content
+            ↓Div [ngx.components.UIDynamicElement-1607527427834]: 
+              beanData: '{"ionBean":"DivTag"}'
+              tagName: div
+              ↓c [ngx.components.UIAttribute-1607527436200]: 
+                attrName: class
+                attrValue: 
+                  - xmlizable: 
+                    - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+                    - MobileSmartSourceType: plain:bd_content_1
+              ↓Tag [ngx.components.UIElement-1607524911818]: 
+                tagName: ul
+                ↓Directive [ngx.components.UIControlDirective-1607524246437]: 
+                  directiveItemName: item
+                  directiveSource: 
+                    - xmlizable: 
+                      - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+                      - MobileSmartSourceType: script:this.breadcrumb
+                  ↓Tag [ngx.components.UIElement-1607524946513]: 
+                    tagName: li
+                    ↓Tag [ngx.components.UIElement-1607527870608]: 
+                      tagName: a
+                      ↓Text [ngx.components.UIText-1607524962800]: 
+                        textValue: 
+                          - xmlizable: 
+                            - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+                            - MobileSmartSourceType: script:item.displayName
+                    ↓Event [ngx.components.UIControlEvent-1607528509568]: 
+                      ↓updateMainGraphAndUnselectBreadcrumb [ngx.components.UICustomAction-1607528509571]: 
+                        actionValue: 
+                          - xmlizable: 
+                            - ↑classname: com.twinsoft.convertigo.beans.common.FormatedContent
+                            - com.twinsoft.convertigo.beans.common.FormatedContent: 
+                              →: |
+                                '		page.c8o.log.debug(''[MB] ''+ props.actionFunction +'': ''+ props.actionName);
+                                		var cellsToAdd = vars.breadcrumbObject.graph.getCells();
+                                		this.updateGraph(this.graph, cellsToAdd);
+                                		
+                                		if(!vars.breadcrumbObject.isSelected)
+                                			vars.breadcrumbObject.isSelected = true
+                                			
+                                		this.unselectBreadcrumb(vars.breadcrumbObject.id);
+                                		resolve();
+                                '
+                        ↓graph [ngx.components.UIControlVariable-1607528509574]: 
+                          isEnabled: false
+                          varValue: 
+                            - xmlizable: 
+                              - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+                              - MobileSmartSourceType: script:item.graph
+                        ↓id [ngx.components.UIControlVariable-1607529980049]: 
+                          isEnabled: false
+                          varValue: 
+                            - xmlizable: 
+                              - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+                              - MobileSmartSourceType: script:item.id
+                        ↓isSelected [ngx.components.UIControlVariable-1607530405202]: 
+                          isEnabled: false
+                          varValue: 
+                            - xmlizable: 
+                              - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+                              - MobileSmartSourceType: script:item.isSelected
+                        ↓breadcrumbObject [ngx.components.UIControlVariable-1607530489792]: 
+                          varValue: 
+                            - xmlizable: 
+                              - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+                              - MobileSmartSourceType: script:item
+                    ↓Attr [ngx.components.UIAttribute-1607529673831]: 
+                      attrName: style
+                      attrValue: 
+                        - xmlizable: 
+                          - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+                          - MobileSmartSourceType: 'script:(item.isSelected) ? ''background-color: #0CBBE7;''  : ''background-color: #fff; '' '
+        ↓Style [ngx.components.UIStyle-1607594868944]: 
           styleContent: 
             - xmlizable: 
               - ↑classname: com.twinsoft.convertigo.beans.common.FormatedContent
               - com.twinsoft.convertigo.beans.common.FormatedContent: 
                 →: |
-                  '	height: 600px !important;
-                  	overflow: scroll !important;
+                  '/**
+                   * Custom properties (sometimes referred to as CSS variables or cascading variables)
+                   * are entities defined by CSS authors that contain specific values to be reused throughout a document.
+                   * They are set using custom property notation, e.g.: --main-color: black;
+                   * and are accessed using the var() function, e.g.: color: var(--main-color);
+                   * You can find below your component''s properties you can customize within the page.
+                   * If you''d like to make some customizations for whole app, please see your app Style & Theme components.
+                   * For more informations see https://ionicframework.com/docs/theming.
+                  **/
+                  //--ion-grid-column-padding	//Padding for the Column
+                  //--ion-grid-column-padding-lg	//Padding for the Column on lg screens and up
+                  //--ion-grid-column-padding-md	//Padding for the Column on md screens and up
+                  //--ion-grid-column-padding-sm	//Padding for the Column on sm screens and up
+                  //--ion-grid-column-padding-xl	//Padding for the Column on xl screens and up
+                  //--ion-grid-column-padding-xs	//Padding for the Column on xs screens and up
+                  //--ion-grid-columns	//The number of total Columns in the Grid
+                  
+                  max-height: 50px !important;
                   '
-      ↓divBreadcrumb [ngx.components.UIDynamicElement-1607519331636]: 
-        beanData: '{"ionBean":"DivTag"}'
-        tagName: div
-        ↓c [ngx.components.UIAttribute-1607524852840]: 
-          attrName: class
-          attrValue: 
-            - xmlizable: 
-              - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
-              - MobileSmartSourceType: plain:bd_content
-        ↓Div [ngx.components.UIDynamicElement-1607527427834]: 
-          beanData: '{"ionBean":"DivTag"}'
-          tagName: div
-          ↓c [ngx.components.UIAttribute-1607527436200]: 
-            attrName: class
-            attrValue: 
-              - xmlizable: 
-                - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
-                - MobileSmartSourceType: plain:bd_content_1
-          ↓Tag [ngx.components.UIElement-1607524911818]: 
-            tagName: ul
-            ↓Directive [ngx.components.UIControlDirective-1607524246437]: 
-              directiveItemName: item
-              directiveSource: 
+      ↓GridRow1 [ngx.components.UIDynamicElement-1607594606384]: 
+        beanData: '{"ionBean":"GridRow"}'
+        tagName: ion-row
+        ↓GridCol [ngx.components.UIDynamicElement-1607594614016]: 
+          beanData: '{"ionBean":"GridCol"}'
+          tagName: ion-col
+          ↓Div [ngx.components.UIDynamicElement-1588137806849]: 
+            beanData: '{"ionBean":"DivTag"}'
+            identifier: graphDomElement
+            tagName: div
+            ↓Attr [ngx.components.UIAttribute-1588238054179]: 
+              attrName: (document:mousemove)
+              attrValue: 
                 - xmlizable: 
                   - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
-                  - MobileSmartSourceType: script:this.breadcrumb
-              ↓Tag [ngx.components.UIElement-1607524946513]: 
-                tagName: li
-                ↓Tag [ngx.components.UIElement-1607527870608]: 
-                  tagName: a
-                  ↓Text [ngx.components.UIText-1607524962800]: 
-                    textValue: 
-                      - xmlizable: 
-                        - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
-                        - MobileSmartSourceType: script:item.displayName
-                ↓Event [ngx.components.UIControlEvent-1607528509568]: 
-                  ↓updateMainGraphAndUnselectBreadcrumb [ngx.components.UICustomAction-1607528509571]: 
-                    actionValue: 
-                      - xmlizable: 
-                        - ↑classname: com.twinsoft.convertigo.beans.common.FormatedContent
-                        - com.twinsoft.convertigo.beans.common.FormatedContent: 
-                          →: |
-                            '		page.c8o.log.debug(''[MB] ''+ props.actionFunction +'': ''+ props.actionName);
-                            		var cellsToAdd = vars.breadcrumbObject.graph.getCells();
-                            		this.updateGraph(this.graph, cellsToAdd);
-                            		
-                            		if(!vars.breadcrumbObject.isSelected)
-                            			vars.breadcrumbObject.isSelected = true
-                            			
-                            		this.unselectBreadcrumb(vars.breadcrumbObject.id);
-                            		resolve();
-                            '
-                    ↓graph [ngx.components.UIControlVariable-1607528509574]: 
-                      isEnabled: false
-                      varValue: 
-                        - xmlizable: 
-                          - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
-                          - MobileSmartSourceType: script:item.graph
-                    ↓id [ngx.components.UIControlVariable-1607529980049]: 
-                      isEnabled: false
-                      varValue: 
-                        - xmlizable: 
-                          - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
-                          - MobileSmartSourceType: script:item.id
-                    ↓isSelected [ngx.components.UIControlVariable-1607530405202]: 
-                      isEnabled: false
-                      varValue: 
-                        - xmlizable: 
-                          - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
-                          - MobileSmartSourceType: script:item.isSelected
-                    ↓breadcrumbObject [ngx.components.UIControlVariable-1607530489792]: 
-                      varValue: 
-                        - xmlizable: 
-                          - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
-                          - MobileSmartSourceType: script:item
-                ↓Attr [ngx.components.UIAttribute-1607529673831]: 
-                  attrName: style
-                  attrValue: 
-                    - xmlizable: 
-                      - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
-                      - MobileSmartSourceType: 'script:(item.isSelected) ? ''background-color: #0CBBE7;''  : ''background-color: #fff; '' '
-        ↓Div1 [ngx.components.UIDynamicElement-1607531676957]: 
-          beanData: '{"ionBean":"DivTag"}'
-          tagName: div
-          ↓c [ngx.components.UIAttribute-1607531676960]: 
-            attrName: class
-            attrValue: 
+                  - MobileSmartSourceType: plain:onMouseMove($event)
+            ↓Style [ngx.components.UIStyle-1605869247261]: 
+              isEnabled: false
+              styleContent: 
+                - xmlizable: 
+                  - ↑classname: com.twinsoft.convertigo.beans.common.FormatedContent
+                  - com.twinsoft.convertigo.beans.common.FormatedContent: 
+                    →: |
+                      '	height: 600px !important;
+                      	overflow: scroll !important;
+                      '
+          ↓Style [ngx.components.UIStyle-1607594643693]: 
+            styleContent: 
               - xmlizable: 
-                - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
-                - MobileSmartSourceType: plain:bd_content_2
-          ↓Tag [ngx.components.UIElement-1607531676963]: 
-            tagName: ul
-            ↓Directive [ngx.components.UIControlDirective-1607531676966]: 
-              directiveItemName: item
-              directiveSource: 
+                - ↑classname: com.twinsoft.convertigo.beans.common.FormatedContent
+                - com.twinsoft.convertigo.beans.common.FormatedContent: 
+                  →: |
+                    '/**
+                     * Custom properties (sometimes referred to as CSS variables or cascading variables)
+                     * are entities defined by CSS authors that contain specific values to be reused throughout a document.
+                     * They are set using custom property notation, e.g.: --main-color: black;
+                     * and are accessed using the var() function, e.g.: color: var(--main-color);
+                     * You can find below your component''s properties you can customize within the page.
+                     * If you''d like to make some customizations for whole app, please see your app Style & Theme components.
+                     * For more informations see https://ionicframework.com/docs/theming.
+                    **/
+                    //--ion-grid-column-padding	//Padding for the Column
+                    //--ion-grid-column-padding-lg	//Padding for the Column on lg screens and up
+                    //--ion-grid-column-padding-md	//Padding for the Column on md screens and up
+                    //--ion-grid-column-padding-sm	//Padding for the Column on sm screens and up
+                    //--ion-grid-column-padding-xl	//Padding for the Column on xl screens and up
+                    //--ion-grid-column-padding-xs	//Padding for the Column on xs screens and up
+                    //--ion-grid-columns	//The number of total Columns in the Grid
+                    '
+          ↓divBreadcrumb [ngx.components.UIDynamicElement-1607595300976]: 
+            beanData: '{"ionBean":"DivTag"}'
+            tagName: div
+            ↓c [ngx.components.UIAttribute-1607595300979]: 
+              attrName: class
+              attrValue: 
                 - xmlizable: 
                   - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
-                  - MobileSmartSourceType: script:this.breadcrumb
-              ↓Tag [ngx.components.UIElement-1607531676969]: 
-                tagName: li
-                ↓Tag [ngx.components.UIElement-1607531676972]: 
-                  tagName: a
-                  ↓Text [ngx.components.UIText-1607531676975]: 
-                    textValue: 
-                      - xmlizable: 
-                        - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
-                        - MobileSmartSourceType: script:item.displayName
-                ↓Event [ngx.components.UIControlEvent-1607531676978]: 
-                  ↓updateMainGraphAndUnselectBreadcrumb [ngx.components.UICustomAction-1607531676981]: 
-                    actionValue: 
-                      - xmlizable: 
-                        - ↑classname: com.twinsoft.convertigo.beans.common.FormatedContent
-                        - com.twinsoft.convertigo.beans.common.FormatedContent: 
-                          →: |
-                            '		page.c8o.log.debug(''[MB] ''+ props.actionFunction +'': ''+ props.actionName);
-                            		var cellsToAdd = vars.breadcrumbObject.graph.getCells();
-                            		this.updateGraph(this.graph, cellsToAdd);
-                            		
-                            		if(!vars.breadcrumbObject.isSelected)
-                            			vars.breadcrumbObject.isSelected = true
-                            			
-                            		this.unselectBreadcrumb(vars.breadcrumbObject.id);
-                            		resolve();
-                            '
-                    ↓graph [ngx.components.UIControlVariable-1607531676984]: 
-                      isEnabled: false
-                      varValue: 
-                        - xmlizable: 
-                          - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
-                          - MobileSmartSourceType: script:item.graph
-                    ↓id [ngx.components.UIControlVariable-1607531676987]: 
-                      isEnabled: false
-                      varValue: 
-                        - xmlizable: 
-                          - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
-                          - MobileSmartSourceType: script:item.id
-                    ↓isSelected [ngx.components.UIControlVariable-1607531676990]: 
-                      isEnabled: false
-                      varValue: 
-                        - xmlizable: 
-                          - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
-                          - MobileSmartSourceType: script:item.isSelected
-                    ↓breadcrumbObject [ngx.components.UIControlVariable-1607531676993]: 
-                      varValue: 
-                        - xmlizable: 
-                          - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
-                          - MobileSmartSourceType: script:item
-                ↓Attr [ngx.components.UIAttribute-1607531676996]: 
-                  attrName: style
-                  attrValue: 
+                  - MobileSmartSourceType: plain:bd_content
+            ↓Div [ngx.components.UIDynamicElement-1607595300982]: 
+              beanData: '{"ionBean":"DivTag"}'
+              tagName: div
+              ↓c [ngx.components.UIAttribute-1607595300985]: 
+                attrName: class
+                attrValue: 
+                  - xmlizable: 
+                    - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+                    - MobileSmartSourceType: plain:bd_content_1
+              ↓Tag [ngx.components.UIElement-1607595300988]: 
+                tagName: ul
+                ↓Directive [ngx.components.UIControlDirective-1607595300991]: 
+                  directiveItemName: item
+                  directiveSource: 
                     - xmlizable: 
                       - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
-                      - MobileSmartSourceType: 'script:(item.isSelected) ? ''background-color: #0CBBE7;''  : ''background-color: #fff; '' '
+                      - MobileSmartSourceType: script:this.breadcrumb
+                  ↓Tag [ngx.components.UIElement-1607595300994]: 
+                    tagName: li
+                    ↓Tag [ngx.components.UIElement-1607595300997]: 
+                      tagName: a
+                      ↓Text [ngx.components.UIText-1607595301000]: 
+                        textValue: 
+                          - xmlizable: 
+                            - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+                            - MobileSmartSourceType: script:item.displayName
+                    ↓Event [ngx.components.UIControlEvent-1607595301003]: 
+                      ↓updateMainGraphAndUnselectBreadcrumb [ngx.components.UICustomAction-1607595301006]: 
+                        actionValue: 
+                          - xmlizable: 
+                            - ↑classname: com.twinsoft.convertigo.beans.common.FormatedContent
+                            - com.twinsoft.convertigo.beans.common.FormatedContent: 
+                              →: |
+                                '		page.c8o.log.debug(''[MB] ''+ props.actionFunction +'': ''+ props.actionName);
+                                		var cellsToAdd = vars.breadcrumbObject.graph.getCells();
+                                		this.updateGraph(this.graph, cellsToAdd);
+                                		
+                                		if(!vars.breadcrumbObject.isSelected)
+                                			vars.breadcrumbObject.isSelected = true
+                                			
+                                		this.unselectBreadcrumb(vars.breadcrumbObject.id);
+                                		resolve();
+                                '
+                        ↓graph [ngx.components.UIControlVariable-1607595301009]: 
+                          isEnabled: false
+                          varValue: 
+                            - xmlizable: 
+                              - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+                              - MobileSmartSourceType: script:item.graph
+                        ↓id [ngx.components.UIControlVariable-1607595301012]: 
+                          isEnabled: false
+                          varValue: 
+                            - xmlizable: 
+                              - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+                              - MobileSmartSourceType: script:item.id
+                        ↓isSelected [ngx.components.UIControlVariable-1607595301015]: 
+                          isEnabled: false
+                          varValue: 
+                            - xmlizable: 
+                              - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+                              - MobileSmartSourceType: script:item.isSelected
+                        ↓breadcrumbObject [ngx.components.UIControlVariable-1607595301018]: 
+                          varValue: 
+                            - xmlizable: 
+                              - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+                              - MobileSmartSourceType: script:item
+                    ↓Attr [ngx.components.UIAttribute-1607595301021]: 
+                      attrName: style
+                      attrValue: 
+                        - xmlizable: 
+                          - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+                          - MobileSmartSourceType: 'script:(item.isSelected) ? ''background-color: #0CBBE7;''  : ''background-color: #fff; '' '
     ↓GridCol1 [ngx.components.UIDynamicElement-1600682513448]: 
       beanData: '{"ionBean":"GridCol","SizeXl":"plain:2"}'
       isEnabled: false
