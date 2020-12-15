@@ -355,12 +355,15 @@
                 	var isComplexNode = context.addTextNode(dboNode.item(0), "isComplex", isComplex);
                 	isComplexNode.setAttribute("type", "boolean");
                 	
+                	context.addTextNode(dboNode.item(0), "depthLvl", 0);
+                //	depthLvl++;
+                	
                 	parentQName = item.getFullQName();
                 
-                	walkChildren(dboNode.item(0), parentQName);
+                	walkChildren(dboNode.item(0), parentQName, 0);
                 }
                 
-                function walkChildren(parentNode, parentQName) {
+                function walkChildren(parentNode, parentQName, depthLvl) {
                 	
                 	// getting dbo and its children
                 	var dbo = com.twinsoft.convertigo.engine.Engine.theApp.databaseObjectsManager.getDatabaseObjectByQName(parentQName);
@@ -385,12 +388,14 @@
                 		var childNode = context.addTextNode(parentNode, "children", "");
                 		childNode.setAttribute("type", "array");
                 		
+                		depthLvl++;
                 		// for each children 
                 		for (var i = 0; i < child.size(); i++) {
                 			var childQName = child.get(i).getFullQName();
                 			var childDisplayName = child.get(i).getName();
                 			var childClassName = child.get(i).getClass().getName();
                 			var beanSubstr = "" + childClassName.substring(strBean.length)
+                
                 
                 			if(elementsToNotDisplayByClassName.indexOf(beanSubstr) == -1) {
                 				isComplex = (beanSubstr == "steps.XMLComplexStep") ? true : false
@@ -407,8 +412,10 @@
                 				
                 				var isComplexNode = context.addTextNode(dboChildNode, "isComplex", isComplex);
                 				isComplexNode.setAttribute("type", "boolean");
+                				
+                				context.addTextNode(dboChildNode, "depthLvl", depthLvl);
                 				// getting children of children
-                				walkChildren(dboChildNode, childQName)
+                				walkChildren(dboChildNode, childQName, depthLvl)
                 			}
                 		}
                 	}

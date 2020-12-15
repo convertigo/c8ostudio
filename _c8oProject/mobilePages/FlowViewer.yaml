@@ -94,14 +94,19 @@ scriptContent:
         		    this.paper.translate(
         		    	event.offsetX - this.dragStartPosition.x * this.scale / 10, 
         		        event.offsetY - this.dragStartPosition.y * this.scale / 10);
-        			this.paperMiniMap.translate(
-        				event.offsetX - this.dragStartPosition.x,
-        				event.offsetY - this.dragStartPosition.y
-        			)
+        //			this.paperMiniMap.translate(
+        //				event.offsetX - this.dragStartPosition.x,
+        //				event.offsetY - this.dragStartPosition.y
+        //			)
         		}
             }
         	
-        	makeLink(source, target, label, graph: joint.dia.Graph, previousThen, previousElse) {
+        	makeLink(source, target, label, graph: joint.dia.Graph, previousThen, previousElse, startDirection) {
+        		
+        		var sourceClassName = this.getClassName(source.attributes.className)
+        		var targetClassName = this.getClassName(target.attributes.className)
+        		
+        			
                 var link = new joint.shapes.standard.ShadowLink({
         		    source: source,
         		    target: target,
@@ -124,8 +129,21 @@ scriptContent:
         		    attrs: {
         		        line: {
         		            stroke: ''#77ACA1'', //#3c4260
-        					"stroke-width": 10
-        		        }
+        					"stroke-width": 5, 
+        					sourceMarker: {
+        						type: "circle",
+        						fill: "#FFF",
+        						stroke: ''#333'',
+         		 				r: 5, // radius of the circle
+          						cx: 5
+        					}
+        		        },
+        				shadow: {
+        					"stroke-width": 5,
+        					sourceMarker: {
+        						type: "circle"
+        					}
+        				}
         			},
         
         		});
@@ -138,20 +156,38 @@ scriptContent:
             		}
         		})
         		
-        		var startDirection = (previousThen) ? ''top'' : (previousElse) ? ''bottom'': ''right''; 
+        //		var startDirection = '''';
+        		startDirection = (previousThen) ? ''top'' : (previousElse) ? 	''bottom'' : startDirection;
+        //		if(isInArray && source.collection.models[source.collection.models.length - 2].attributes.type == "standard.ShadowLink")
+        //			startDirection = ''right''
+        //		startDirection = (previousThen) ? ''top'' : (previousElse) ? ''bottom'' : ''right''; 
+        //		if(this.isInArray(this.ifThenElseSteps, sourceClassName) && !this.isInArray(this.ifSteps, targetClassName) || !this.isInArray(this.ifThenElseSteps, targetClassName))
+        		
+        		
+        //		if(this.isInArray(this.ifSteps, this.getClassName(source.attributes.className)))
+        //			startDirection = ''top'';
         		
         		link.router(''manhattan'', {
         		    startDirections: [startDirection],
-        		    endDirections: [''left'']
+        		    endDirections: [''left''],
+        			step: 10,
+        			maximumLoops: 2000,
+        			padding: {
+        				horizontal: 20
+        			}
         		});
-        		
+        
         //		link.router(''orthogonal'')
         		
         //		console.log(''link: '' + JSON.stringify(link))
+        //		if(this.isInArray(this.ifThenElseSteps, sourceClassName) && !this.isInArray(this.ifSteps, targetClassName) && !this.isInArray(this.ifThenElseSteps, targetClassName))
+        //		if(this.isInArray(this.ifThenElseSteps, sourceClassName) && this.isInArray(this.ifSteps, targetClassName) == false && this.isInArray(this.ifThenElseSteps, targetClassName) == false)
         		link.addTo(graph)
+        		console.log("link JSON: " + JSON.stringify(link.toJSON()))
+        		
             }
         
-        	makeElement(position, text: string, qname: string, className: string, isComplex: boolean, isEmbedded: boolean, refIdEmbed: string, graph: joint.dia.Graph) {
+        	makeElement(position, text: string, qname: string, className: string, isComplex: boolean, isInBranch: boolean, refBranchStart: string, depthLvl, graph: joint.dia.Graph) {
                 
         		var element;
         		if(!isComplex) {
@@ -174,10 +210,11 @@ scriptContent:
         			element.prop(''className'', className);
         			element.prop(''displayName'', text);
         			element.prop(''isComplex'', isComplex);
-        			element.prop(''isEmbedded'', isEmbedded);
-        			element.prop(''refIdEmbed'', refIdEmbed);
+        			element.prop(''isInBranch'', isInBranch);
+        			element.prop(''refBranchStart'', refBranchStart);
+        			element.prop(''depthLvl'', depthLvl)
         		} else {
-        			element = this.makeComplexElement(position, text, qname, className, isComplex, isEmbedded, refIdEmbed);
+        			element = this.makeComplexElement(position, text, qname, className, isComplex, isInBranch, refBranchStart, depthLvl);
         		}
         
         		
@@ -186,7 +223,7 @@ scriptContent:
         		return element;
             }
         
-        	makeComplexElement(position, text: string, qname: string, className: string, isComplex: boolean, isEmbedded: boolean, refIdEmbed: string) {
+        	makeComplexElement(position, text: string, qname: string, className: string, isComplex: boolean, isInBranch: boolean, refBranchStart: string, depthLvl) {
         		
         		let element = new joint.shapes.basic.Rect({
         	        position: {
@@ -209,8 +246,8 @@ scriptContent:
         			''className'': className,
         			''displayName'': text,
         			''isComplex'': isComplex, 
-        			''isEmbedded'': isEmbedded,
-        			''refIdEmbed'': refIdEmbed
+        			''isInBranch'': isInBranch,
+        			''refBranchStart'': refBranchStart
             	});
         
         //		var port = {
@@ -241,8 +278,13 @@ scriptContent:
         		last array''s element is the one which comes after the branch in logical flow, it is linked from the ''if step'' so it appears as a successors of it
         	*/
         	getLastElementFromSimpleBranch(branch, minus) {
+        		console.log(''branch:'' + JSON.stringify(branch))
         		var successors = this.graph.getSuccessors(branch)
         		var lastElement = successors[successors.length - minus]
+        //		for(var i = 0; i < successors.length; i++) {
+        //			console.log("successor:" + JSON.stringify(successors[i]))
+        //			lastElement = successors[i]
+        //		} 
         //		console.log(''getLastElementFromSimpleBranch:'' + successors)
         //		console.log(''getLastElementFromSimpleBranch:'' + JSON.stringify(lastElement))
         		return lastElement;
@@ -349,7 +391,9 @@ scriptContent:
         		var previousThen = previousThen;
         		var previousElse = previousElse;
         		var previousNodeObject;
+        		
         		var stepIsInBranch = false;
+        		var refStartBranch = '''';
         		
         		var nbChildren = 0;
         		for (var i=0; i < nodeObject.length; i++) {
@@ -378,14 +422,17 @@ scriptContent:
         			if(this.isInArray(this.ifThenElseSteps, parentClassName) && previousThen) { // parentClassName == "IfThenElseStep"
         				x = parentX + this.horizontalSpace
         				y = parentY - 120;
+        				stepIsInBranch = true
         			} else if (this.isInArray(this.ifThenElseSteps, parentClassName) && previousElse) { // parentClassName == "IfThenElseStep"
         				x = parentX + this.horizontalSpace
         				y = parentY + 120
+        				stepIsInBranch = true
         			}
         			
         			if(this.isInArray(this.ifSteps, previousClassName)) {
         				x = previous.attributes.position.x + this.horizontalSpace
-        				y = previous.attributes.position.y - 120			
+        				y = previous.attributes.position.y - 120
+        				stepIsInBranch = true			
         			}
         			
         			if(previousNodeObject != undefined && this.isInArray(this.ifSteps, previousClassName)) {
@@ -395,6 +442,25 @@ scriptContent:
         				x = previous.attributes.position.x + (70 + this.horizontalSpace * nbChildren) + 45
         				y = previous.attributes.position.y
         				
+        			}
+        			var lastCell = this.graph.getLastCell()
+        //			console.log(''lastCell: '' + JSON.stringify(lastCell))
+        						
+        			if(lastCell != undefined && lastCell.attributes.type == "standard.ShadowLink") {
+        					// So if it a link, the true last cell is its target
+        					if(lastCell.attributes.target != undefined && !previousThen && !previousElse) {
+        						var lastCellTarget = lastCell.attributes.target
+        						//console.log(''target: '' + JSON.stringify(lastCellTarget))
+        						x = lastCellTarget.attributes.position.x + this.horizontalSpace;
+        						// y = lastCellTarget.attributes.position.y
+        					}
+        //					var lastCellTarget = lastCell.attributes.target
+        //					x = lastCellTarget.attributes.position.x + this.horizontalSpace;
+        //					y = lastCellTarget.attributes.position.y
+        			} 
+        			else {
+        				x = lastCell.attributes.position.x + this.horizontalSpace
+        				// y = lastCell.attributes.position.y
         			}
         		
         			// walking through branches
@@ -421,36 +487,41 @@ scriptContent:
         //					console.log(''nbChildren: '' + nbChildren)
         					x = previous.attributes.position.x + (70 + this.horizontalSpace * nbChildren) + 45
         					y = previous.attributes.position.y
+        					stepIsInBranch = true
         			}
+        			
+        			// TO DELETE
+        			
+        //			if(this.checkElementOnPoint(x,y)) {
+        //				// Last cell might be a link or en element
+        //				var lastCell = this.graph.getLastCell();
+        //				if(lastCell.attributes.type == "standard.ShadowLink") {
+        //					// So if it a link, the true last cell is its target
+        //					if(lastCell.attributes.target != undefined) {
+        //						var lastCellTarget = lastCell.attributes.target
+        //						//if(lastCellTarget.attributes.endsBranch) {}
+        //						x = lastCellTarget.attributes.position.x + this.horizontalSpace;
+        //						y = lastCellTarget.attributes.position.y
+        //					}
+        ////					var lastCellTarget = lastCell.attributes.target
+        ////					x = lastCellTarget.attributes.position.x + this.horizontalSpace;
+        ////					y = lastCellTarget.attributes.position.y
+        //				} 
+        //				else {
+        //					x = lastCell.attributes.position.x + this.horizontalSpace
+        //					y = lastCell.attributes.position.y
+        //				}
+        //			}
         			
         
-        	
-        			
-        			
-        			if(this.checkElementOnPoint(x,y)) {
-        				// Last cell might be a link or en element
-        				var lastCell = this.graph.getLastCell();
-        				if(lastCell.attributes.type == "standard.ShadowLink") {
-        					// So if it a link, the true last cell is its target
-        					if(lastCell.attributes.target != undefined) {
-        						var lastCellTarget = lastCell.attributes.target
-        						x = lastCellTarget.attributes.position.x + this.horizontalSpace;
-        						y = lastCellTarget.attributes.position.y
-        					}
-        //					var lastCellTarget = lastCell.attributes.target
-        //					x = lastCellTarget.attributes.position.x + this.horizontalSpace;
-        //					y = lastCellTarget.attributes.position.y
-        				} 
-        				else {
-        					x = lastCell.attributes.position.x + this.horizontalSpace
-        					y = lastCell.attributes.position.y
-        				}
-        			}
         			
         			// getting ref complex id 
         			if(previous.attributes.isComplex) {
         				refId = previous.id
         			}
+        			
+        			if(stepIsInBranch)
+        				refStartBranch = parent.id
         			
         			if(!parentIsComplex && stepClassName != "ThenStep" && stepClassName != "ElseStep") {
         			var el = this.makeElement({
@@ -461,49 +532,134 @@ scriptContent:
         				nodeObject[i].dbo.qname,
         				nodeObject[i].dbo.className,
         				nodeObject[i].dbo.isComplex,
-        				nodeObject[i].dbo.isEmbedded,
-        				refId,
+        				stepIsInBranch,
+        //				nodeObject[i].dbo.isEmbedded,
+        				refStartBranch,
+        				nodeObject[i].dbo.depthLvl,
         				graph
         			)
         
         			if(previousThen) {
         				label = "Then"
-        				stepIsInBranch = true;
-        			}
-        				
-        			if (previousElse) {
+        			} else if (previousElse) {
         				label = "Else"
-        				stepIsInBranch = true;
+        			} else {
+        				label = ""
         			}
         		
-        			if(previous != null)  //  && !previous.attributes.isComplex
-        				this.makeLink(previous, el, label, graph, previousThen, previousElse)
+        //			if(this.isInArray(this.ifThenElseSteps, previousClassName) || this.isInArray(this.ifSteps, previousClassName) 
+        //				&& !this.isInArray(this.ifSteps, stepClassName) && !this.isInArray(this.ifThenElseSteps, stepClassName))  //  && !previous.attributes.isComplex
+        //				this.makeLink(previous, el, label, graph, previousThen, previousElse)
+        			
+        //			if(previousNodeObject != null  && this.isInArray(this.ifThenElseSteps, this.getClassName(previousNodeObject.dbo.className)) && !this.isInArray(this.ifSteps, stepClassName))
+        //				this.makeLink(previous, el, label, graph, previousThen, previousElse)
+        			
+        			// si mon précédent est un thenElse ou un simple if ET si mon current n''est pas un thenElse ou un If je fais un lien
+        //			if(this.isInArray(this.ifThenElseSteps, previousClassName) || this.isInArray(this.ifSteps, previousClassName)) {
+        				var startDirection;
+        				if(this.isInArray(this.ifSteps, previousClassName) && !this.isInArray(this.ifSteps, stepClassName)) {
+        //					startDirection = (this.isInArray(this.ifThenElseSteps, stepClassName)) ? ''right'' : ''top''
+        //					startDirection = (previous.attributes.depthLvl == el.attributes.depthLvl) ? ''bottom'' : ''top''
+        					startDirection = (this.isInArray(this.ifThenElseSteps, stepClassName)) ? ''right'' : (previous.attributes.depthLvl == el.attributes.depthLvl) ? ''bottom'' : ''top''
+        	//				startDirection = (!this.isInArray(this.ifSteps, stepClassName) && !this.isInArray(this.ifThenElseSteps, stepClassName)) ? ''bottom'' : startDirection
+        //					startDirection = (this.isInArray(this.ifSteps, previousClassName) && !this.isInArray(this.ifSteps, stepClassName) && !this.isInArray(this.ifThenElseSteps, stepClassName)) ? ''top'' : startDirection  
+        					this.makeLink(previous, el, label, graph, previousThen, previousElse, startDirection)
+        				} else if (this.isInArray(this.ifSteps, previousClassName) && this.isInArray(this.ifSteps, stepClassName)) {
+        					//startDirection = (previousNodeObject.dbo.children != undefined) ? ''right '' : ''top''
+        					startDirection = (this.graph.getSuccessors(previous).length <= 0) ? ''top'' : ''right''
+        					this.makeLink(previous, el, label, graph, previousThen, previousElse, startDirection) // right
+        				} else if (this.isInArray(this.ifSteps, previousClassName) && this.isInArray(this.ifThenElseSteps, stepClassName)) {
+        					startDirection = (previousNodeObject.dbo.children != undefined) ? ''right '' : ''top''
+        					this.makeLink(previous, el, label, graph, previousThen, previousElse, startDirection) // top
+        				} else if(!this.isInArray(this.ifSteps, previousClassName) && !this.isInArray(this.ifThenElseSteps, previousClassName)) {
+        					this.makeLink(previous, el, label, graph, previousThen, previousElse, "right")
+        				} else if(!this.isInArray(this.ifThenElseSteps, stepClassName) && !this.isInArray(this.ifSteps, stepClassName)) {
+        					this.makeLink(previous, el, label, graph, previousThen, previousElse, "right")
+        				}
+        //			} 
+        //				this.makeLink(previous, el, label, graph, previousThen, previousElse)
         				
+        //			if(this.isInArray(this.ifThenElseSteps, previousClassName) && !this.isInArray(this.ifSteps, stepClassName))
+        //				this.makeLink(previous, el, label, graph, previousThen, previousElse)
+        			// getting last element of branches	
         			if(previousNodeObject != null && this.isInArray(this.ifThenElseSteps, previousClassName)) { // this.getClassName(previous.attributes.className) == "IfThenElseStep"
         				var lastElements = this.getLastElementsFromThenAndElseBranch(previous)
         				var jThenLastElement = lastElements.jThen[lastElements.jThen.length - 1]
         				var jElseLastElement = lastElements.jElse[lastElements.jElse.length - 1]
         
         //							console.log("jThenLastElement: " + JSON.stringify(jThenLastElement) )
-        				if(jThenLastElement != undefined)
-        					this.makeLink(jThenLastElement, el, label, this.graph, false, false)
+        				if(jThenLastElement != undefined) {
+        					this.makeLink(jThenLastElement, el, label, this.graph, false, false, "right") // right
+        //					previous = jThenLastElement
+        				}
         							
-        				if(jElseLastElement != undefined)
-        					this.makeLink(jElseLastElement, el, label, this.graph, false, false)
+        				if(jElseLastElement != undefined) {
+        					this.makeLink(jElseLastElement, el, label, this.graph, false, false, "right") // right
+        //					previous = jElseLastElement
+        				}
         								
-        			} else if(previousNodeObject != null && this.isInArray(this.ifSteps, previousClassName)) { // this.getClassName(previous.attributes.className) == "IfStep"
-        				// minus = 2 because element has been created so the successors length got + 1
-        				var lastElementFromSimpleBranch = this.getLastElementFromSimpleBranch(previous, 2)
-        				this.makeLink(lastElementFromSimpleBranch, el, label, this.graph, false, false)
-        			} else {
+        			} 
+        			// add a condition tfor last elmement
+        //			else if(previousNodeObject != null && this.isInArray(this.ifSteps, previousClassName)) { // this.getClassName(previous.attributes.className) == "IfStep"
+        //				// minus = 2 because element has been created so the successors length got + 1
+        //				var lastElementFromSimpleBranch = this.getLastElementFromSimpleBranch(previous, 2)
+        //				this.makeLink(lastElementFromSimpleBranch, el, label, this.graph, false, false) // right
+        //			} 
+        			else if(previousNodeObject != null && this.isInArray(this.ifSteps, previousClassName)) { // this.getClassName(previous.attributes.className) == "IfStep"
+        				if(previousClassName != this.getClassName(previousNodeObject.dbo.className)) {
+        					var lastElement = this.getLastElementFromSimpleBranch(previous, 2);
+        					this.makeLink(lastElement, el, '''', this.graph, false, false, "right")
+        				} else {			
+        					if(lastCell != undefined && lastCell.attributes.type == "standard.ShadowLink") {
+        						// So if it a link, the true last cell is its target
+        						if(lastCell.attributes.target != undefined) {
+        							// if(lastCell.attributes.isInBranch)
+        							// getSuccessors - 1 
+        							var lastCellTarget = lastCell.attributes.target
+        							console.log(''target: '' + JSON.stringify(lastCellTarget))
+        							
+        							if(lastCellTarget != undefined) {
+        								var startBranchElement = this.graph.getCell(lastCellTarget.attributes.refBranchStart)
+        								var lastElements = this.getLastElementsFromThenAndElseBranch(startBranchElement)
+        								var jThenLastElement = lastElements.jThen[lastElements.jThen.length - 1]
+        								var jElseLastElement = lastElements.jElse[lastElements.jElse.length - 1]
+        								
+        								// positionning current element on Y position of the start branch element
+        								//el.position(el.attributes.position.x, startBranchElement.attributes.position.y)
         
+        				//							console.log("jThenLastElement: " + JSON.stringify(jThenLastElement) )
+        								if(jThenLastElement != undefined) {
+        									this.makeLink(jThenLastElement, el, label, this.graph, false, false, "right") // right
+        				//					previous = jThenLastElement
+        								}
+        											
+        								if(jElseLastElement != undefined) {
+        									el.position(el.attributes.position.x, jElseLastElement.attributes.position.y)
+        									this.makeLink(jElseLastElement, el, label, this.graph, false, false, "right") // right
+        				//					previous = jElseLastElement
+        								}	
+        							}
+        							
+        							this.makeLink(lastCellTarget, el, '''', this.graph, false, false, "right")
+        
+        							
+        											// y = lastCellTarget.attributes.position.y
+        						}
+        					//					var lastCellTarget = lastCell.attributes.target
+        					//					x = lastCellTarget.attributes.position.x + this.horizontalSpace;
+        					//					y = lastCellTarget.attributes.position.y
+        					} 
+        					else {
+        						this.makeLink(lastCell, el, '''', this.graph, false, false, "right")
+        						// y = lastCell.attributes.position.y
+        					}								
+        				}
         			}
-        			
         			previous = el
         			
         			if(this.isInArray(this.ifThenElseSteps, stepClassName) || this.isInArray(this.ifSteps, stepClassName))
         				previousNodeObject = nodeObject[i]
-        		
+        							
         			}
         			
         			if(stepClassName == "ThenStep") {
@@ -538,12 +694,6 @@ scriptContent:
                     model: this.graph,
                     gridSize: 10,
         			embeddingMode: true,
-        			drawGrid: {
-        				name: ''dot'',
-        				args: {
-        					color: ''white''
-        				}
-        			},
                     defaultRouter: {
                         name: ''normal''
                     },
@@ -558,6 +708,13 @@ scriptContent:
                             return true
                     }
                 }
+        
+        //			drawGrid: {
+        //				name: ''dot'',
+        //				args: {
+        //					color: ''white''
+        //				}
+        //			},
                 this.paper = this.createPaper(paperOpts);
         		this.paper.setOrigin(this.graphOriginX, this.graphOriginY)
         
@@ -664,6 +821,8 @@ scriptContent:
         						else: 0	
         					};
         					
+        					var lastCell = this.graph.getLastCell();
+        					
         					_.each(resp[''array''], (newElement, i) => {
         
         						x = 70 + this.horizontalSpace * parseInt(i);
@@ -711,9 +870,32 @@ scriptContent:
         							y = 70
         						}
         						
-        						if(previous != null && this.isInArray(this.ifSteps, previousClassName)) { //previousClassName == "IfStep"
-        							var lastElement = this.getLastElementFromSimpleBranch(previous, 1);
-        							x = lastElement.attributes.position.x + this.horizontalSpace;
+        						if(previous != null && this.isInArray(this.ifSteps, previousClassName)) { //previousClassName == "IfStep"g
+        							if(previousClassName != previousFromSequenceClassName) {
+        								var lastElement = this.getLastElementFromSimpleBranch(previous, 1);
+        								x = lastElement.attributes.position.x + this.horizontalSpace;
+        							} else {
+        								lastCell = this.graph.getLastCell()
+        								console.log(''lastCell: '' + JSON.stringify(lastCell))
+        											
+        								if(lastCell != undefined && lastCell.attributes.type == "standard.ShadowLink") {
+        										// So if it a link, the true last cell is its target
+        										if(lastCell.attributes.target != undefined) {
+        											var lastCellTarget = lastCell.attributes.target
+        //											console.log(''target: '' + JSON.stringify(lastCellTarget))
+        											x = lastCellTarget.attributes.position.x + this.horizontalSpace;
+        											// y = lastCellTarget.attributes.position.y
+        										}
+        					//					var lastCellTarget = lastCell.attributes.target
+        					//					x = lastCellTarget.attributes.position.x + this.horizontalSpace;
+        					//					y = lastCellTarget.attributes.position.y
+        								} 
+        								else {
+        									x = lastCell.attributes.position.x + this.horizontalSpace
+        									// y = lastCell.attributes.position.y
+        								}								
+        							}
+        							
         						}
         						
         						if(this.checkElementOnPoint(x,y)) {
@@ -734,6 +916,7 @@ scriptContent:
         							x = previous.attributes.position.x + this.horizontalSpace
         						}
         						
+        							
         //						if(previous != null) {
         //							x = previous.atrributes.position.x + this.horizontalSpace;
         //							y = previous.attributes.position.y
@@ -745,11 +928,12 @@ scriptContent:
         							newElement.dbo.className, 
         							newElement.dbo.isComplex, 
         							newElement.dbo.isEmbedded, 
-        							'''', 
+        							'''',
+        							newElement.dbo.depthLvl, 
         							this.graph)
-        
+        						
         						if(previous != null && !this.isInArray(this.ifThenElseSteps, previousClassName)) // && previousClassName != "IfThenElseStep"
-        							var link = this.makeLink(previous, el, '''', this.graph, false, false)
+        							var link = this.makeLink(previous, el, '''', this.graph, false, false, "right")
         
         						
         						if(previous != null && this.isInArray(this.ifThenElseSteps, previousClassName)) { // this.getClassName(previous.attributes.className) == "IfThenElseStep"
@@ -758,17 +942,44 @@ scriptContent:
         							var jElseLastElement = lastElements.jElse[lastElements.jElse.length - 1]
         
         //							console.log("jThenLastElement: " + JSON.stringify(jThenLastElement) )
-        							if(jThenLastElement != undefined)
-        								this.makeLink(jThenLastElement, el, '''', this.graph, false, false)
+        							if(jThenLastElement != undefined) {
+        								this.makeLink(jThenLastElement, el, '''', this.graph, false, false, "right")
+        //								lastCell = jThenLastElement
+        							}
+        								
         							
-        							if(jElseLastElement != undefined)
-        								this.makeLink(jElseLastElement, el, '''', this.graph, false, false)
+        							if(jElseLastElement != undefined) {
+        								this.makeLink(jElseLastElement, el, '''', this.graph, false, false, "right")
+        //								lastCell = jElseLastElement
+        							}
+        								
         								
         						}  else if(previous != null && this.isInArray(this.ifSteps, previousClassName)) { // this.getClassName(previous.attributes.className) == "IfStep"
-        							
+        							if(previousClassName != previousFromSequenceClassName) {
+        								var lastElement = this.getLastElementFromSimpleBranch(previous, 1);
+        								this.makeLink(lastElement, el, '''', this.graph, false, false, "right")
+        							} else {
+        										
+        								if(lastCell != undefined && lastCell.attributes.type == "standard.ShadowLink") {
+        										// So if it a link, the true last cell is its target
+        										if(lastCell.attributes.target != undefined) {
+        											var lastCellTarget = lastCell.attributes.target
+        //											console.log(''target: '' + JSON.stringify(lastCellTarget))
+        											this.makeLink(lastCellTarget, el, '''', this.graph, false, false, "right")
+        											// y = lastCellTarget.attributes.position.y
+        										}
+        					//					var lastCellTarget = lastCell.attributes.target
+        					//					x = lastCellTarget.attributes.position.x + this.horizontalSpace;
+        					//					y = lastCellTarget.attributes.position.y
+        								} 
+        								else {
+        									this.makeLink(lastCell, el, '''', this.graph, false, false, "right")
+        									// y = lastCell.attributes.position.y
+        								}								
+        							}
         							// minus = 2 because element has been created so the successors length got + 1
-        							var lastElementFromSimpleBranch = this.getLastElementFromSimpleBranch(previous, 2)
-        							this.makeLink(lastElementFromSimpleBranch, el, '''', this.graph, false, false)
+        //							var lastElementFromSimpleBranch = this.getLastElementFromSimpleBranch(previous, 2)
+        //							this.makeLink(lastElementFromSimpleBranch, el, '''', this.graph, false, false)
         						}
         						
         						previous = el
@@ -1003,6 +1214,7 @@ title: Title for FlowViewer
               					isComplex,
               					false,
               					'''',
+              					vars.flow[i].dbo.depthLvl,
               					this.graph
               				)
               				
@@ -1012,7 +1224,7 @@ title: Title for FlowViewer
               //				console.log("DisplayFlow - element created: " + JSON.stringify(step))
               				
               				if(previous != null)
-              					var link = this.makeLink(previous, step, "", this.graph, false, false)
+              					var link = this.makeLink(previous, step, "", this.graph, false, false, "right")
               
               				previous = step
               
