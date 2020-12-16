@@ -16,6 +16,9 @@
     ];
     
     strBean = ''com.twinsoft.convertigo.beans.'''
+↓jElement [steps.ElementStep-1608112565089]: 
+  expression: qname
+  nodeName: qname
 ↓array [steps.XMLComplexStep-1595493946412]: 
   nodeName: array
   ↓Attribute [steps.XMLAttributeStep-1595493960148]: 
@@ -340,10 +343,13 @@
               expression: |
                 'strBean = ''com.twinsoft.convertigo.beans.''
                 beanSubstr = "" + item.getClass().getName().substring(strBean.length)
+                dbo = com.twinsoft.convertigo.engine.Engine.theApp.databaseObjectsManager.getDatabaseObjectByQName(qname);
                 
                 if(elementsToNotDisplayByClassName.indexOf(beanSubstr) == -1) {
                 	isComplex = (beanSubstr == "steps.XMLComplexStep") ? true : false
-                
+                	
+                	var propDesc = com.twinsoft.convertigo.engine.util.CachedIntrospector.getBeanInfo(dbo.getClass()).getPropertyDescriptors();
+                	log.warn(''propDesc : '' + propDesc)
                 	context.addTextNode(dboNode.item(0), "qname", item.getFullQName());
                 	context.addTextNode(dboNode.item(0), "displayName", item.getName());
                 	context.addTextNode(dboNode.item(0), "className", item.getClass().getName());
@@ -356,7 +362,11 @@
                 	isComplexNode.setAttribute("type", "boolean");
                 	
                 	context.addTextNode(dboNode.item(0), "depthLvl", 0);
-                //	depthLvl++;
+                	
+                	var properties = context.addTextNode(dboNode.item(0), "properties", "")
+                	properties.setAttribute("type", "array");
+                	
+                
                 	
                 	parentQName = item.getFullQName();
                 
@@ -420,6 +430,22 @@
                 		}
                 	}
                 	
+                }
+                
+                function callGetProperties(qname) {
+                	var __project = java.lang.reflect.Array.newInstance(java.lang.String, 1);
+                	__project[0] = "C8oStudio"
+                	var __sequence = "GetProperties"
+                	
+                	var parameters = new java.util.HashMap();
+                	parameters.put("__project", __project);
+                	parameters.put("__sequence", __sequence);
+                	parameters.put("qname", qname);
+                	
+                	var request = new com.twinsoft.convertigo.engine.requesters.InternalHttpServletRequest();
+                	var requester = new com.twinsoft.convertigo.engine.requesters.InternalRequester(parameters, request);
+                	requester.processRequest();
+                	org.apache.log4j.MDC.put("ContextualParameters", context.logParameters);
                 }'
           ↓jElse [steps.ElseStep-1606222997577]: 
             ↓jElement1 [steps.ElementStep-1606222997580]: 
