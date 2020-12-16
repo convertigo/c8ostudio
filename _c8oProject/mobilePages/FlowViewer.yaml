@@ -47,16 +47,17 @@ scriptContent:
         		this.breadcrumb.push(breadcrumbObject)
         	}
         	
-        	createGraph() {
-        		var graph = new joint.dia.Graph;
-        		return graph;
+        	cardIsOpen(priority) {
+        		var isOpened;
+        		for (var i =0; i < this.miniMapsArray.length; i++){
+        			if(this.miniMapsArray[i].priority == priority) {
+        				isOpened = true;
+        				break;
+        			}
+        		}
+        		
+        		return isOpened;
         	}
-        	
-        	createPaper(opts: Object) {
-        		var paper = new joint.dia.Paper(opts);
-        		return paper;
-        	}
-        	
         	compareBranches(jThen: number, jElse: number) {
         		if(jThen > jElse) {
         			return jThen
@@ -65,6 +66,16 @@ scriptContent:
         		} else {
         			return jThen
         		}	
+        	}
+        	
+        	createGraph() {
+        		var graph = new joint.dia.Graph;
+        		return graph;
+        	}
+        	
+        	createPaper(opts: Object) {
+        		var paper = new joint.dia.Paper(opts);
+        		return paper;
         	}
         	
         	highlightBreadcrumb(id) {
@@ -102,11 +113,7 @@ scriptContent:
             }
         	
         	makeLink(source, target, label, graph: joint.dia.Graph, previousThen, previousElse, startDirection) {
-        		
-        		var sourceClassName = this.getClassName(source.attributes.className)
-        		var targetClassName = this.getClassName(target.attributes.className)
-        		
-        			
+        
                 var link = new joint.shapes.standard.ShadowLink({
         		    source: source,
         		    target: target,
@@ -136,6 +143,9 @@ scriptContent:
         						stroke: ''#333'',
          		 				r: 5, // radius of the circle
           						cx: 5
+        					},
+        					targetMarker: {
+        						cx: 100
         					}
         		        },
         				shadow: {
@@ -156,16 +166,7 @@ scriptContent:
             		}
         		})
         		
-        //		var startDirection = '''';
         		startDirection = (previousThen) ? ''top'' : (previousElse) ? 	''bottom'' : startDirection;
-        //		if(isInArray && source.collection.models[source.collection.models.length - 2].attributes.type == "standard.ShadowLink")
-        //			startDirection = ''right''
-        //		startDirection = (previousThen) ? ''top'' : (previousElse) ? ''bottom'' : ''right''; 
-        //		if(this.isInArray(this.ifThenElseSteps, sourceClassName) && !this.isInArray(this.ifSteps, targetClassName) || !this.isInArray(this.ifThenElseSteps, targetClassName))
-        		
-        		
-        //		if(this.isInArray(this.ifSteps, this.getClassName(source.attributes.className)))
-        //			startDirection = ''top'';
         		
         		link.router(''manhattan'', {
         		    startDirections: [startDirection],
@@ -177,88 +178,53 @@ scriptContent:
         			}
         		});
         
-        //		link.router(''orthogonal'')
-        		
-        //		console.log(''link: '' + JSON.stringify(link))
-        //		if(this.isInArray(this.ifThenElseSteps, sourceClassName) && !this.isInArray(this.ifSteps, targetClassName) && !this.isInArray(this.ifThenElseSteps, targetClassName))
-        //		if(this.isInArray(this.ifThenElseSteps, sourceClassName) && this.isInArray(this.ifSteps, targetClassName) == false && this.isInArray(this.ifThenElseSteps, targetClassName) == false)
         		link.addTo(graph)
-        		console.log("link JSON: " + JSON.stringify(link.toJSON()))
         		
             }
         
-        	makeElement(position, text: string, qname: string, className: string, isComplex: boolean, isInBranch: boolean, refBranchStart: string, depthLvl, graph: joint.dia.Graph) {
-                
-        		var element;
-        		if(!isComplex) {
-        			console.log("makeElement isComplex logical node : " + isComplex + ", element concerned is :" + text)
-        			element = new joint.shapes.standard.InscribedImage;
-        			
-        			element.resize(70, 70);
-        			element.position(position.x, position.y);
-        			element.attr(''root/title'', ''joint.shapes.standard.element'');
-        			element.attr(''label/text'', text);
-        			element.attr(''label/fill'', ''#fff'');
-        			element.attr(''root'', { class: ''pulsar'' });
-        			element.attr(''background/fill'', ''#2D433F''); // #fe854f
-        			element.attr(''background/fillOpacity'', 0.5);
-        			element.attr(''border/stroke'', ''#1E7C6D''); // #1E7C6D #fe854f
-        			element.attr(''image'', {
-        				xlinkHref: this.c8o.endpoint + ''/.bin?__sequence=GetIcon&className='' + className + ''&large=true&__nolog=true'',
-        			});
-        			element.prop(''qname'', qname);
-        			element.prop(''className'', className);
-        			element.prop(''displayName'', text);
-        			element.prop(''isComplex'', isComplex);
-        			element.prop(''isInBranch'', isInBranch);
-        			element.prop(''refBranchStart'', refBranchStart);
-        			element.prop(''depthLvl'', depthLvl)
-        		} else {
-        			element = this.makeComplexElement(position, text, qname, className, isComplex, isInBranch, refBranchStart, depthLvl);
+        	makeElement(opts, graph) {
+        		var element = new joint.shapes.standard.InscribedImage;
+        
+        		element.resize(70,70);
+        		element.position(opts.attrs.position.x, opts.attrs.position.y)
+        		element.attr(''root/title'', opts.props.displayName)
+        		element.attr(''label/text'', opts.props.displayName)
+        		element.attr(''label/fill'', ''#fff'');
+        		element.attr(''background/fill'', ''#2D433F'');
+        		element.attr(''border/stroke'', ''#1E7C6D'');
+        		element.attr(''background/fillOpacity'', 0.5);
+        		element.attr(''image'', {
+        				xlinkHref: this.c8o.endpoint + ''/.bin?__sequence=GetIcon&className='' + opts.props.className + ''&large=true&__nolog=true'',
+        		})
+        
+        		for(var key in opts.props) {
+        			element.prop(key, opts.props[key])
+        //			console.log("key:" + key + " value: " + opts.props[key])
         		}
-        
         		
+        //		console.log("makeElement ELT :" + JSON.stringify(element))
+        		element.addTo(graph)
+        		return element;
+        		
+        	}
+        	
+        	makeComplexElement(opts, graph) {
+        		var element = new joint.shapes.basic.Rect;
+        		
+        		element.resize(70,70)
+        		element.position(opts.attrs.position.x, opts.attrs.position.y)
+        		element.attr(''root/title'', opts.props.displayName)
+        		element.attr(''rect/fill'', ''#00CDFF'')
+        		element.attr(''text/text'', opts.props.displayName)
+        		
+        		for(var key in opts.props) {
+        			element.prop(key, opts.props[key])
+        //			console.log("key:" + key + " value: " + opts.props[key])
+        		}
+        		
+        //		console.log("complexElement: " + JSON.stringify(element))
         		element.addTo(graph);
-        		
-        		return element;
-            }
-        
-        	makeComplexElement(position, text: string, qname: string, className: string, isComplex: boolean, isInBranch: boolean, refBranchStart: string, depthLvl) {
-        		
-        		let element = new joint.shapes.basic.Rect({
-        	        position: {
-        				x: position.x, 
-        				y: position.y
-        			},
-        	        size: { 
-        				width: 70, 
-        				height: 70
-        			},
-        	        attrs: { 
-        				rect: { 
-        					fill: ''#00CDFF'' //#E74C3C
-        				}, 
-        				text: { 
-        					text: text 
-        				},	
-        			},
-        			''qname'': qname,
-        			''className'': className,
-        			''displayName'': text,
-        			''isComplex'': isComplex, 
-        			''isInBranch'': isInBranch,
-        			''refBranchStart'': refBranchStart
-            	});
-        
-        //		var port = {
-        //		    id: ''port2'',
-        //		    position:{
-        //		      name: ''right''
-        //		    },
-        //		    markup: ''<rect width="0"  height="1"/>''
-        //		  };
-        		
-        		return element;
+        		return element;		
         	}
         
         	getFlowScale() {
@@ -281,10 +247,7 @@ scriptContent:
         		console.log(''branch:'' + JSON.stringify(branch))
         		var successors = this.graph.getSuccessors(branch)
         		var lastElement = successors[successors.length - minus]
-        //		for(var i = 0; i < successors.length; i++) {
-        //			console.log("successor:" + JSON.stringify(successors[i]))
-        //			lastElement = successors[i]
-        //		} 
+        
         //		console.log(''getLastElementFromSimpleBranch:'' + successors)
         //		console.log(''getLastElementFromSimpleBranch:'' + JSON.stringify(lastElement))
         		return lastElement;
@@ -321,6 +284,16 @@ scriptContent:
         //		console.log("successors" + JSON.stringify(this.graph.getSuccessors(branch)))
         //		console.log(branch)
         
+        	}
+        
+        	getPriority(properties) {
+        		var priority;
+        		for (var i =0; i < properties.length; i++) {
+        			if(properties[i].name == "priority")
+        				priority = properties[i].value
+        		}
+        		
+        		return priority;
         	}
         	
         	unselectBreadcrumb(breadcrumbID) {
@@ -393,7 +366,7 @@ scriptContent:
         		var previousNodeObject;
         		
         		var stepIsInBranch = false;
-        		var refStartBranch = '''';
+        		var refBranchStart = '''';
         		
         		var nbChildren = 0;
         		for (var i=0; i < nodeObject.length; i++) {
@@ -490,8 +463,7 @@ scriptContent:
         					stepIsInBranch = true
         			}
         			
-        			// TO DELETE
-        			
+        //			TO KEEP, MIGHT NEED IT LATER
         //			if(this.checkElementOnPoint(x,y)) {
         //				// Last cell might be a link or en element
         //				var lastCell = this.graph.getLastCell();
@@ -521,23 +493,44 @@ scriptContent:
         			}
         			
         			if(stepIsInBranch)
-        				refStartBranch = parent.id
+        				refBranchStart = parent.id
         			
-        			if(!parentIsComplex && stepClassName != "ThenStep" && stepClassName != "ElseStep") {
-        			var el = this.makeElement({
-        					x : x,
-        					y: y
-        				}, 
-        				nodeObject[i].dbo.displayName,
-        				nodeObject[i].dbo.qname,
-        				nodeObject[i].dbo.className,
-        				nodeObject[i].dbo.isComplex,
-        				stepIsInBranch,
-        //				nodeObject[i].dbo.isEmbedded,
-        				refStartBranch,
-        				nodeObject[i].dbo.depthLvl,
-        				graph
-        			)
+        			if(stepClassName != "ThenStep" && stepClassName != "ElseStep") {
+        				
+        				var elmtOpts = {
+            				attrs: {
+                				position: {
+                   	 				x: x,
+                    				y: y
+                				}
+            				},
+            				props: {
+        				        qname: nodeObject[i].dbo.qname,
+        				        displayName: nodeObject[i].dbo.displayName,
+        				        className: nodeObject[i].dbo.className,
+        				        isComplex: nodeObject[i].dbo.isComplex,
+        				        isInBranch: stepIsInBranch,
+        				        refBranchStart: refBranchStart,
+        				        depthLvl: nodeObject[i].dbo.depthLvl,
+        				        properties: nodeObject[i].dbo.properties
+            				}
+        				}
+        				
+        				var el = (nodeObject[i].dbo.isComplex) ? this.makeComplexElement(elmtOpts, graph) : this.makeElement(elmtOpts, graph);
+        //			var el = this.makeElement({
+        //					x : x,
+        //					y: y
+        //				}, 
+        //				nodeObject[i].dbo.displayName,
+        //				nodeObject[i].dbo.qname,
+        //				nodeObject[i].dbo.className,
+        //				nodeObject[i].dbo.isComplex,
+        //				stepIsInBranch,
+        ////				nodeObject[i].dbo.isEmbedded,
+        //				refStartBranch,
+        //				nodeObject[i].dbo.depthLvl,
+        //				graph
+        //			)
         
         			if(previousThen) {
         				label = "Then"
@@ -616,7 +609,7 @@ scriptContent:
         							// if(lastCell.attributes.isInBranch)
         							// getSuccessors - 1 
         							var lastCellTarget = lastCell.attributes.target
-        							console.log(''target: '' + JSON.stringify(lastCellTarget))
+        //							console.log(''target: '' + JSON.stringify(lastCellTarget))
         							
         							if(lastCellTarget != undefined) {
         								var startBranchElement = this.graph.getCell(lastCellTarget.attributes.refBranchStart)
@@ -739,6 +732,15 @@ scriptContent:
         			var elementQName = cellView.model.attributes.qname;
         			var elementDisplayName = cellView.model.attributes.displayName;
         			var elementIsComplex = cellView.model.attributes.isComplex;
+        			var elementProperties = cellView.model.attributes.properties;
+        			
+        			var priority = this.getPriority(elementProperties);
+        			
+        			// on vérifie si la priority de l''objet est contenue dans le tableau des cards, si c''est le cas c''est que l''objet est déjà open, 
+        			// alors, si c''est vrai, on highlight la card
+        			
+        			if(!this.cardIsOpen(priority)) {
+        				
         			
         			// pushing data to array to retrieve the correct dom element
         			this.levelCount++;
@@ -746,13 +748,15 @@ scriptContent:
         			this.miniMapsArray.push({
         				id: ''level-'' + this.levelCount,
         				displayName: elementDisplayName,
+        				priority: priority,
         				qname: elementQName,
-        				graph: newGraph 
+        				graph: newGraph, 
         			});
         			
         			this.addToBreadcrumb({
         				id: ''level-''+ this.levelCount,
         				displayName: elementDisplayName,
+        				priority: priority,
         				graph: newGraph,
         				isSelected: true
         			})
@@ -837,19 +841,7 @@ scriptContent:
         						
         						if(previous != null)
         							var previousClassName = this.getClassName(previous.attributes.className)
-        //						
-        //						if(newElementClassName == "IfThenElseStep") {
-        //							children = {
-        //								then: newElement.dbo.children[0].dbo.children.length,
-        //								else: newElement.dbo.children[1].dbo.children.length
-        //							}
-        //							
-        //							var nbChildren = this.compareBranches(children.then, children.else)
-        //							console.log(''nbChildren: '' + JSON.stringify(children))
-        ////							x = 70 + this.horizontalSpace * nbChildren
-        ////							y = 70;
-        //						}
-        						
+        
         						var thenNumber = 0;
         						var elseNumber = 0;
         						if(previousFromSequence != null && previousFromSequenceClassName != undefined && this.isInArray(this.ifThenElseSteps, previousFromSequenceClassName)) { // previousFromSequenceClassName == "IfThenElseStep"
@@ -876,7 +868,7 @@ scriptContent:
         								x = lastElement.attributes.position.x + this.horizontalSpace;
         							} else {
         								lastCell = this.graph.getLastCell()
-        								console.log(''lastCell: '' + JSON.stringify(lastCell))
+        //								console.log(''lastCell: '' + JSON.stringify(lastCell))
         											
         								if(lastCell != undefined && lastCell.attributes.type == "standard.ShadowLink") {
         										// So if it a link, the true last cell is its target
@@ -921,16 +913,26 @@ scriptContent:
         //							x = previous.atrributes.position.x + this.horizontalSpace;
         //							y = previous.attributes.position.y
         //						}
+        						var elmtOpts = {
+            						attrs: {
+                						position: {
+                   	 						x: x,
+                    						y: y
+                						}
+            						},
+            						props: {
+        							    qname: newElement.dbo.qname,
+        							    displayName: newElement.dbo.displayName,
+        							    className: newElement.dbo.className,
+        							    isComplex: newElement.dbo.isComplex,
+        							    isInBranch: false,
+        							    refBranchStart: '''',
+        							    depthLvl: newElement.dbo.depthLvl,
+        							    properties: newElement.dbo.properties
+            						}
+        						}
+        						var el = (newElement.dbo.isComplex) ? this.makeComplexElement(elmtOpts, this.graph) : this.makeElement(elmtOpts, this.graph)
         
-        						var el = this.makeElement({x: x, y: y}, 
-        							newElement.dbo.displayName, 
-        							newElement.dbo.qname, 
-        							newElement.dbo.className, 
-        							newElement.dbo.isComplex, 
-        							newElement.dbo.isEmbedded, 
-        							'''',
-        							newElement.dbo.depthLvl, 
-        							this.graph)
         						
         						if(previous != null && !this.isInArray(this.ifThenElseSteps, previousClassName)) // && previousClassName != "IfThenElseStep"
         							var link = this.makeLink(previous, el, '''', this.graph, false, false, "right")
@@ -1004,6 +1006,8 @@ scriptContent:
         				});
         //					console.log(element)
         				})
+        				
+        			}
         			}, 0o400); // = 0.4s
         
         	}
@@ -1085,92 +1089,173 @@ title: Title for FlowViewer
                 - ↑value: graphlib
 ↓Subscribe_Handler [ngx.components.UIEventSubscriber-1588686865663]: 
   topic: dboFocus
-  ↓CallSequence [ngx.components.UIDynamicAction-1588686924736]: 
+  ↓GetGraph [ngx.components.UIDynamicAction-1588686924736]: 
     beanData: '{"ionBean":"CallSequenceAction","requestable":"plain:C8oStudio.GetGraph"}'
-    ↓createFirstPaperAndPushGraphToArray [ngx.components.UICustomAction-1605878512148]: 
-      actionValue: 
-        - xmlizable: 
-          - ↑classname: com.twinsoft.convertigo.beans.common.FormatedContent
-          - com.twinsoft.convertigo.beans.common.FormatedContent: 
-            →: |
-              '		page.c8o.log.debug(''[MB] ''+ props.actionFunction +'': ''+ props.actionName);
-              		console.log("i am out: " + JSON.stringify(vars.qname))
-              		
-              		var qname = vars.qname;
-              		var splitStr = qname.split('':'')
-              		for(var i = 0; i < splitStr.length; i++) {
-              			var str = splitStr[i].split(''.'')
-              		}
-              		var displayName = str;
-              		
-              		this.levelCount++;
-              		this.global.firstGraphInColumn = this.createGraph();
-              		this.miniMapsArray.push({
-              			id: ''level-'' + this.levelCount,
-              			displayName: displayName,
-              			graph: this.global.firstGraphInColumn
-              		})
-              		this.addToBreadcrumb({
-              			id: ''level-'' + this.levelCount,
-              			displayName: displayName,
-              			graph: this.global.firstGraphInColumn,
-              			isSelected: true
-              		})
-              		
-              //		console.log(this.miniMapsArray);
-              		setTimeout(() => {
-              			var el = document.getElementById("level-"+this.levelCount)
-              			let paperOpts = {
-              	            el: el,
-              	            width: ''100%'',
-              	            height: ''100%'',
-              	            model: this.global.firstGraphInColumn,
-              	            gridSize: 10,
-              				embeddingMode: false,
-              				interactive: false,
-              	            defaultLink: new joint.dia.Link({
-              	            	attrs: {
-              	                    ''.connection'' : {
-              	                        stroke: ''orange'',
-              	                        strokeWidth: 2
-              	                    }
-              	                }                
-              	            }),
-              				drawGrid: {
-              					name: ''dot'',
-              					args: {
-              						color: ''white''
-              					}
-              				},
-              	            defaultRouter: {
-              	                name: ''manhattan''
-              	            },
-              	            defaultConnector: {
-              	                name: ''rounded''
-              	            },
-              	            validateConnection: function(cellViewS, magnetS, cellViewT, magnetT, end, linkView) {
-              	                // Prevent connections if not on Magnets from ports
-              	                if (magnetT == undefined|| magnetS ==undefined)
-              	                    return false
-              	                else
-              	                    return true
-              	            }
-              	        }
-              	        var paper = this.createPaper(paperOpts);
-              			paper.scale(0.2)
-              			var computedSize = paper.getComputedSize();
-              			var originY = computedSize.height / 2;
-              			
-              			paper.setOrigin(this.graphOriginX, originY)
-              		}, 0o400) // = 0.4s
-              
-              		resolve();
-              '
-      ↓qname [ngx.components.UIControlVariable-1607522458675]: 
+    ↓GetProperties [ngx.components.UIDynamicAction-1608133810936]: 
+      beanData: '{"ionBean":"CallSequenceAction","requestable":"plain:C8oStudio.GetProperties"}'
+      ↓qname [ngx.components.UIControlVariable-1608133836413]: 
+        comment: new variable
         varValue: 
           - xmlizable: 
             - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
             - MobileSmartSourceType: source:{"filter":"Action","project":"C8oStudio","input":"","model":{"data":[{"priority":1588686924736}],"path":"?.in?.vars?.qname","prefix":"","suffix":"","custom":"","useCustom":false}}
+      ↓createFirstPaperAndPushGraphToArray [ngx.components.UICustomAction-1605878512148]: 
+        actionValue: 
+          - xmlizable: 
+            - ↑classname: com.twinsoft.convertigo.beans.common.FormatedContent
+            - com.twinsoft.convertigo.beans.common.FormatedContent: 
+              →: |
+                '		page.c8o.log.debug(''[MB] ''+ props.actionFunction +'': ''+ props.actionName);
+                		
+                		var qname = vars.qname;
+                		var splitStr = qname.split('':'')
+                		for(var i = 0; i < splitStr.length; i++) {
+                			var str = splitStr[i].split(''.'')
+                		}
+                		var displayName = str;
+                		
+                		this.levelCount++;
+                		this.global.firstGraphInColumn = this.createGraph();
+                		
+                		var priority = this.getPriority(vars.properties.properties);
+                		
+                		this.miniMapsArray.push({
+                			id: ''level-'' + this.levelCount,
+                			displayName: displayName,
+                			priority: priority,
+                			graph: this.global.firstGraphInColumn
+                		})
+                		this.addToBreadcrumb({
+                			id: ''level-'' + this.levelCount,
+                			displayName: displayName,
+                			priority: priority,
+                			graph: this.global.firstGraphInColumn,
+                			isSelected: true
+                		})
+                		
+                //		console.log(this.miniMapsArray);
+                		setTimeout(() => {
+                			var el = document.getElementById("level-"+this.levelCount)
+                			let paperOpts = {
+                	            el: el,
+                	            width: ''100%'',
+                	            height: ''100%'',
+                	            model: this.global.firstGraphInColumn,
+                	            gridSize: 10,
+                				embeddingMode: false,
+                				interactive: false,
+                	            defaultLink: new joint.dia.Link({
+                	            	attrs: {
+                	                    ''.connection'' : {
+                	                        stroke: ''orange'',
+                	                        strokeWidth: 2
+                	                    }
+                	                }                
+                	            }),
+                				drawGrid: {
+                					name: ''dot'',
+                					args: {
+                						color: ''white''
+                					}
+                				},
+                	            defaultRouter: {
+                	                name: ''manhattan''
+                	            },
+                	            defaultConnector: {
+                	                name: ''rounded''
+                	            },
+                	            validateConnection: function(cellViewS, magnetS, cellViewT, magnetT, end, linkView) {
+                	                // Prevent connections if not on Magnets from ports
+                	                if (magnetT == undefined|| magnetS ==undefined)
+                	                    return false
+                	                else
+                	                    return true
+                	            }
+                	        }
+                	        var paper = this.createPaper(paperOpts);
+                			paper.scale(0.2)
+                			var computedSize = paper.getComputedSize();
+                			var originY = computedSize.height / 2;
+                			
+                			paper.setOrigin(this.graphOriginX, originY)
+                		}, 0o400) // = 0.4s
+                
+                		resolve();
+                '
+        ↓qname [ngx.components.UIControlVariable-1607522458675]: 
+          varValue: 
+            - xmlizable: 
+              - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+              - MobileSmartSourceType: source:{"filter":"Action","project":"C8oStudio","input":"","model":{"data":[{"priority":1588686924736}],"path":"?.in?.vars?.qname","prefix":"","suffix":"","custom":"","useCustom":false}}
+        ↓DisplayFlow [ngx.components.UICustomAction-1588687209815]: 
+          actionValue: 
+            - xmlizable: 
+              - ↑classname: com.twinsoft.convertigo.beans.common.FormatedContent
+              - com.twinsoft.convertigo.beans.common.FormatedContent: 
+                →: |
+                  '            class walkTree {
+                                  
+                              }
+                  		    
+                      		this.graph.clear();
+                  // 			console.log("I AM VARS FLOW" + JSON.stringify(vars.flow));
+                      		let previous = null
+                  			var isComplex = false;
+                  			var refIdEmbed = '''';
+                      		for (var i=0; i < vars.flow.length ; i++) {
+                  				let stepClassName = vars.flow[i].dbo.className.substring(this.strStep.length)
+                  //				console.log("DisplayFlow - stepClassName : " + stepClassName)
+                  				
+                  				isComplex = (stepClassName == "XMLComplexStep") ? true : false
+                  				var opts = {
+                  				    attrs: {
+                  				        position: {
+                  				            x: 30 + this.horizontalSpace * i,
+                  				            y: 70
+                  				        }
+                  				    },
+                  				    props: {
+                  				        qname: vars.flow[i].dbo.qname,
+                  				        displayName: vars.flow[i].dbo.displayName,
+                  				        className: vars.flow[i].dbo.className,
+                  				        isComplex: vars.flow[i].isComplex,
+                  				        isInBranch: false,
+                  				        refBranchStart: '''',
+                  				        depthLvl: vars.flow[i].dbo.depthLvl,
+                  				        properties: vars.flow[i].dbo.properties
+                  				    }
+                  				}
+                  				
+                  				var step = (isComplex) ? this.makeComplexElement(opts, this.graph) : this.makeElement(opts, this.graph)
+                  
+                  //				console.log("DisplayFlow - element created: " + JSON.stringify(step))
+                  				
+                  				if(previous != null)
+                  					var link = this.makeLink(previous, step, "", this.graph, false, false, "right")
+                  
+                  				previous = step
+                  
+                  //				if(vars.flow[i].dbo.children != undefined && vars.flow[i].dbo.children.length > 0) {
+                  //					this.walkChildren(vars.flow[i].dbo.children, previous, refIdEmbed)
+                  //					this.paper.setDimensions(this.local.maxX, this.local.maxY)
+                  //				}
+                  
+                      		}
+                  				var cellsToAdd = this.graph.getCells();
+                  				this.updateGraph(this.global.firstGraphInColumn, cellsToAdd);
+                  //			this.walkChildren(vars.flow, null)
+                      		resolve();
+                  '
+          ↓flow [ngx.components.UIControlVariable-1588693303067]: 
+            varValue: 
+              - xmlizable: 
+                - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+                - MobileSmartSourceType: source:{"filter":"Sequence","project":"C8oStudio","input":"listen(['C8oStudio.GetChildren'])?.array","model":{"data":[{"sequence":"C8oStudio.GetGraph","marker":""}],"path":"?.array","prefix":"","suffix":"","custom":"","useCustom":false}}
+        ↓properties [ngx.components.UIControlVariable-1608133962701]: 
+          varValue: 
+            - xmlizable: 
+              - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+              - MobileSmartSourceType: source:{"filter":"Action","project":"C8oStudio","input":"","model":{"data":[{"priority":1608133810936},{"priority":1588686924736}],"path":"?.out","prefix":"","suffix":"","custom":"","useCustom":false}}
     ↓qname [ngx.components.UIControlVariable-1589811848532]: 
       comment: new variable
       varValue: 
@@ -1183,67 +1268,6 @@ title: Title for FlowViewer
         - xmlizable: 
           - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
           - MobileSmartSourceType: plain:100
-    ↓DisplayFlow [ngx.components.UICustomAction-1588687209815]: 
-      actionValue: 
-        - xmlizable: 
-          - ↑classname: com.twinsoft.convertigo.beans.common.FormatedContent
-          - com.twinsoft.convertigo.beans.common.FormatedContent: 
-            →: |
-              '            class walkTree {
-                              
-                          }
-              		    
-                  		this.graph.clear();
-              // 			console.log("I AM VARS FLOW" + JSON.stringify(vars.flow));
-                  		let previous = null
-              			var isComplex = false;
-              			var refIdEmbed = '''';
-                  		for (var i=0; i < vars.flow.length ; i++) {
-              				let stepClassName = vars.flow[i].dbo.className.substring(this.strStep.length)
-              //				console.log("DisplayFlow - stepClassName : " + stepClassName)
-              				
-              				isComplex = (stepClassName == "XMLComplexStep") ? true : false
-              
-              				var step = this.makeElement({
-              						x: 30 + this.horizontalSpace * i,
-              						y: 70
-              					},
-              					vars.flow[i].dbo.displayName,
-              					vars.flow[i].dbo.qname,
-              					vars.flow[i].dbo.className,
-              					isComplex,
-              					false,
-              					'''',
-              					vars.flow[i].dbo.depthLvl,
-              					this.graph
-              				)
-              				
-              				if(stepClassName == "XMLComplexStep")
-              					refIdEmbed = step.id
-              				
-              //				console.log("DisplayFlow - element created: " + JSON.stringify(step))
-              				
-              				if(previous != null)
-              					var link = this.makeLink(previous, step, "", this.graph, false, false, "right")
-              
-              				previous = step
-              
-              //				if(vars.flow[i].dbo.children != undefined && vars.flow[i].dbo.children.length > 0) {
-              //					this.walkChildren(vars.flow[i].dbo.children, previous, refIdEmbed)
-              //					this.paper.setDimensions(this.local.maxX, this.local.maxY)
-              //				}
-              
-                  		}
-              				var cellsToAdd = this.graph.getCells();
-              				this.updateGraph(this.global.firstGraphInColumn, cellsToAdd);
-              //			this.walkChildren(vars.flow, null)
-                  		resolve();
-              '
-      ↓flow [ngx.components.UIControlVariable-1588693303067]: 
-        varValue: 
-          - xmlizable: 
-            - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
-            - MobileSmartSourceType: source:{"filter":"Sequence","project":"C8oStudio","input":"listen(['C8oStudio.GetChildren'])?.array","model":{"data":[{"sequence":"C8oStudio.GetGraph","marker":""}],"path":"?.array","prefix":"","suffix":"","custom":"","useCustom":false}}
 ↓Grid [ngx.components.UIDynamicElement-1588228737881]: 
   beanData: '{"ionBean":"Grid","Height":"plain:"}'
   tagName: ion-grid
@@ -1445,6 +1469,12 @@ title: Title for FlowViewer
                         '		page.c8o.log.debug(''[MB] ''+ props.actionFunction +'': ''+ props.actionName);
                         		var cellsToAdd = vars.graph.getCells();
                         		this.updateGraph(this.graph, cellsToAdd);
+                        		var firstCellBBox = this.graph.getFirstCell().getBBox();
+                        		var x = firstCellBBox.x;
+                        		var y = firstCellBBox.y;
+                        		
+                        		this.paper.setOrigin(x, y);
+                        		
                         		this.highlightBreadcrumb(vars.id)
                         		resolve();
                         '

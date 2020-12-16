@@ -347,9 +347,7 @@
                 
                 if(elementsToNotDisplayByClassName.indexOf(beanSubstr) == -1) {
                 	isComplex = (beanSubstr == "steps.XMLComplexStep") ? true : false
-                	
-                	var propDesc = com.twinsoft.convertigo.engine.util.CachedIntrospector.getBeanInfo(dbo.getClass()).getPropertyDescriptors();
-                	log.warn(''propDesc : '' + propDesc)
+                
                 	context.addTextNode(dboNode.item(0), "qname", item.getFullQName());
                 	context.addTextNode(dboNode.item(0), "displayName", item.getName());
                 	context.addTextNode(dboNode.item(0), "className", item.getClass().getName());
@@ -363,11 +361,11 @@
                 	
                 	context.addTextNode(dboNode.item(0), "depthLvl", 0);
                 	
-                	var properties = context.addTextNode(dboNode.item(0), "properties", "")
-                	properties.setAttribute("type", "array");
-                	
+                	// add properties array
+                	var docProperties = callGetProperties(item.getFullQName())
+                	var nodeList = docProperties.getElementsByTagName(''properties'')
+                	dboNode.item(0).appendChild(dom.adoptNode(nodeList.item(0)));
                 
-                	
                 	parentQName = item.getFullQName();
                 
                 	walkChildren(dboNode.item(0), parentQName, 0);
@@ -384,12 +382,12 @@
                 	var parentIsComplex = parentNode.getLastChild().getTextContent(); /* return bool */
                 	var isEmbedded = (parentIsComplex == "true" || parentIsEmbedded == "true") ? true : false;
                 
-                	for(var j = 0; j < nodeList.length; j++)
-                		log.warn("STEP IS : " + nodeList.item(j))
-                		
-                	log.warn(''parentIsEmbedded :'' + parentIsEmbedded)
-                	log.warn("parentIsComplex : " + parentIsComplex)
-                	log.warn("isEmbedded : " + isEmbedded)
+                //	for(var j = 0; j < nodeList.length; j++)
+                //		log.warn("STEP IS : " + nodeList.item(j))
+                //		
+                //	log.warn(''parentIsEmbedded :'' + parentIsEmbedded)
+                //	log.warn("parentIsComplex : " + parentIsComplex)
+                //	log.warn("isEmbedded : " + isEmbedded)
                 	
                 	
                 	if(!child.isEmpty() && elementsToNotDisplayByClassName.indexOf(beanSubstr) == -1) {
@@ -424,6 +422,11 @@
                 				isComplexNode.setAttribute("type", "boolean");
                 				
                 				context.addTextNode(dboChildNode, "depthLvl", depthLvl);
+                				
+                				var docProperties = callGetProperties(childQName)
+                				var nodeList = docProperties.getElementsByTagName(''properties'')
+                	
+                				dboChildNode.appendChild(dom.adoptNode(nodeList.item(0)));
                 				// getting children of children
                 				walkChildren(dboChildNode, childQName, depthLvl)
                 			}
@@ -446,6 +449,8 @@
                 	var requester = new com.twinsoft.convertigo.engine.requesters.InternalRequester(parameters, request);
                 	requester.processRequest();
                 	org.apache.log4j.MDC.put("ContextualParameters", context.logParameters);
+                
+                	return requester.getDocument();
                 }'
           ↓jElse [steps.ElseStep-1606222997577]: 
             ↓jElement1 [steps.ElementStep-1606222997580]: 
