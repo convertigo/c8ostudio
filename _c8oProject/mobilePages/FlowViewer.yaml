@@ -28,7 +28,7 @@ scriptContent:
         	verticalSpace = 170
         	horizontalSpace = 140 //115
         	graphOriginX = 10
-        	graphOriginY = 50
+        	graphOriginY = 200
         	minimapNavigatorPosition = {
           		minX: 0,
           		minY: 0,
@@ -87,6 +87,15 @@ scriptContent:
         		}
         	}
         	
+        	highlightCard(id) {
+        		for(var i = 0; i < this.miniMapsArray.length; i++) {
+        			if(this.miniMapsArray[i].id == id)
+        				this.miniMapsArray[i].isSelected = true
+        			else
+        				this.miniMapsArray[i].isSelected = false
+        		}
+        	}
+        	
         	isInArray(array, className) {
         		if(array.includes(className))
         			return true
@@ -102,13 +111,14 @@ scriptContent:
         		console.log("I AM EVENT " + JSON.stringify(event));
         		 if (this.dragStartPosition != null) {
         			// this.c8o.log.debug("Mouse Move : " + JSON.stringify(this.dragStartPosition))
+        			var bbox = this.graph.getBBox()
+        			console.log(JSON.stringify(bbox));
         		    this.paper.translate(
         		    	event.offsetX - this.dragStartPosition.x * this.scale / 10, 
         		        event.offsetY - this.dragStartPosition.y * this.scale / 10);
-        //			this.paperMiniMap.translate(
-        //				event.offsetX - this.dragStartPosition.x,
-        //				event.offsetY - this.dragStartPosition.y
-        //			)
+        		
+        		console.log(event.offsetX - this.dragStartPosition.x * this.scale / 10)
+        		console.log(event.offsetY - this.dragStartPosition.y * this.scale / 10)
         		}
             }
         	
@@ -233,6 +243,18 @@ scriptContent:
         		return scaleNbr;
         	}
         	
+        	getCardByPriority(priority) {
+        		var card;
+        		for(var i = 0; i < this.miniMapsArray.length; i++) {
+        			if(this.miniMapsArray[i].priority == priority) {
+        				card = this.miniMapsArray[i];
+        				break;
+        			}
+        		}
+        		
+        		return card;
+        	}
+        	
         	getClassName(qname: string) {
         		var className = qname.substr(this.strStep.length)
         		return className;
@@ -300,6 +322,13 @@ scriptContent:
         		for(var i = 0; i < this.breadcrumb.length; i++) {
         			if(this.breadcrumb[i].id != breadcrumbID)
         				this.breadcrumb[i].isSelected = false;
+        		}
+        	}
+        	
+        	unselectCard(cardID) {
+        		for(var i = 0; i < this.miniMapsArray.length; i++) {
+        			if(this.miniMapsArray[i].id != cardID)
+        				this.miniMapsArray[i].isSelected = false
         		}
         	}
         	
@@ -485,17 +514,11 @@ scriptContent:
         //				}
         //			}
         			
-        
-        			
-        			// getting ref complex id 
-        			if(previous.attributes.isComplex) {
-        				refId = previous.id
-        			}
         			
         			if(stepIsInBranch)
         				refBranchStart = parent.id
         			
-        			if(stepClassName != "ThenStep" && stepClassName != "ElseStep") {
+        			if(!parentIsComplex && stepClassName != "ThenStep" && stepClassName != "ElseStep") {
         				
         				var elmtOpts = {
             				attrs: {
@@ -739,6 +762,14 @@ scriptContent:
         			// on vérifie si la priority de l''objet est contenue dans le tableau des cards, si c''est le cas c''est que l''objet est déjà open, 
         			// alors, si c''est vrai, on highlight la card
         			
+        			if(this.cardIsOpen(priority)) {
+        				var card = this.getCardByPriority(priority);
+        				this.highlightCard(card.id);
+        				this.highlightBreadcrumb(card.id)
+        				var cellsToAdd = card.graph.getCells();
+        				this.updateGraph(this.graph, cellsToAdd);
+        			}
+        			
         			if(!this.cardIsOpen(priority)) {
         				
         			
@@ -750,6 +781,7 @@ scriptContent:
         				displayName: elementDisplayName,
         				priority: priority,
         				qname: elementQName,
+        				isSelected: true,
         				graph: newGraph, 
         			});
         			
@@ -762,7 +794,7 @@ scriptContent:
         			})
         		
         			this.unselectBreadcrumb(this.breadcrumb[this.breadcrumb.length - 1].id);
-        	
+        			this.unselectCard(this.miniMapsArray[this.miniMapsArray.length - 1].id);	
         			setTimeout(() => {
         				var el = document.getElementById("level-"+this.levelCount)			
         				var paperOpts = {
@@ -1123,7 +1155,8 @@ title: Title for FlowViewer
                 			id: ''level-'' + this.levelCount,
                 			displayName: displayName,
                 			priority: priority,
-                			graph: this.global.firstGraphInColumn
+                			graph: this.global.firstGraphInColumn,
+                			isSelected: true,
                 		})
                 		this.addToBreadcrumb({
                 			id: ''level-'' + this.levelCount,
@@ -1176,8 +1209,9 @@ title: Title for FlowViewer
                 			paper.scale(0.2)
                 			var computedSize = paper.getComputedSize();
                 			var originY = computedSize.height / 2;
+                //			paper.scaleContentToFit()
                 			
-                			paper.setOrigin(this.graphOriginX, originY)
+                //			paper.setOrigin(this.graphOriginX, originY)
                 		}, 0o400) // = 0.4s
                 
                 		resolve();
@@ -1198,6 +1232,7 @@ title: Title for FlowViewer
                               }
                   		    
                       		this.graph.clear();
+                  			var bbox = this.paper.getContentBBox();
                   // 			console.log("I AM VARS FLOW" + JSON.stringify(vars.flow));
                       		let previous = null
                   			var isComplex = false;
@@ -1211,7 +1246,7 @@ title: Title for FlowViewer
                   				    attrs: {
                   				        position: {
                   				            x: 30 + this.horizontalSpace * i,
-                  				            y: 70
+                  				            y: 100
                   				        }
                   				    },
                   				    props: {
@@ -1442,6 +1477,12 @@ title: Title for FlowViewer
                     →: |
                       '	padding: 2px 2px 2px 2px;
                       '
+            ↓Attr [ngx.components.UIAttribute-1608199488681]: 
+              attrName: style
+              attrValue: 
+                - xmlizable: 
+                  - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+                  - MobileSmartSourceType: 'script:(item.isSelected) ? ''background-color: #0CBBE7; animation-name: whiteToBlue; animation-duration: 1s''  : ''background-color: #fff; animation-name: blueToWhite; animation-duration: 1s '' '
           ↓CardContent [ngx.components.UIDynamicElement-1606208795686]: 
             beanData: '{"ionBean":"CardContent"}'
             tagName: ion-card-content
@@ -1452,6 +1493,7 @@ title: Title for FlowViewer
                   - com.twinsoft.convertigo.beans.common.FormatedContent: 
                     →: |
                       '	min-height: 100px;
+                      	background-color: rgb(34,34,34)
                       '
             ↓Attr [ngx.components.UIAttribute-1606208856542]: 
               attrName: id
@@ -1469,12 +1511,13 @@ title: Title for FlowViewer
                         '		page.c8o.log.debug(''[MB] ''+ props.actionFunction +'': ''+ props.actionName);
                         		var cellsToAdd = vars.graph.getCells();
                         		this.updateGraph(this.graph, cellsToAdd);
-                        		var firstCellBBox = this.graph.getFirstCell().getBBox();
-                        		var x = firstCellBBox.x;
-                        		var y = firstCellBBox.y;
                         		
-                        		this.paper.setOrigin(x, y);
+                        		this.paper.setOrigin(this.graphOriginX, this.graphOriginY);
                         		
+                        		if(!vars.cardObject.isSelected)
+                        			vars.cardObject.isSelected = true
+                        			
+                        		this.unselectCard(vars.cardObject.id);
                         		this.highlightBreadcrumb(vars.id)
                         		resolve();
                         '
@@ -1488,6 +1531,17 @@ title: Title for FlowViewer
                     - xmlizable: 
                       - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
                       - MobileSmartSourceType: script:item.id
+                ↓cardObject [ngx.components.UIControlVariable-1608201162871]: 
+                  varValue: 
+                    - xmlizable: 
+                      - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+                      - MobileSmartSourceType: script:item
+          ↓Attr [ngx.components.UIAttribute-1608214511472]: 
+            attrName: style
+            attrValue: 
+              - xmlizable: 
+                - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
+                - MobileSmartSourceType: 'plain:animation-name: fadeInUp; animation-duration: 1s; border-bottom-left-radius: 0px; border-bottom-right-radius: 0px;'
     ↓colGraph [ngx.components.UIDynamicElement-1588228746957]: 
       beanData: '{"ionBean":"GridCol","SizeXl":"plain:10"}'
       tagName: ion-col
@@ -1856,10 +1910,17 @@ title: Title for FlowViewer
                                 		var cellsToAdd = vars.breadcrumbObject.graph.getCells();
                                 		this.updateGraph(this.graph, cellsToAdd);
                                 		
+                                		this.paper.setOrigin(this.graphOriginX, this.graphOriginY);
+                                		
                                 		if(!vars.breadcrumbObject.isSelected)
                                 			vars.breadcrumbObject.isSelected = true
-                                			
+                                		
+                                		// cards and breadcrumb items have the same id
+                                		this.unselectCard(vars.breadcrumbObject.id)
+                                		this.highlightCard(vars.breadcrumbObject.id)
+                                
                                 		this.unselectBreadcrumb(vars.breadcrumbObject.id);
+                                		
                                 		resolve();
                                 '
                         ↓graph [ngx.components.UIControlVariable-1607595301009]: 

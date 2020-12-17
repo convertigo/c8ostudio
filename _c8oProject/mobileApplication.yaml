@@ -1510,3 +1510,36 @@ tplProjectName: C8oStudio
           	color: white;
           	padding-top: 10px;
           }'
+↓animationsKeyFramesStyle [ngx.components.UIStyle-1608207135133]: 
+  styleContent: 
+    - xmlizable: 
+      - ↑classname: com.twinsoft.convertigo.beans.common.FormatedContent
+      - com.twinsoft.convertigo.beans.common.FormatedContent: 
+        →: |
+          '@keyframes whiteToBlue {
+          	from { background-color: #FFF;}
+          	to { background-color: #0CBBE7;}
+          //	0% {background-color: #fff} 
+          }
+          
+          @keyframes blueToWhite {
+          	from { background-color: #0CBBE7; }
+          	to { background-color: #FFF}
+          }
+          
+          @keyframes fadeInUp{
+          	0% { -webkit-transform:translate3d(0,100%,0); 
+          	opacity:0;
+          	transform:translate3d(0,100%,0)
+          	}
+          	
+          	to { -webkit-transform:translateZ(0);
+          	opacity:1;
+          	transform:translateZ(0) 
+          	}
+          }
+          
+          .fadeInUp { 
+          	-webkit-animation-name: fadeInUp; 
+          	animation-name: fadeInUp
+          }'
