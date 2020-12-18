@@ -220,6 +220,65 @@ scriptContent:
         		
         	}
         	
+        	makeCustomElement() {
+        		var element = joint.shapes.basic.Generic.extend({
+                markup: [{
+        					tagName: ''ellipse'',
+        					selector: ''background''
+        				},
+        				{
+        					tagName: ''image'',
+        					selector: ''image''
+        				},
+        				{
+        					tagName: ''ellipse'',
+        					selector: ''border''
+        				},
+        				{
+        					tagName: ''text'',
+        					selector: ''label''
+        				}],
+        
+                defaults: joint.util.deepSupplement({
+        
+                    type: ''basic.MyRect'',
+                    attrs: {
+                        background: {
+                            stroke: ''#1E7C6D'',
+        					strokeWidth: 2,
+        					rx: 35,
+        					ry: 35,
+        					cx: 35,
+        					cy: 35,
+        					fill: ''none''				
+                        },
+                        image: {
+        					xlinkHref: ''''
+                        },
+        				border: {
+        					fill: ''none'',
+        					stroke: ''#1E7C6D'',
+        					strokeWidth: 2,
+        					rx: 35,
+        					ry: 35,
+        					cx: 35,
+        					cy: 35
+        				},
+        				label: {
+        					fontSize: 14,
+        					textAnchor: ''middle''
+        				}
+                    }
+                }, joint.shapes.basic.Generic.prototype.defaults)
+        
+           	 });
+        		
+        		element.position(50,50);
+        		element.attr(''text/text'');
+        		
+        		element.addTo(this.graph);
+        	}
+        	
         	makeComplexElement(opts, graph) {
         		var element = new joint.shapes.basic.Rect;
         		
@@ -736,6 +795,8 @@ scriptContent:
         //			},
                 this.paper = this.createPaper(paperOpts);
         		this.paper.setOrigin(this.graphOriginX, this.graphOriginY)
+        		
+        		// this.makeCustomElement();
         
         		/**
         	     * The next two events are to be able to drag on the graph
@@ -1308,10 +1369,10 @@ title: Title for FlowViewer
                   
                   				previous = step
                   
-                  //				if(vars.flow[i].dbo.children != undefined && vars.flow[i].dbo.children.length > 0) {
-                  //					this.walkChildren(vars.flow[i].dbo.children, previous, refIdEmbed)
-                  //					this.paper.setDimensions(this.local.maxX, this.local.maxY)
-                  //				}
+                  				if(!isComplex && vars.flow[i].dbo.children != undefined && vars.flow[i].dbo.children.length > 0) {
+                  					this.walkChildren(vars.flow[i].dbo.children, previous, false, false, '''', this.graph)
+                  	//				this.paper.setDimensions(this.local.maxX, this.local.maxY)
+                  				}
                   
                       		}
                   				var cellsToAdd = this.graph.getCells();
