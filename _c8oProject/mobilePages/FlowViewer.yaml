@@ -749,6 +749,14 @@ scriptContent:
                     this.dragStartPosition = { x: x * this.scale / 10, y: y * this.scale / 10};
                 });
         
+        		this.paper.on(''blank:mousewheel'', (evt, x, y, delta) => {
+        			var normalizedDelta = Math.max(-1, Math.min(1, (delta))) / 50;
+        			var newScale = this.paper.scale().sx + normalizedDelta; // the current paper scale changed by delta
+        		  	if (newScale > 0.4 && newScale < 2) {
+        			    this.paper.scale(newScale, newScale);
+          			}
+        		})
+        
         		this.paper.on(''cell:pointerdblclick'', (cellView, event, x, y) => {
         			
         			// getting element
