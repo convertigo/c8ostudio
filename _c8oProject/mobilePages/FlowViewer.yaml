@@ -750,7 +750,7 @@ scriptContent:
                 });
         
         		this.paper.on(''blank:mousewheel'', (evt, x, y, delta) => {
-        			var normalizedDelta = Math.max(-1, Math.min(1, (delta))) / 50;
+        			var normalizedDelta = Math.max(-1, Math.min(1, (delta))) / 10;
         			var newScale = this.paper.scale().sx + normalizedDelta; // the current paper scale changed by delta
         		  	if (newScale > 0.4 && newScale < 2) {
         			    this.paper.scale(newScale, newScale);
