@@ -5,6 +5,14 @@
     ↓Complex2 [steps.XMLComplexStep-1606228717528]: 
       nodeName: complex2
     ↓jSimpleSource [steps.SimpleSourceStep-1606228727320]: 
+      sourceDefinition: 
+        - xmlizable: 
+          - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+          - com.twinsoft.convertigo.beans.common.XMLVector: 
+            - java.lang.String: 
+              - ↑value: 1606228717528
+            - java.lang.String: 
+              - ↑value: .
   ↓Call_Sequence [steps.SequenceStep-1606301775939]: 
     sourceSequence: C8oStudio.Execute
   ↓jIfThenElse [steps.IfThenElseStep-1606398425655]: 

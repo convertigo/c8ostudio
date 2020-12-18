@@ -193,7 +193,7 @@ scriptContent:
             }
         
         	makeElement(opts, graph) {
-        		var element = new joint.shapes.standard.InscribedImage;
+        		var element = new joint.shapes.standard.InscribedImage
         
         		element.resize(70,70);
         		element.position(opts.attrs.position.x, opts.attrs.position.y)
@@ -577,6 +577,7 @@ scriptContent:
         //					startDirection = (this.isInArray(this.ifThenElseSteps, stepClassName)) ? ''right'' : ''top''
         //					startDirection = (previous.attributes.depthLvl == el.attributes.depthLvl) ? ''bottom'' : ''top''
         					startDirection = (this.isInArray(this.ifThenElseSteps, stepClassName)) ? ''right'' : (previous.attributes.depthLvl == el.attributes.depthLvl) ? ''bottom'' : ''top''
+        					startDirection = (this.isInArray(this.ifSteps, previousClassName) && this.isInArray(this.ifThenElseSteps, stepClassName) && previous.attributes.depthLvl != el.attributes.depthLvl) ? ''top'' : startDirection
         	//				startDirection = (!this.isInArray(this.ifSteps, stepClassName) && !this.isInArray(this.ifThenElseSteps, stepClassName)) ? ''bottom'' : startDirection
         //					startDirection = (this.isInArray(this.ifSteps, previousClassName) && !this.isInArray(this.ifSteps, stepClassName) && !this.isInArray(this.ifThenElseSteps, stepClassName)) ? ''top'' : startDirection  
         					this.makeLink(previous, el, label, graph, previousThen, previousElse, startDirection)
@@ -768,9 +769,7 @@ scriptContent:
         				this.highlightBreadcrumb(card.id)
         				var cellsToAdd = card.graph.getCells();
         				this.updateGraph(this.graph, cellsToAdd);
-        			}
-        			
-        			if(!this.cardIsOpen(priority)) {
+        			} else {
         				
         			
         			// pushing data to array to retrieve the correct dom element
@@ -858,6 +857,7 @@ scriptContent:
         					};
         					
         					var lastCell = this.graph.getLastCell();
+        					this.paper.setOrigin(this.graphOriginX, this.graphOriginY)
         					
         					_.each(resp[''array''], (newElement, i) => {
         
@@ -999,9 +999,37 @@ scriptContent:
         										if(lastCell.attributes.target != undefined) {
         											var lastCellTarget = lastCell.attributes.target
         //											console.log(''target: '' + JSON.stringify(lastCellTarget))
-        											this.makeLink(lastCellTarget, el, '''', this.graph, false, false, "right")
+        											if(lastCellTarget.attributes.isInBranch) {
+        												var startBranchElement = this.graph.getCell(lastCellTarget.attributes.refBranchStart)
+        												if(this.isInArray(this.ifThenElseSteps, this.getClassName(startBranchElement.attributes.className))) {
+        													// var startBranchElement = this.graph.getCell(lastCellTarget.attributes.refBranchStart)
+        													var lastElements = this.getLastElementsFromThenAndElseBranch(startBranchElement)
+        													var jThenLastElement = lastElements.jThen[lastElements.jThen.length - 1]
+        													var jElseLastElement = lastElements.jElse[lastElements.jElse.length - 1]
+        													
+        													// positionning current element on Y position of the start branch element
+        													//el.position(el.attributes.position.x, startBranchElement.attributes.position.y)
+        					
+        									//							console.log("jThenLastElement: " + JSON.stringify(jThenLastElement) )
+        													if(jThenLastElement != undefined) {
+        														this.makeLink(jThenLastElement, el, "", this.graph, false, false, "right") // right
+        									//					previous = jThenLastElement
+        													}
+        																
+        													if(jElseLastElement != undefined) {
+        														el.position(el.attributes.position.x, jElseLastElement.attributes.position.y)
+        														this.makeLink(jElseLastElement, el, "", this.graph, false, false, "right") // right
+        									//					previous = jElseLastElement
+        													}
+        																								
+        												} else {
+        													this.makeLink(lastCellTarget, el, '''', this.graph, false, false, "right")
+        												}
+        											}
+        
         											// y = lastCellTarget.attributes.position.y
         										}
+        										
         					//					var lastCellTarget = lastCell.attributes.target
         					//					x = lastCellTarget.attributes.position.x + this.horizontalSpace;
         					//					y = lastCellTarget.attributes.position.y
@@ -1245,8 +1273,8 @@ title: Title for FlowViewer
                   				var opts = {
                   				    attrs: {
                   				        position: {
-                  				            x: 30 + this.horizontalSpace * i,
-                  				            y: 100
+                  				            x: 70 + this.horizontalSpace * i,
+                  				            y: 70
                   				        }
                   				    },
                   				    props: {
@@ -1541,7 +1569,7 @@ title: Title for FlowViewer
             attrValue: 
               - xmlizable: 
                 - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
-                - MobileSmartSourceType: 'plain:animation-name: fadeInUp; animation-duration: 1s; border-bottom-left-radius: 0px; border-bottom-right-radius: 0px;'
+                - MobileSmartSourceType: 'plain:animation-name: fadeInUp; animation-duration: 0.5s; border-bottom-left-radius: 0px; border-bottom-right-radius: 0px;'
     ↓colGraph [ngx.components.UIDynamicElement-1588228746957]: 
       beanData: '{"ionBean":"GridCol","SizeXl":"plain:10"}'
       tagName: ion-col
