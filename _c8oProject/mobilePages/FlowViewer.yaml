@@ -112,13 +112,15 @@ scriptContent:
         		 if (this.dragStartPosition != null) {
         			// this.c8o.log.debug("Mouse Move : " + JSON.stringify(this.dragStartPosition))
         			var bbox = this.graph.getBBox()
-        			console.log(JSON.stringify(bbox));
-        		    this.paper.translate(
-        		    	event.offsetX - this.dragStartPosition.x * this.scale / 10, 
-        		        event.offsetY - this.dragStartPosition.y * this.scale / 10);
-        		
-        		console.log(event.offsetX - this.dragStartPosition.x * this.scale / 10)
-        		console.log(event.offsetY - this.dragStartPosition.y * this.scale / 10)
+        //			console.log(JSON.stringify(bbox));
+        			
+        			var scale = this.getFlowScale()
+        			this.paper.translate(
+        		    	event.offsetX - this.dragStartPosition.x * scale, 
+        		        event.offsetY - this.dragStartPosition.y * scale);
+        
+        //		console.log(event.offsetX - this.dragStartPosition.x * this.scale / 10)
+        //		console.log(event.offsetY - this.dragStartPosition.y * this.scale / 10)
         		}
             }
         	
@@ -338,14 +340,14 @@ scriptContent:
         	zoomOutFlow() {
         		var currentScale = this.getFlowScale();
         		currentScale = currentScale * 100;
-        		console.log(''currentScale : '' + currentScale)
+        //		console.log(''currentScale : '' + currentScale)
         		if(currentScale == 10) {
         			this.getInstance(Events).publish("scaleView", "Zoom min");
         		} else {
         			var newScale = currentScale - 10
         			if(newScale == 0)
         				newScale = 10; // we can go under 0.1 otherwise graph disappears
-        			console.log(''newScale : '' + newScale)
+        //			console.log(''newScale : '' + newScale)
         			this.paper.scale(newScale / 100)
         			this.scaleView = newScale;
         		}
@@ -354,12 +356,12 @@ scriptContent:
         	zoomInFlow() {
         		var currentScale = this.getFlowScale();
         		currentScale = currentScale * 100;
-        		console.log(''currentScale : '' + currentScale)
+        //		console.log(''currentScale : '' + currentScale)
         		if(currentScale == 100) {
         			this.getInstance(Events).publish("scaleView","Zoom max");
         		} else {
         			var newScale = currentScale + 10
-        			console.log(''newScale : '' + newScale)
+        //			console.log(''newScale : '' + newScale)
         			this.paper.scale(newScale / 100)
         			this.scaleView = newScale;
         		}
@@ -746,7 +748,7 @@ scriptContent:
         
         		this.paper.on(''blank:pointerdown'', (event, x, y) => {
                 	this.c8o.log.debug("Mouse Start")
-                    this.dragStartPosition = { x: x * this.scale / 10, y: y * this.scale / 10};
+                    this.dragStartPosition = { x: x , y: y }; // { x: x * this.scale / 10, y: y * this.scale / 10};
                 });
         
         		this.paper.on(''blank:mousewheel'', (evt, x, y, delta) => {
