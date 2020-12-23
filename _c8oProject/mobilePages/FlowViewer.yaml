@@ -13,6 +13,28 @@ scriptContent:
         /*Begin_c8o_PageDeclaration*/
         	ifSteps = ["IfStep", "IfExistStep", "IfFileExistStep", "IsInStep"]
         	ifThenElseSteps = ["IfThenElseStep","IfExistThenElseStep", "IsInThenElseStep"]
+        	iteratorSteps = ["SimpleIteratorStep", "IteratorStep"]
+        	linkColors = {
+        		main: ''#77ACA1'',
+        		iterators: [
+        			''#ffd66b'',
+        			''#654062'',
+        			''#ff9d72'',
+        			''#f4f4f4''
+        		]
+        	}
+        	elementColors = {
+        		main: "#2D433F",
+        		iterators: [
+        			''#ffd66b'',
+        			''#654062'',
+        			''#ff9d72'',
+        			''#f4f4f4''
+        		],
+        		iteratorsBorder: [
+        			''#4D4637''
+        		]
+        	}
         	graph = new joint.dia.Graph;
         	paper : joint.dia.Paper
         	miniMapsArray = [];
@@ -124,7 +146,7 @@ scriptContent:
         		}
             }
         	
-        	makeLink(source, target, label, graph: joint.dia.Graph, previousThen, previousElse, startDirection) {
+        	makeLink(source, target, label, graph: joint.dia.Graph, previousThen, previousElse, startDirection, colorLink) {
         
                 var link = new joint.shapes.standard.ShadowLink({
         		    source: source,
@@ -147,7 +169,7 @@ scriptContent:
         		    }],
         		    attrs: {
         		        line: {
-        		            stroke: ''#77ACA1'', //#3c4260
+        		            stroke: colorLink, //#77ACA1
         					"stroke-width": 5, 
         					sourceMarker: {
         						type: "circle",
@@ -194,7 +216,7 @@ scriptContent:
         		
             }
         
-        	makeElement(opts, graph) {
+        	makeElement(opts, graph, color) {
         		var element = new joint.shapes.standard.InscribedImage
         
         		element.resize(70,70);
@@ -202,7 +224,7 @@ scriptContent:
         		element.attr(''root/title'', opts.props.displayName)
         		element.attr(''label/text'', opts.props.displayName)
         		element.attr(''label/fill'', ''#fff'');
-        		element.attr(''background/fill'', ''#2D433F'');
+        		element.attr(''background/fill'', color);
         		element.attr(''border/stroke'', ''#1E7C6D'');
         		element.attr(''background/fillOpacity'', 0.5);
         		element.attr(''image'', {
@@ -279,13 +301,13 @@ scriptContent:
         		element.addTo(this.graph);
         	}
         	
-        	makeComplexElement(opts, graph) {
+        	makeComplexElement(opts, graph, color) {
         		var element = new joint.shapes.basic.Rect;
         		
         		element.resize(70,70)
         		element.position(opts.attrs.position.x, opts.attrs.position.y)
         		element.attr(''root/title'', opts.props.displayName)
-        		element.attr(''rect/fill'', ''#00CDFF'')
+        		element.attr(''rect/fill'', color) // ''#00CDFF
         		element.attr(''text/text'', opts.props.displayName)
         		
         		for(var key in opts.props) {
@@ -316,8 +338,8 @@ scriptContent:
         		return card;
         	}
         	
-        	getClassName(qname: string) {
-        		var className = qname.substr(this.strStep.length)
+        	getClassName(className: string) {
+        		var className = className.substr(this.strStep.length)
         		return className;
         	}
         	
@@ -458,6 +480,9 @@ scriptContent:
         		var stepIsInBranch = false;
         		var refBranchStart = '''';
         		
+        		var stepIsInIterator = false;
+        		var refBranchIterator = '''';
+        		
         		var nbChildren = 0;
         		for (var i=0; i < nodeObject.length; i++) {
         			//parent = previous;
@@ -579,6 +604,22 @@ scriptContent:
         			if(stepIsInBranch)
         				refBranchStart = parent.id
         			
+        			if(this.isInArray(this.iteratorSteps, previousClassName))
+        				refBranchIterator = parent.id
+        				
+        			if(previous.attributes.isInIterator)
+        				refBranchIterator = previous.attributes.refBranchIterator	
+        			
+        			if(this.isInArray(this.iteratorSteps, parentClassName) && parent.attributes.depthLvl < nodeObject[i].dbo.depthLvl || previous.attributes.isInIterator)
+        				stepIsInIterator = true;
+        		
+        			var elColor;
+        			if(stepIsInIterator) {
+        				var iteratorRef = this.graph.getCell(refBranchIterator)
+        				elColor = this.elementColors.iterators[iteratorRef.attributes.depthLvl]
+        			} else {
+        				elColor = this.elementColors.main
+        			}
         			if(!parentIsComplex && stepClassName != "ThenStep" && stepClassName != "ElseStep") {
         				
         				var elmtOpts = {
@@ -594,27 +635,15 @@ scriptContent:
         				        className: nodeObject[i].dbo.className,
         				        isComplex: nodeObject[i].dbo.isComplex,
         				        isInBranch: stepIsInBranch,
+        						isInIterator: stepIsInIterator,
         				        refBranchStart: refBranchStart,
+        						refBranchIterator: refBranchIterator,
         				        depthLvl: nodeObject[i].dbo.depthLvl,
         				        properties: nodeObject[i].dbo.properties
             				}
         				}
         				
-        				var el = (nodeObject[i].dbo.isComplex) ? this.makeComplexElement(elmtOpts, graph) : this.makeElement(elmtOpts, graph);
-        //			var el = this.makeElement({
-        //					x : x,
-        //					y: y
-        //				}, 
-        //				nodeObject[i].dbo.displayName,
-        //				nodeObject[i].dbo.qname,
-        //				nodeObject[i].dbo.className,
-        //				nodeObject[i].dbo.isComplex,
-        //				stepIsInBranch,
-        ////				nodeObject[i].dbo.isEmbedded,
-        //				refStartBranch,
-        //				nodeObject[i].dbo.depthLvl,
-        //				graph
-        //			)
+        				var el = (nodeObject[i].dbo.isComplex) ? this.makeComplexElement(elmtOpts, graph, elColor) : this.makeElement(elmtOpts, graph, elColor);
         
         			if(previousThen) {
         				label = "Then"
@@ -634,6 +663,15 @@ scriptContent:
         			// si mon précédent est un thenElse ou un simple if ET si mon current n''est pas un thenElse ou un If je fais un lien
         //			if(this.isInArray(this.ifThenElseSteps, previousClassName) || this.isInArray(this.ifSteps, previousClassName)) {
         				var startDirection;
+        				var linkColor;
+        				if(el.attributes.isInIterator != undefined && el.attributes.isInIterator) { // this.isInArray(this.iteratorSteps, parentClassName) && el.attributes.depthLvl != parent.attributes.depthLvl
+        					var iteratorRef = this.graph.getCell(el.attributes.refBranchIterator)
+        					var depthLvl = iteratorRef.attributes.depthLvl
+        					linkColor = this.linkColors.iterators[depthLvl]
+        				} else {
+        					linkColor = this.linkColors.main
+        				}
+        				
         				if(this.isInArray(this.ifSteps, previousClassName) && !this.isInArray(this.ifSteps, stepClassName)) {
         //					startDirection = (this.isInArray(this.ifThenElseSteps, stepClassName)) ? ''right'' : ''top''
         //					startDirection = (previous.attributes.depthLvl == el.attributes.depthLvl) ? ''bottom'' : ''top''
@@ -641,18 +679,18 @@ scriptContent:
         					startDirection = (this.isInArray(this.ifSteps, previousClassName) && this.isInArray(this.ifThenElseSteps, stepClassName) && previous.attributes.depthLvl != el.attributes.depthLvl) ? ''top'' : startDirection
         	//				startDirection = (!this.isInArray(this.ifSteps, stepClassName) && !this.isInArray(this.ifThenElseSteps, stepClassName)) ? ''bottom'' : startDirection
         //					startDirection = (this.isInArray(this.ifSteps, previousClassName) && !this.isInArray(this.ifSteps, stepClassName) && !this.isInArray(this.ifThenElseSteps, stepClassName)) ? ''top'' : startDirection  
-        					this.makeLink(previous, el, label, graph, previousThen, previousElse, startDirection)
+        					this.makeLink(previous, el, label, graph, previousThen, previousElse, startDirection, linkColor)
         				} else if (this.isInArray(this.ifSteps, previousClassName) && this.isInArray(this.ifSteps, stepClassName)) {
         					//startDirection = (previousNodeObject.dbo.children != undefined) ? ''right '' : ''top''
         					startDirection = (this.graph.getSuccessors(previous).length <= 0) ? ''top'' : ''right''
-        					this.makeLink(previous, el, label, graph, previousThen, previousElse, startDirection) // right
+        					this.makeLink(previous, el, label, graph, previousThen, previousElse, startDirection, linkColor) // right
         				} else if (this.isInArray(this.ifSteps, previousClassName) && this.isInArray(this.ifThenElseSteps, stepClassName)) {
         					startDirection = (previousNodeObject.dbo.children != undefined) ? ''right '' : ''top''
-        					this.makeLink(previous, el, label, graph, previousThen, previousElse, startDirection) // top
+        					this.makeLink(previous, el, label, graph, previousThen, previousElse, startDirection, linkColor) // top
         				} else if(!this.isInArray(this.ifSteps, previousClassName) && !this.isInArray(this.ifThenElseSteps, previousClassName)) {
-        					this.makeLink(previous, el, label, graph, previousThen, previousElse, "right")
+        					this.makeLink(previous, el, label, graph, previousThen, previousElse, "right", linkColor)
         				} else if(!this.isInArray(this.ifThenElseSteps, stepClassName) && !this.isInArray(this.ifSteps, stepClassName)) {
-        					this.makeLink(previous, el, label, graph, previousThen, previousElse, "right")
+        					this.makeLink(previous, el, label, graph, previousThen, previousElse, "right", linkColor)
         				}
         //			} 
         //				this.makeLink(previous, el, label, graph, previousThen, previousElse)
@@ -667,12 +705,12 @@ scriptContent:
         
         //							console.log("jThenLastElement: " + JSON.stringify(jThenLastElement) )
         				if(jThenLastElement != undefined) {
-        					this.makeLink(jThenLastElement, el, label, this.graph, false, false, "right") // right
+        					this.makeLink(jThenLastElement, el, label, this.graph, false, false, "right", linkColor) // right
         //					previous = jThenLastElement
         				}
         							
         				if(jElseLastElement != undefined) {
-        					this.makeLink(jElseLastElement, el, label, this.graph, false, false, "right") // right
+        					this.makeLink(jElseLastElement, el, label, this.graph, false, false, "right", linkColor) // right
         //					previous = jElseLastElement
         				}
         								
@@ -686,7 +724,7 @@ scriptContent:
         			else if(previousNodeObject != null && this.isInArray(this.ifSteps, previousClassName)) { // this.getClassName(previous.attributes.className) == "IfStep"
         				if(previousClassName != this.getClassName(previousNodeObject.dbo.className)) {
         					var lastElement = this.getLastElementFromSimpleBranch(previous, 2);
-        					this.makeLink(lastElement, el, '''', this.graph, false, false, "right")
+        					this.makeLink(lastElement, el, '''', this.graph, false, false, "right", linkColor)
         				} else {			
         					if(lastCell != undefined && lastCell.attributes.type == "standard.ShadowLink") {
         						// So if it a link, the true last cell is its target
@@ -707,18 +745,18 @@ scriptContent:
         
         				//							console.log("jThenLastElement: " + JSON.stringify(jThenLastElement) )
         								if(jThenLastElement != undefined) {
-        									this.makeLink(jThenLastElement, el, label, this.graph, false, false, "right") // right
+        									this.makeLink(jThenLastElement, el, label, this.graph, false, false, "right", linkColor) // right
         				//					previous = jThenLastElement
         								}
         											
         								if(jElseLastElement != undefined) {
         									el.position(el.attributes.position.x, jElseLastElement.attributes.position.y)
-        									this.makeLink(jElseLastElement, el, label, this.graph, false, false, "right") // right
+        									this.makeLink(jElseLastElement, el, label, this.graph, false, false, "right", linkColor) // right
         				//					previous = jElseLastElement
         								}	
         							}
         							
-        							this.makeLink(lastCellTarget, el, '''', this.graph, false, false, "right")
+        							this.makeLink(lastCellTarget, el, '''', this.graph, false, false, "right", linkColor)
         
         							
         											// y = lastCellTarget.attributes.position.y
@@ -728,14 +766,14 @@ scriptContent:
         					//					y = lastCellTarget.attributes.position.y
         					} 
         					else {
-        						this.makeLink(lastCell, el, '''', this.graph, false, false, "right")
+        						this.makeLink(lastCell, el, '''', this.graph, false, false, "right", linkColor)
         						// y = lastCell.attributes.position.y
         					}								
         				}
         			}
         			previous = el
         			
-        			if(this.isInArray(this.ifThenElseSteps, stepClassName) || this.isInArray(this.ifSteps, stepClassName))
+        			if(this.isInArray(this.ifThenElseSteps, stepClassName) || this.isInArray(this.ifSteps, stepClassName) || this.isInArray(this.iteratorSteps, stepClassName))
         				previousNodeObject = nodeObject[i]
         							
         			}
@@ -1030,15 +1068,16 @@ scriptContent:
         							    isComplex: newElement.dbo.isComplex,
         							    isInBranch: false,
         							    refBranchStart: '''',
+        								refBranchIterator: '''',
         							    depthLvl: newElement.dbo.depthLvl,
         							    properties: newElement.dbo.properties
             						}
         						}
-        						var el = (newElement.dbo.isComplex) ? this.makeComplexElement(elmtOpts, this.graph) : this.makeElement(elmtOpts, this.graph)
+        						var el = (newElement.dbo.isComplex) ? this.makeComplexElement(elmtOpts, this.graph, "#2D433F") : this.makeElement(elmtOpts, this.graph, "#2D433F")
         
         						
         						if(previous != null && !this.isInArray(this.ifThenElseSteps, previousClassName)) // && previousClassName != "IfThenElseStep"
-        							var link = this.makeLink(previous, el, '''', this.graph, false, false, "right")
+        							var link = this.makeLink(previous, el, '''', this.graph, false, false, "right", ''#77ACA1'')
         
         						
         						if(previous != null && this.isInArray(this.ifThenElseSteps, previousClassName)) { // this.getClassName(previous.attributes.className) == "IfThenElseStep"
@@ -1048,13 +1087,13 @@ scriptContent:
         
         //							console.log("jThenLastElement: " + JSON.stringify(jThenLastElement) )
         							if(jThenLastElement != undefined) {
-        								this.makeLink(jThenLastElement, el, '''', this.graph, false, false, "right")
+        								this.makeLink(jThenLastElement, el, '''', this.graph, false, false, "right", ''#77ACA1'')
         //								lastCell = jThenLastElement
         							}
         								
         							
         							if(jElseLastElement != undefined) {
-        								this.makeLink(jElseLastElement, el, '''', this.graph, false, false, "right")
+        								this.makeLink(jElseLastElement, el, '''', this.graph, false, false, "right", ''#77ACA1'')
         //								lastCell = jElseLastElement
         							}
         								
@@ -1062,7 +1101,7 @@ scriptContent:
         						}  else if(previous != null && this.isInArray(this.ifSteps, previousClassName)) { // this.getClassName(previous.attributes.className) == "IfStep"
         							if(previousClassName != previousFromSequenceClassName) {
         								var lastElement = this.getLastElementFromSimpleBranch(previous, 1);
-        								this.makeLink(lastElement, el, '''', this.graph, false, false, "right")
+        								this.makeLink(lastElement, el, '''', this.graph, false, false, "right", ''#77ACA1'')
         							} else {
         										
         								if(lastCell != undefined && lastCell.attributes.type == "standard.ShadowLink") {
@@ -1083,18 +1122,18 @@ scriptContent:
         					
         									//							console.log("jThenLastElement: " + JSON.stringify(jThenLastElement) )
         													if(jThenLastElement != undefined) {
-        														this.makeLink(jThenLastElement, el, "", this.graph, false, false, "right") // right
+        														this.makeLink(jThenLastElement, el, "", this.graph, false, false, "right", ''#77ACA1'') // right
         									//					previous = jThenLastElement
         													}
         																
         													if(jElseLastElement != undefined) {
         														el.position(el.attributes.position.x, jElseLastElement.attributes.position.y)
-        														this.makeLink(jElseLastElement, el, "", this.graph, false, false, "right") // right
+        														this.makeLink(jElseLastElement, el, "", this.graph, false, false, "right", ''#77ACA1'') // right
         									//					previous = jElseLastElement
         													}
         																								
         												} else {
-        													this.makeLink(lastCellTarget, el, '''', this.graph, false, false, "right")
+        													this.makeLink(lastCellTarget, el, '''', this.graph, false, false, "right", ''#77ACA1'')
         												}
         											}
         
@@ -1106,7 +1145,7 @@ scriptContent:
         					//					y = lastCellTarget.attributes.position.y
         								} 
         								else {
-        									this.makeLink(lastCell, el, '''', this.graph, false, false, "right")
+        									this.makeLink(lastCell, el, '''', this.graph, false, false, "right", ''#77ACA1'')
         									// y = lastCell.attributes.position.y
         								}								
         							}
@@ -1360,12 +1399,12 @@ title: Title for FlowViewer
                   				    }
                   				}
                   				
-                  				var step = (isComplex) ? this.makeComplexElement(opts, this.graph) : this.makeElement(opts, this.graph)
+                  				var step = (isComplex) ? this.makeComplexElement(opts, this.graph, "#2D433F") : this.makeElement(opts, this.graph, "#2D433F")
                   
                   //				console.log("DisplayFlow - element created: " + JSON.stringify(step))
                   				
                   				if(previous != null)
-                  					var link = this.makeLink(previous, step, "", this.graph, false, false, "right")
+                  					var link = this.makeLink(previous, step, "", this.graph, false, false, "right", ''#77ACA1'')
                   
                   				previous = step
                   
