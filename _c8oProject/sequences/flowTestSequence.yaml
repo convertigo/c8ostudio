@@ -17,6 +17,13 @@
                 - ↑value: 1606228717528
               - java.lang.String: 
                 - ↑value: .
+      ↓jIterator [steps.SimpleIteratorStep-1608802183054]: 
+        ↓Element [steps.XMLElementStep-1608802189418]: 
+        ↓Parallel [steps.ParallelStep-1608808651866]: 
+        ↓Iterator [steps.IteratorStep-1608803502228]: 
+          ↓Element [steps.XMLElementStep-1608803506675]: 
+          ↓Iterator [steps.IteratorStep-1608803513707]: 
+            ↓Element [steps.XMLElementStep-1608803521435]: 
   ↓jIfThenElse [steps.IfThenElseStep-1606398425655]: 
     ↓jThen [steps.ThenStep-1606398427087]: 
       ↓Complex [steps.XMLComplexStep-1606471421899]: 
