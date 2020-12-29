@@ -1509,6 +1509,27 @@ tplProjectName: C8oStudio
           	font-size: 9px;
           	color: white;
           	padding-top: 10px;
+          }
+          
+          .properties-panel {
+          	min-height: 300px;
+          	max-height: 500px;
+          	overflow-y: scroll;
+          }
+          
+          .properties-panel-header {
+          	background-color: #0CBBE7;
+          	padding: 10px 10px 10px 10px;
+          	font-size: 18px;
+          }
+          .properties-panel-button-close {
+          	float: right;
+          	font-size: 18px;
+          	background-color: none;
+          }
+          .properties-panel-body {
+          	background-color: #f8f8f8;
+          	padding: 5px 5px 5px 5px;
           }'
 ↓animationsKeyFramesStyle [ngx.components.UIStyle-1608207135133]: 
   styleContent: 

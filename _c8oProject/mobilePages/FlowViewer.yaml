@@ -17,10 +17,11 @@ scriptContent:
         	linkColors = {
         		main: ''#77ACA1'',
         		iterators: [
-        			''#ffd66b'',
-        			''#654062'',
-        			''#ff9d72'',
-        			''#f4f4f4''
+        			''#c8e6c9'',
+        			''#81c784'',
+        			''#4caf50'',
+        			''#388e3c'',
+        			''#1b5e20''
         		]
         	}
         	elementColors = {
@@ -28,16 +29,18 @@ scriptContent:
         		mainBorder: "#1E7C6D",
         		complex: ''#0CBBE7'',
         		iterators: [
-        			''#ffd66b'',
-        			''#654062'',
-        			''#ff9d72'',
-        			''#f4f4f4''
+        			''#c8e6c9'',
+        			''#81c784'',
+        			''#4caf50'',
+        			''#388e3c'',
+        			''#1b5e20''
         		],
         		iteratorsBorder: [
-        			''#FFCE7B'',
-        			''#657AB3'',
-        			''#FFA78C'',
-        			''#CFEDFF''
+        			''#97b498'',
+        			''#519657'',
+        			''#087f23'',
+        			''#00600f'',
+        			''#003300''
         		]
         	}
         	graph = new joint.dia.Graph;
@@ -258,63 +261,144 @@ scriptContent:
         		
         	}
         	
-        	makeCustomElement() {
-        		var element = joint.shapes.basic.Generic.extend({
-                markup: [{
-        					tagName: ''ellipse'',
-        					selector: ''background''
-        				},
-        				{
-        					tagName: ''image'',
-        					selector: ''image''
-        				},
-        				{
-        					tagName: ''ellipse'',
-        					selector: ''border''
-        				},
-        				{
-        					tagName: ''text'',
-        					selector: ''label''
-        				}],
+        	makeCustomElement(props) {
+        		
+        		var template = 
+        			''<div class="properties-panel" style="position: absolute;z-index: 2000;">'' +
+        			''<div class="properties-panel-header">'' +
+                    ''<button class="properties-panel-button-close">x</button>'' + 
+                    ''<label></label>'' + 
+        			''</div>'' +
+                    ''<div class="properties-panel-body">''; 
         
+        			for(var i = 0; i < props.length; i++) {
+        				template = template + ''<h5>'' + props[i].displayName + ''</h5>'' +	
+        							''<input type="text" value="'' + props[i].value + ''" />''
+        				
+        			}
+        			
+        			template = template + 
+        			''</div> </div>'';
+        		
+        		joint.shapes[''html''] = {};
+            	joint.shapes[''html''].Element = joint.shapes.basic.Rect.extend({
                 defaults: joint.util.deepSupplement({
-        
-                    type: ''basic.MyRect'',
+                    type: ''html.Element'',
                     attrs: {
-                        background: {
-                            stroke: ''#1E7C6D'',
-        					strokeWidth: 2,
-        					rx: 35,
-        					ry: 35,
-        					cx: 35,
-        					cy: 35,
-        					fill: ''none''				
-                        },
-                        image: {
-        					xlinkHref: ''''
-                        },
-        				border: {
-        					fill: ''none'',
-        					stroke: ''#1E7C6D'',
-        					strokeWidth: 2,
-        					rx: 35,
-        					ry: 35,
-        					cx: 35,
-        					cy: 35
-        				},
-        				label: {
-        					fontSize: 14,
-        					textAnchor: ''middle''
-        				}
+                        rect: { stroke: ''none'', ''fill-opacity'': 0 }
                     }
-                }, joint.shapes.basic.Generic.prototype.defaults)
+                }, joint.shapes.basic.Rect.prototype.defaults)
+            	});
         
-           	 });
-        		
-        		element.position(50,50);
-        		element.attr(''text/text'');
-        		
-        		element.addTo(this.graph);
+        joint.shapes[''html''].ElementView = joint.dia.ElementView.extend({
+                template: [
+                    template
+                ].join(''''),
+        
+                initialize(): void {
+                    console.log("Init function called") //THIS LINE IS NEVER PRINTED ON THE CONSOLE
+                    _.bindAll(this, ''updateBox'');
+                    joint.dia.ElementView.prototype.initialize.apply(this, arguments);
+        //
+                    this.$box = $(_.template(this.template)());
+                    // Prevent paper from handling pointerdown.
+        //            this.$box.find(''input,select'').on(''mousedown click'', function(evt) {
+        //                evt.stopPropagation();
+        //            });
+                    // This is an example of reacting on the input change and storing the input data in the cell model.
+                    this.$box.find(''input'').on(''change'', _.bind(function(evt) {
+                      this.model.set(''input'', $(evt.target).val());
+                    }, this));
+                    this.$box.find(''select'').on(''change'', _.bind(function(evt) {
+                      this.model.set(''select'', $(evt.target).val());
+                    }, this));
+                    this.$box.find(''select'').val(this.model.get(''select''));
+                    this.$box.find(''.properties-panel-button-close'').on(''click'', _.bind(this.model.remove, this.model));
+                    // Update the box position whenever the underlying model changes.
+                    this.model.on(''change'', this.updateBox, this);
+                    // Remove the box when the model gets removed from the graph.
+                    this.model.on(''remove'', this.removeBox, this);
+                    console.log("************Init function processed"+this)
+        //
+                    this.updateBox();
+                },
+                render: function() {
+                    joint.dia.ElementView.prototype.render.apply(this, arguments);
+                    this.paper.$el.prepend(this.$box);
+                    this.updateBox();
+                    return this;
+                },
+                updateBox: function() {
+                  console.log("****This is the time")
+                  // Set the position and dimension of the box so that it covers the JointJS element.
+                  var bbox = this.model.getBBox();
+                  // Example of updating the HTML with a data stored in the cell model.
+                  this.$box.find(''label'').text(this.model.get(''label''));
+                  this.$box.find(''span'').text(this.model.get(''select''));
+                  this.$box.css({
+                      width: bbox.width,
+                      height: bbox.height,
+                      left: bbox.x,
+                      top: bbox.y,
+                      transform: ''rotate('' + (this.model.get(''angle'') || 0) + ''deg)''
+                  });
+              },
+        
+              removeBox: function(evt) {
+                this.$box.remove();
+              }
+            });
+        
+        	var el1 = new joint.shapes[''html''].Element({
+                position: { x: 80, y: 80 },
+                size: { width: 400 },
+                label: ''Properties'',
+            });
+        	
+        	el1.addTo(this.graph)
+        	return el1;
+        
+        //	el1.addTo(this.graph)
+        //		joint.shapes[''custom''] = {}
+        //		joint.shapes.standard.Rectangle.define(''custom.Complex'', {
+        //	    	attrs: {
+        //		        body: {
+        //		            refWidth: ''100%'',
+        //		            refHeight: ''100%'',
+        //		            strokeWidth: 2,
+        //		            stroke: ''#000000'',
+        //		            fill: ''#FFFFFF''
+        //		        },
+        //		        label: {
+        //		            textVerticalAnchor: ''middle'',
+        //		            textAnchor: ''middle'',
+        //		            refX: ''50%'',
+        //		            refY: ''50%'',
+        //		            fontSize: 14,
+        //		            fill: ''#333333''
+        //		        },
+        //				''bullet-children'': {
+        //					refX: ''100%'',
+        //					refY: ''100%'',
+        //					fill: ''red''
+        //				}
+        //	    	}
+        //		}, 
+        //		{
+        //		    markup: [{
+        //		        tagName: ''rect'',
+        //		        selector: ''body'',
+        //		    }, {
+        //		        tagName: ''text'',
+        //		        selector: ''label''
+        //		    }, {
+        //				tagName: ''bullet-children'',
+        //				selector: ''bullet-children''
+        //			}]
+        //		});
+        //
+        //		var element = new joint.shapes[''custom''].Complex()
+        //		return element;
         	}
         	
         	makeComplexElement(opts, graph, color) {
@@ -835,6 +919,8 @@ scriptContent:
                     model: this.graph,
                     gridSize: 10,
         			embeddingMode: true,
+        			cellViewNamespace: joint.shapes,
+        			preventContextMenu: false,
                     defaultRouter: {
                         name: ''normal''
                     },
@@ -847,7 +933,17 @@ scriptContent:
                             return false
                         else
                             return true
-                    }
+                    },
+        			beforeRender: function() {
+        				this.waitingToBeRendered = true;
+        			},
+        			afterRender: function(stats, options, paper) {
+        				this.waitingToBeRendered = false;
+        				console.log(''stats:'' + stats)
+        				console.log(this.waitingToBeRendered)
+        				alert(this.waitingToBeRendered)
+        				console.log("paper:" + paper)
+        			}
                 }
         
         //			drawGrid: {
@@ -858,8 +954,63 @@ scriptContent:
         //			},
                 this.paper = this.createPaper(paperOpts);
         		this.paper.setOrigin(this.graphOriginX, this.graphOriginY)
-        				
-        		// this.makeCustomElement();
+        		
+        		var props = [
+             {
+              "displayName": "Comment",
+              "name": "comment",
+              "value": ""
+             },
+             {
+              "displayName": "Expression",
+              "name": "expression",
+              "value": "level = level - 1;\r\n\/\/ level = 0; \/\/ comment this and re-enable the 2 Then to enable level again\r\nhandleFolders = handleFolders == \"true\";"
+             },
+             {
+              "displayName": "Is active",
+              "name": "isEnabled",
+              "value": "true"
+             },
+             {
+              "displayName": "Name",
+              "name": "name",
+              "value": "MinusLevel"
+             },
+             {
+              "displayName": "Output",
+              "name": "output",
+              "value": "false"
+             },
+             {
+              "displayName": "Schema data type",
+              "name": "schemaDataType",
+              "value": "xsd:string"
+             },
+             {
+              "displayName": "Assigned XSD Complex type QName ",
+              "name": "xmlComplexTypeAffectation",
+              "value": "{}"
+             },
+             {
+              "displayName": "Assigned XSD Element ref QName",
+              "name": "xmlElementRefAffectation",
+              "value": "{}"
+             },
+             {
+              "displayName": "Assigned XSD Simple type QName",
+              "name": "xmlSimpleTypeAffectation",
+              "value": "string{http:\/\/www.w3.org\/2001\/XMLSchema}"
+             },
+             {
+              "displayName": "Priority",
+              "name": "priority",
+              "value": "1589879185131"
+             }
+            ]
+        		var element = this.makeCustomElement(props);
+        //		element.resize(70,70)
+        //		element.position(50,50) 
+        //		element.addTo(this.graph)			
         
         		/**
         	     * The next two events are to be able to drag on the graph
@@ -881,6 +1032,11 @@ scriptContent:
         		  	if (newScale > 0.4 && newScale < 2) {
         			    this.paper.scale(newScale, newScale);
           			}
+        		})
+        		
+        		this.paper.on(''cell:contextmenu element:contextmenu'', (cellView, event, x, y) => {
+        			var element = this.makeCustomElement(cellView.model.attributes.properties)
+        			element.position(cellView.model.attributes.position.x + 40, cellView.model.attributes.position.y)
         		})
         
         		this.paper.on(''cell:pointerdblclick'', (cellView, event, x, y) => {
@@ -929,9 +1085,9 @@ scriptContent:
         			this.unselectBreadcrumb(this.breadcrumb[this.breadcrumb.length - 1].id);
         			this.unselectCard(this.miniMapsArray[this.miniMapsArray.length - 1].id);	
         			setTimeout(() => {
-        				var el = document.getElementById("level-"+this.levelCount)			
+        				var card = document.getElementById("level-"+this.levelCount)			
         				var paperOpts = {
-        		            el: el,
+        		            el: card,
         		            width: ''100%'',
         		            height: ''100%'',
         		            model: newGraph,
@@ -946,12 +1102,6 @@ scriptContent:
         		                    }
         		                }                
         		            }),
-        					drawGrid: {
-        						name: ''dot'',
-        						args: {
-        							color: ''white''
-        						}
-        					},
         		            defaultRouter: {
         		                name: ''manhattan''
         		            },
@@ -969,19 +1119,16 @@ scriptContent:
         						this.waitingToBeRendered = true;
         					},
         					afterRender: function(stats, options, paper) {
-        						this.waitingToBeRendered = false;
-        						console.log(''stats:'' + stats)
-        						console.log(this.waitingToBeRendered)
-        						alert(this.waitingToBeRendered)
+        						paper.scaleContentToFit()
         					}
         		        }
         			
         				var paper = this.createPaper(paperOpts);
-        				paper.scale(0.2);
+        				paper.scale(0.1)
         				var computedSize = paper.getComputedSize();
         				var originY = (computedSize.height / 2);
         			
-        				paper.setOrigin(this.graphOriginX, originY)
+        //				paper.setOrigin(this.graphOriginX, originY)
         			
         				this.c8o.callJsonObject(''.GetGraph'', {
         					qname: elementQName,
@@ -1238,11 +1385,12 @@ scriptContent:
         					console.log(error)
         				});
         //					console.log(element)
-        				})
         				
+        				})
         			}
         			}, 0o400); // = 0.4s
-        
+        			
+        			
         	}
         	/*End_c8o_PageFunction*/
         '
@@ -1386,12 +1534,6 @@ title: Title for FlowViewer
                 	                    }
                 	                }                
                 	            }),
-                				drawGrid: {
-                					name: ''dot'',
-                					args: {
-                						color: ''white''
-                					}
-                				},
                 	            defaultRouter: {
                 	                name: ''manhattan''
                 	            },
@@ -1407,7 +1549,9 @@ title: Title for FlowViewer
                 	            }
                 	        }
                 	        var paper = this.createPaper(paperOpts);
-                			paper.scale(0.2)
+                			paper.scaleContentToFit({
+                				padding: 10
+                			});
                 			var computedSize = paper.getComputedSize();
                 			var originY = computedSize.height / 2;
                 //			paper.scaleContentToFit()
@@ -1443,6 +1587,12 @@ title: Title for FlowViewer
                   //				console.log("DisplayFlow - stepClassName : " + stepClassName)
                   				
                   				isComplex = (stepClassName == "XMLComplexStep") ? true : false
+                  				var elColor;
+                  				if(isComplex) {
+                  					elColor = this.elementColors.complex
+                  				} else {
+                  					elColor = this.elementColors.main
+                  				}
                   				var opts = {
                   				    attrs: {
                   				        position: {
@@ -1462,7 +1612,7 @@ title: Title for FlowViewer
                   				    }
                   				}
                   				
-                  				var step = (isComplex) ? this.makeComplexElement(opts, this.graph, "#2D433F") : this.makeElement(opts, this.graph, "#2D433F")
+                  				var step = (isComplex) ? this.makeComplexElement(opts, this.graph, elColor) : this.makeElement(opts, this.graph, elColor)
                   
                   //				console.log("DisplayFlow - element created: " + JSON.stringify(step))
                   				
