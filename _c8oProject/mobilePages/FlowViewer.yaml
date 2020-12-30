@@ -117,6 +117,7 @@ scriptContent:
         				if(elements[i].attributes.refIteratorBox.length != 0) {
         					var previousBox = this.graph.getCell(elements[i].attributes.refIteratorBox)
         					previousBox.embed(elements[i])
+        					//@ts-ignore
         					previousBox.fitEmbeds({
         						padding: 20,
         						deep: true
@@ -852,6 +853,7 @@ scriptContent:
         //						console.log(''elite:'' + JSON.stringify(el))
         						var cellIteratorBox = this.graph.getCell(el.attributes.refIteratorBox);
         						cellIteratorBox.embed(el);
+        						//@ts-ignore
         						cellIteratorBox.fitEmbeds({
         							padding: 20,
         							deep:true
