@@ -17,11 +17,11 @@ scriptContent:
         	linkColors = {
         		main: ''#77ACA1'',
         		iterators: [
-        			''#c8e6c9'',
-        			''#81c784'',
-        			''#4caf50'',
-        			''#388e3c'',
-        			''#1b5e20''
+        			''#ef5350'',
+        			''#ec407a'',
+        			''#ab47bc'',
+        			''#7e57c2'',
+        			''#5c6bc0''
         		]
         	}
         	elementColors = {
@@ -29,18 +29,18 @@ scriptContent:
         		mainBorder: "#1E7C6D",
         		complex: ''#0CBBE7'',
         		iterators: [
-        			''#c8e6c9'',
-        			''#81c784'',
-        			''#4caf50'',
-        			''#388e3c'',
-        			''#1b5e20''
+        			''#ef5350'',
+        			''#ec407a'',
+        			''#ab47bc'',
+        			''#7e57c2'',
+        			''#5c6bc0''
         		],
         		iteratorsBorder: [
-        			''#97b498'',
-        			''#519657'',
-        			''#087f23'',
-        			''#00600f'',
-        			''#003300''
+        			''#b61827'',
+        			''#b4004e'',
+        			''#790e8b'',
+        			''#4d2c91'',
+        			''#26418f''
         		]
         	}
         	graph = new joint.dia.Graph;
@@ -109,6 +109,23 @@ scriptContent:
         		return paper;
         	}
         	
+        	embedIteratorBox() {
+        		var elements = this.graph.getElements();
+        		for(var i = 0; i < elements.length; i++) {
+        			console.log("LIST OF ELEMENTS: " + JSON.stringify(elements[i]))
+        			if(elements[i].attributes.isIteratorBox) {
+        				if(elements[i].attributes.refIteratorBox.length != 0) {
+        					var previousBox = this.graph.getCell(elements[i].attributes.refIteratorBox)
+        					previousBox.embed(elements[i])
+        					previousBox.fitEmbeds({
+        						padding: 20,
+        						deep: true
+        					})
+        				}
+        			}
+        		}
+        	}
+        	
         	highlightBreadcrumb(id) {
         		for(var i = 0; i < this.breadcrumb.length; i++) {
         			if(this.breadcrumb[i].id == id)
@@ -139,7 +156,7 @@ scriptContent:
         	}
         	
         	onMouseMove(event) {
-        		console.log("I AM EVENT " + JSON.stringify(event));
+        //		console.log("I AM EVENT " + JSON.stringify(event));
         		 if (this.dragStartPosition != null) {
         			// this.c8o.log.debug("Mouse Move : " + JSON.stringify(this.dragStartPosition))
         			var bbox = this.graph.getBBox()
@@ -261,7 +278,7 @@ scriptContent:
         		
         	}
         	
-        	makeCustomElement(props) {
+        	makePropertiesPanel(label, props) {
         		
         		var template = 
         			''<div class="properties-panel" style="position: absolute;z-index: 2000;">'' +
@@ -296,15 +313,15 @@ scriptContent:
                 ].join(''''),
         
                 initialize(): void {
-                    console.log("Init function called") //THIS LINE IS NEVER PRINTED ON THE CONSOLE
+         //           console.log("Init function called") //THIS LINE IS NEVER PRINTED ON THE CONSOLE
                     _.bindAll(this, ''updateBox'');
                     joint.dia.ElementView.prototype.initialize.apply(this, arguments);
         //
                     this.$box = $(_.template(this.template)());
                     // Prevent paper from handling pointerdown.
-        //            this.$box.find(''input,select'').on(''mousedown click'', function(evt) {
-        //                evt.stopPropagation();
-        //            });
+                    this.$box.find(''input,select'').on(''mousedown click'', function(evt) {
+                        evt.stopPropagation();
+                    });
                     // This is an example of reacting on the input change and storing the input data in the cell model.
                     this.$box.find(''input'').on(''change'', _.bind(function(evt) {
                       this.model.set(''input'', $(evt.target).val());
@@ -318,7 +335,7 @@ scriptContent:
                     this.model.on(''change'', this.updateBox, this);
                     // Remove the box when the model gets removed from the graph.
                     this.model.on(''remove'', this.removeBox, this);
-                    console.log("************Init function processed"+this)
+        //            console.log("************Init function processed"+this)
         //
                     this.updateBox();
                 },
@@ -329,18 +346,19 @@ scriptContent:
                     return this;
                 },
                 updateBox: function() {
-                  console.log("****This is the time")
+        //          console.log("****This is the time")
                   // Set the position and dimension of the box so that it covers the JointJS element.
                   var bbox = this.model.getBBox();
                   // Example of updating the HTML with a data stored in the cell model.
                   this.$box.find(''label'').text(this.model.get(''label''));
-                  this.$box.find(''span'').text(this.model.get(''select''));
+        //          this.$box.find(''span'').text(this.model.get(''select''));
+        //		console.log(''bbox:'' + JSON.stringify(bbox))
                   this.$box.css({
                       width: bbox.width,
                       height: bbox.height,
                       left: bbox.x,
                       top: bbox.y,
-                      transform: ''rotate('' + (this.model.get(''angle'') || 0) + ''deg)''
+        //              transform: ''rotate('' + (this.model.get(''angle'') || 0) + ''deg)''
                   });
               },
         
@@ -350,9 +368,8 @@ scriptContent:
             });
         
         	var el1 = new joint.shapes[''html''].Element({
-                position: { x: 80, y: 80 },
-                size: { width: 400 },
-                label: ''Properties'',
+                size: { width: 300, height: 500 },
+                label: label,
             });
         	
         	el1.addTo(this.graph)
@@ -419,6 +436,42 @@ scriptContent:
         		element.addTo(graph);
         		return element;		
         	}
+        	
+        	makeIteratorBox(opts, graph, color) {
+        		var element = new joint.shapes.basic.Rect({
+        			position: {
+        				x: opts.attrs.position.x,
+        				y: opts.attrs.position.y
+        			},
+        //			size: {
+        //				width: 200,
+        //				height: 50
+        //			},
+        			attrs: {
+        				rect: {
+        					fill: ''#222222'',
+        					strokeWidth: 1,
+        					stroke: color,
+        					strokeDasharray: 5
+        				}
+        			}
+        		})
+        		
+        //		console.log(''props'' + opts.props)
+        		for(var key in opts.props)
+        			element.prop(key, opts.props[key])
+        		
+        //		element.resize(50,50);
+        //		element.position(80,80);
+        //		element.attr(''rect/fill'', ''none'');
+        //		element.attr(''rect/strokeWidth'', 1);
+        //		element.attr(''rect/stroke'', color);
+        //		element.attr(''rect/strokeDasharray'', ''5 5'')
+        		
+        //		console.log(''ele: '' + JSON.stringify(element))
+        		element.addTo(graph);
+        		return element;
+        	}
         
         	getFlowScale() {
         		var scale = this.paper.scale();
@@ -449,7 +502,7 @@ scriptContent:
         		last array''s element is the one which comes after the branch in logical flow, it is linked from the ''if step'' so it appears as a successors of it
         	*/
         	getLastElementFromSimpleBranch(branch, minus) {
-        		console.log(''branch:'' + JSON.stringify(branch))
+        //		console.log(''branch:'' + JSON.stringify(branch))
         		var successors = this.graph.getSuccessors(branch)
         		var lastElement = successors[successors.length - minus]
         
@@ -580,8 +633,10 @@ scriptContent:
         		var stepIsInBranch = false;
         		var refBranchStart = '''';
         		
+        		var isIterator = false;
         		var stepIsInIterator = false;
         		var refBranchIterator = '''';
+        		var refIteratorBox = '''';
         		
         		var nbChildren = 0;
         		for (var i=0; i < nodeObject.length; i++) {
@@ -707,12 +762,21 @@ scriptContent:
         			if(previous.attributes.isInIterator)
         				refBranchIterator = previous.attributes.refBranchIterator	
         			
+        			if(this.isInArray(this.iteratorSteps, stepClassName))
+        				isIterator = true;
+        				
         			if(this.isInArray(this.iteratorSteps, previousClassName))
         				refBranchIterator = parent.id
         
         			if(this.isInArray(this.iteratorSteps, parentClassName) && parent.attributes.depthLvl < nodeObject[i].dbo.depthLvl || previous.attributes.isInIterator)
         				stepIsInIterator = true;
-        		
+        			
+        			if(previous.attributes.isIterator)
+        				refIteratorBox = parent.attributes.refIteratorBox
+        			
+        			if(previous.attributes.isInIterator)
+        				refIteratorBox = parent.attributes.refIteratorBox
+        
         			var elColor;
         			if(this.isInArray(this.iteratorSteps, stepClassName)) {
         				elColor = this.elementColors.iterators[nodeObject[i].dbo.depthLvl]
@@ -725,6 +789,27 @@ scriptContent:
         				else
         					elColor = this.elementColors.main
         			}
+        			
+        			if(isIterator) {
+        				var iteratorBoxOpts = {
+        					attrs: {
+        						position: {
+        							x: x,
+        							y: y
+        						}
+        					},
+        					props: {
+        						refIteratorBox : (previous.attributes.isInIterator && this.isInArray(this.iteratorSteps, stepClassName) && previous.attributes.depthLvl == nodeObject[i].dbo.depthLvl) ? previous.attributes.refIteratorBox : '''',
+        						isInIterator: stepIsInIterator,
+        						isIteratorBox: true
+        					}
+        				}
+        				var iteratorBox = this.makeIteratorBox(iteratorBoxOpts, this.graph, elColor)
+        				refIteratorBox = iteratorBox.id
+        				
+        				console.log("itebox:" + JSON.stringify(iteratorBox)) 
+        			}
+        			
         			if(!parentIsComplex && stepClassName != "ThenStep" && stepClassName != "ElseStep") {
         				
         				var elmtOpts = {
@@ -739,16 +824,82 @@ scriptContent:
         				        displayName: nodeObject[i].dbo.displayName,
         				        className: nodeObject[i].dbo.className,
         				        isComplex: nodeObject[i].dbo.isComplex,
+        						isIterator: isIterator,
         				        isInBranch: stepIsInBranch,
         						isInIterator: stepIsInIterator,
         				        refBranchStart: refBranchStart,
         						refBranchIterator: refBranchIterator,
+        						refIteratorBox: refIteratorBox,
         				        depthLvl: nodeObject[i].dbo.depthLvl,
         				        properties: nodeObject[i].dbo.properties
             				}
         				}
         				
         				var el = (nodeObject[i].dbo.isComplex) ? this.makeComplexElement(elmtOpts, graph, elColor) : this.makeElement(elmtOpts, graph, elColor);
+        				
+        
+        				if(this.isInArray(this.iteratorSteps, stepClassName)) {
+        					if(iteratorBox != undefined) {
+        						iteratorBox.embed(el);
+        						iteratorBox.fitEmbeds({
+        							padding: 20,
+        							deep: true
+        						})
+        					}
+        				} 
+        				else if (previous.attributes.isInIterator || stepIsInIterator) {
+        					if(el.attributes.refIteratorBox.length != 0) {
+        //						console.log(''elite:'' + JSON.stringify(el))
+        						var cellIteratorBox = this.graph.getCell(el.attributes.refIteratorBox);
+        						cellIteratorBox.embed(el);
+        						cellIteratorBox.fitEmbeds({
+        							padding: 20,
+        							deep:true
+        						})
+        //						var previousIteratorBox = this.graph.getCell(cellIteratorBox.attributes.refIteratorBox)
+        //						if(previousIteratorBox != undefined) {
+        //							previousIteratorBox.embed(cellIteratorBox)
+        //							previousIteratorBox.fitEmbeds({
+        //								padding: 10,
+        //								deep:true
+        //							})
+        //
+        //							if(previousIteratorBox.attributes.isInIterator) {
+        //								var box = this.graph.getCell(previousIteratorBox.attributes.refIteratorBox)
+        //								box.embed(previousIteratorBox)
+        //								box.fitEmbeds({
+        //									padding: 10,
+        //									deep: true
+        //								})
+        //							}
+        //						}						
+        					}
+        
+        //					cellIteratorBox.fitEmbeds({
+        //						deep: true
+        //					})
+        				}
+        				
+        //				if(previous.attributes.isInIterator && this.isInArray(this.iteratorSteps, stepClassName) && previous.attributes.depthLvl == el.attributes.depthLvl) {
+        //					var previousIteratorBox = this.graph.getCell(previous.attributes.refIteratorBox);
+        //					var currentIteratorBox = this.graph.getCell(el.attributes.refIteratorBox)
+        //					previousIteratorBox.embed(currentIteratorBox)
+        //					previousIteratorBox.fitEmbeds({
+        //						padding: 5,
+        //						deep: true
+        //					})
+        //				}
+        				
+        //				var previousIteratorBox = this.graph.getCell(previous.attributes.refIteratorBox);
+        //				if(previousIteratorBox.attributes.refIteratorBox != undefined && previousIteratorBox.attributes.refIteratorBox != el.attributes.refIteratorBox) {
+        //					var currentIteratorBox = this.graph.getCell(el.attributes.refIteratorBox)
+        //					previousIteratorBox.embed(currentIteratorBox)
+        //					previousIteratorBox.fitEmbeds({
+        //						padding: 5,
+        //						deep: true
+        //					})
+        //				}
+        //					
         
         			if(previousThen) {
         				label = "Then"
@@ -897,6 +1048,8 @@ scriptContent:
         				previousThen = false
         				previousElse = false
         			}
+        			
+        			this.embedIteratorBox();
         		
         			if(!parentIsComplex && nodeObject[i].dbo.children != undefined && nodeObject[i].dbo.children.length > 0) {
         					this.walkChildren(nodeObject[i].dbo.children, previous, previousThen, previousElse, refId, graph);
@@ -939,10 +1092,10 @@ scriptContent:
         			},
         			afterRender: function(stats, options, paper) {
         				this.waitingToBeRendered = false;
-        				console.log(''stats:'' + stats)
-        				console.log(this.waitingToBeRendered)
+        //				console.log(''stats:'' + stats)
+        //				console.log(this.waitingToBeRendered)
         				alert(this.waitingToBeRendered)
-        				console.log("paper:" + paper)
+        //				console.log("paper:" + paper)
         			}
                 }
         
@@ -955,59 +1108,8 @@ scriptContent:
                 this.paper = this.createPaper(paperOpts);
         		this.paper.setOrigin(this.graphOriginX, this.graphOriginY)
         		
-        		var props = [
-             {
-              "displayName": "Comment",
-              "name": "comment",
-              "value": ""
-             },
-             {
-              "displayName": "Expression",
-              "name": "expression",
-              "value": "level = level - 1;\r\n\/\/ level = 0; \/\/ comment this and re-enable the 2 Then to enable level again\r\nhandleFolders = handleFolders == \"true\";"
-             },
-             {
-              "displayName": "Is active",
-              "name": "isEnabled",
-              "value": "true"
-             },
-             {
-              "displayName": "Name",
-              "name": "name",
-              "value": "MinusLevel"
-             },
-             {
-              "displayName": "Output",
-              "name": "output",
-              "value": "false"
-             },
-             {
-              "displayName": "Schema data type",
-              "name": "schemaDataType",
-              "value": "xsd:string"
-             },
-             {
-              "displayName": "Assigned XSD Complex type QName ",
-              "name": "xmlComplexTypeAffectation",
-              "value": "{}"
-             },
-             {
-              "displayName": "Assigned XSD Element ref QName",
-              "name": "xmlElementRefAffectation",
-              "value": "{}"
-             },
-             {
-              "displayName": "Assigned XSD Simple type QName",
-              "name": "xmlSimpleTypeAffectation",
-              "value": "string{http:\/\/www.w3.org\/2001\/XMLSchema}"
-             },
-             {
-              "displayName": "Priority",
-              "name": "priority",
-              "value": "1589879185131"
-             }
-            ]
-        		var element = this.makeCustomElement(props);
+        //		this.makeIteratorBox(this.graph, ''#fff'')
+        
         //		element.resize(70,70)
         //		element.position(50,50) 
         //		element.addTo(this.graph)			
@@ -1034,8 +1136,8 @@ scriptContent:
           			}
         		})
         		
-        		this.paper.on(''cell:contextmenu element:contextmenu'', (cellView, event, x, y) => {
-        			var element = this.makeCustomElement(cellView.model.attributes.properties)
+        		this.paper.on(''element:contextmenu'', (cellView, event, x, y) => {
+        			var element = this.makePropertiesPanel(cellView.model.attributes.displayName, cellView.model.attributes.properties)
         			element.position(cellView.model.attributes.position.x + 40, cellView.model.attributes.position.y)
         		})
         
@@ -1141,6 +1243,10 @@ scriptContent:
         					var previousFromSequence = null;
         					var nbChildren = 0;
         					
+        					var isIterator = false;
+        					var isInIterator = false; 
+        					var refIteratorBox = ''''
+        					
         					var children = {
         						then: 0,
         						else: 0	
@@ -1230,7 +1336,11 @@ scriptContent:
         							x = previous.attributes.position.x + this.horizontalSpace
         						}
         						
-        							
+        						if(this.isInArray(this.iteratorSteps, newElementClassName))
+        							isIterator = true;
+        						
+        //						if(previous != null && previous.attributes.isIterator)
+        //							isInIterator = true;
         //						if(previous != null) {
         //							x = previous.atrributes.position.x + this.horizontalSpace;
         //							y = previous.attributes.position.y
@@ -1244,6 +1354,23 @@ scriptContent:
         							else
         								elColor = this.elementColors.main
         						}
+        						
+        						if(isIterator) {
+        							var iteratorBoxOpts = {
+        								attrs: {
+        									position: {
+        										x: x,
+        										y: y
+        									}
+        								}, 
+        								props: {
+        									refIteratorBox : '''',
+        									isIteratorBox: true
+        								}
+        							}
+        							var iteratorBox = this.makeIteratorBox(iteratorBoxOpts, this.graph, elColor)
+        							refIteratorBox = iteratorBox.id
+        						}
         						var elmtOpts = {
             						attrs: {
                 						position: {
@@ -1256,15 +1383,26 @@ scriptContent:
         							    displayName: newElement.dbo.displayName,
         							    className: newElement.dbo.className,
         							    isComplex: newElement.dbo.isComplex,
+        								isIterator: isIterator,
+        								isInIterator: isInIterator,
         							    isInBranch: false,
         							    refBranchStart: '''',
         								refBranchIterator: '''',
+        								refIteratorBox: refIteratorBox,
         							    depthLvl: newElement.dbo.depthLvl,
         							    properties: newElement.dbo.properties
             						}
         						}
         						var el = (newElement.dbo.isComplex) ? this.makeComplexElement(elmtOpts, this.graph, elColor) : this.makeElement(elmtOpts, this.graph, elColor)
-        
+        						if(this.isInArray(this.iteratorSteps, newElementClassName)) {
+        							if(iteratorBox != undefined) {
+        								iteratorBox.embed(el);
+        								iteratorBox.fitEmbeds({
+        									padding: 5,
+        									deep: true
+        								})
+        							}
+        						}
         						
         //						if(previous != null && !this.isInArray(this.ifThenElseSteps, previousClassName)) // && previousClassName != "IfThenElseStep"
         //							var link = this.makeLink(previous, el, '''', this.graph, false, false, "right", ''#77ACA1'')
@@ -1346,7 +1484,7 @@ scriptContent:
         //							var lastElementFromSimpleBranch = this.getLastElementFromSimpleBranch(previous, 2)
         //							this.makeLink(lastElementFromSimpleBranch, el, '''', this.graph, false, false)
         						} else if(previous != null && this.isInArray(this.iteratorSteps, previousClassName)) {
-        							this.makeLink(previous, el, '''', this.graph, false, false, "bottom", "#77ACA1")
+        //							this.makeLink(previous, el, '''', this.graph, false, false, "bottom", "#77ACA1")
         							if(lastCell != undefined && lastCell.attributes.type == "standard.ShadowLink") {
         										// So if it a link, the true last cell is its target
         										if(lastCell.attributes.target != undefined) {
