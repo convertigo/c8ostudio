@@ -636,7 +636,7 @@ scriptContent:
         		var isIterator = false;
         		var stepIsInIterator = false;
         		var refBranchIterator = '''';
-        		var refIteratorBox = '''';
+        		var refIteratorBox : any = '''';
         		
         		var nbChildren = 0;
         		for (var i=0; i < nodeObject.length; i++) {
@@ -1245,7 +1245,7 @@ scriptContent:
         					
         					var isIterator = false;
         					var isInIterator = false; 
-        					var refIteratorBox = ''''
+        					var refIteratorBox : any = ''''
         					
         					var children = {
         						then: 0,
