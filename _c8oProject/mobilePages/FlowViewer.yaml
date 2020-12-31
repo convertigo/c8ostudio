@@ -702,10 +702,10 @@ scriptContent:
         //					x = lastCellTarget.attributes.position.x + this.horizontalSpace;
         //					y = lastCellTarget.attributes.position.y
         			} 
-        			else {
-        				x = lastCell.attributes.position.x + this.horizontalSpace
-        				// y = lastCell.attributes.position.y
-        			}
+        //			else {
+        //				x = lastCell.attributes.position.x + this.horizontalSpace
+        //				// y = lastCell.attributes.position.y
+        //			}
         		
         			// walking through branches
         			
@@ -927,8 +927,8 @@ scriptContent:
         					var iteratorRef = this.graph.getCell(el.attributes.refBranchIterator)
         					var depthLvl = iteratorRef.attributes.depthLvl
         					linkColor = this.linkColors.iterators[depthLvl]
-        					if(previous.attributes.isInIterator && this.isInArray(this.iteratorSteps, stepClassName))
-        						linkColor = this.linkColors.main
+        //					if(previous.attributes.isInIterator && this.isInArray(this.iteratorSteps, stepClassName))
+        //						linkColor = this.linkColors.main
         				} else {
         					linkColor = this.linkColors.main
         				}
