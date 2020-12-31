@@ -1131,7 +1131,11 @@ scriptContent:
                     this.dragStartPosition = { x: x , y: y }; // { x: x * this.scale / 10, y: y * this.scale / 10};
                 });
         
-        		this.paper.on(''blank:mousewheel'', (evt, x, y, delta) => {
+        		this.paper.on(''blank:pointerclick'', (cellView, evt, x, y) => {
+        			
+        		});
+        
+        		this.paper.on(''blank:mousewheel cell:mousewheel'', (evt, x, y, delta) => {
         			var normalizedDelta = Math.max(-1, Math.min(1, (delta))) / 10;
         			var newScale = this.paper.scale().sx + normalizedDelta; // the current paper scale changed by delta
         		  	if (newScale > 0.4 && newScale < 2) {
@@ -1142,6 +1146,7 @@ scriptContent:
         		this.paper.on(''element:contextmenu'', (cellView, event, x, y) => {
         			var element = this.makePropertiesPanel(cellView.model.attributes.displayName, cellView.model.attributes.properties)
         			element.position(cellView.model.attributes.position.x + 40, cellView.model.attributes.position.y)
+        			event.preventDefault()
         		})
         
         		this.paper.on(''cell:pointerdblclick'', (cellView, event, x, y) => {
