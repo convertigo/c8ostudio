@@ -1516,6 +1516,7 @@ tplProjectName: C8oStudio
           	max-height: 500px;
           	overflow-y: scroll;
           	border-radius: 5px;
+          //	pointer-events: none;
           }
           
           .properties-panel-header {
