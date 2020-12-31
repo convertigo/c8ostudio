@@ -2,7 +2,7 @@
 ↓C8oStudio [core.Project]: 
   comment: Convertigo Mobile builder Project
   corsOrigin: =Origin
-  version: 2020.12.30.17.54
+  version: 2020.12.31.11.01
   ↓void [connectors.SqlConnector]: 🗏 connectors/void.yaml
   ↓Execute [sequences.GenericSequence]: 🗏 sequences/Execute.yaml
   ↓flowTestSequence [sequences.GenericSequence]: 🗏 sequences/flowTestSequence.yaml
@@ -22,6 +22,8 @@
   ↓SetProperty [sequences.GenericSequence]: 🗏 sequences/SetProperty.yaml
   ↓Project_reference [references.ProjectSchemaReference]: 
     projectName: lib_ExtendedComponents=https://github.com/convertigo/c8oprj-lib-extended-components.git:branch=ionic5
+  ↓Project_reference1 [references.ProjectSchemaReference]: 
+    projectName: C8oStudio
   ↓MobileApplication [core.MobileApplication]: 
     applicationId: com.convertigo.webstudio
     applicationName: Convertigo Low Code Web Studio

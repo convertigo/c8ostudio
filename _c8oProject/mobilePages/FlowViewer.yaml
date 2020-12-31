@@ -776,7 +776,7 @@ scriptContent:
         				refIteratorBox = parent.attributes.refIteratorBox
         			
         			if(previous.attributes.isInIterator)
-        				refIteratorBox = parent.attributes.refIteratorBox
+        				refIteratorBox = previous.attributes.refIteratorBox
         
         			var elColor;
         			if(this.isInArray(this.iteratorSteps, stepClassName)) {
@@ -791,7 +791,7 @@ scriptContent:
         					elColor = this.elementColors.main
         			}
         			
-        			if(isIterator) {
+        			if(previous.attributes.isIterator) { // isIterator
         				var iteratorBoxOpts = {
         					attrs: {
         						position: {
@@ -800,7 +800,7 @@ scriptContent:
         						}
         					},
         					props: {
-        						refIteratorBox : (previous.attributes.isInIterator && this.isInArray(this.iteratorSteps, stepClassName) && previous.attributes.depthLvl == nodeObject[i].dbo.depthLvl) ? previous.attributes.refIteratorBox : '''',
+        						refIteratorBox : previous.attributes.refIteratorBox,
         						isInIterator: stepIsInIterator,
         						isIteratorBox: true
         					}
@@ -839,16 +839,17 @@ scriptContent:
         				var el = (nodeObject[i].dbo.isComplex) ? this.makeComplexElement(elmtOpts, graph, elColor) : this.makeElement(elmtOpts, graph, elColor);
         				
         
-        				if(this.isInArray(this.iteratorSteps, stepClassName)) {
-        					if(iteratorBox != undefined) {
-        						iteratorBox.embed(el);
-        						iteratorBox.fitEmbeds({
-        							padding: 20,
-        							deep: true
-        						})
-        					}
-        				} 
-        				else if (previous.attributes.isInIterator || stepIsInIterator) {
+        //				if(this.isInArray(this.iteratorSteps, stepClassName)) {
+        //					if(iteratorBox != undefined) {
+        //						iteratorBox.embed(el);
+        //						iteratorBox.fitEmbeds({
+        //							padding: 20,
+        //							deep: true
+        //						})
+        //					}
+        //				} 
+        //				else 
+        				if (previous.attributes.isInIterator || stepIsInIterator) {
         					if(el.attributes.refIteratorBox.length != 0) {
         //						console.log(''elite:'' + JSON.stringify(el))
         						var cellIteratorBox = this.graph.getCell(el.attributes.refIteratorBox);
@@ -1357,22 +1358,22 @@ scriptContent:
         								elColor = this.elementColors.main
         						}
         						
-        						if(isIterator) {
-        							var iteratorBoxOpts = {
-        								attrs: {
-        									position: {
-        										x: x,
-        										y: y
-        									}
-        								}, 
-        								props: {
-        									refIteratorBox : '''',
-        									isIteratorBox: true
-        								}
-        							}
-        							var iteratorBox = this.makeIteratorBox(iteratorBoxOpts, this.graph, elColor)
-        							refIteratorBox = iteratorBox.id
-        						}
+        //						if(isIterator) {
+        //							var iteratorBoxOpts = {
+        //								attrs: {
+        //									position: {
+        //										x: x,
+        //										y: y
+        //									}
+        //								}, 
+        //								props: {
+        //									refIteratorBox : '''',
+        //									isIteratorBox: true
+        //								}
+        //							}
+        //							var iteratorBox = this.makeIteratorBox(iteratorBoxOpts, this.graph, elColor)
+        //							refIteratorBox = iteratorBox.id
+        //						}
         						var elmtOpts = {
             						attrs: {
                 						position: {
@@ -1396,15 +1397,15 @@ scriptContent:
             						}
         						}
         						var el = (newElement.dbo.isComplex) ? this.makeComplexElement(elmtOpts, this.graph, elColor) : this.makeElement(elmtOpts, this.graph, elColor)
-        						if(this.isInArray(this.iteratorSteps, newElementClassName)) {
-        							if(iteratorBox != undefined) {
-        								iteratorBox.embed(el);
-        								iteratorBox.fitEmbeds({
-        									padding: 5,
-        									deep: true
-        								})
-        							}
-        						}
+        //						if(this.isInArray(this.iteratorSteps, newElementClassName)) {
+        //							if(iteratorBox != undefined) {
+        //								iteratorBox.embed(el);
+        //								iteratorBox.fitEmbeds({
+        //									padding: 5,
+        //									deep: true
+        //								})
+        //							}
+        //						}
         						
         //						if(previous != null && !this.isInArray(this.ifThenElseSteps, previousClassName)) // && previousClassName != "IfThenElseStep"
         //							var link = this.makeLink(previous, el, '''', this.graph, false, false, "right", ''#77ACA1'')
