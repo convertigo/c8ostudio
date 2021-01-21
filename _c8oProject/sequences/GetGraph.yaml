@@ -349,7 +349,11 @@
                 	isComplex = (beanSubstr == "steps.XMLComplexStep") ? true : false
                 
                 	context.addTextNode(dboNode.item(0), "qname", item.getFullQName());
-                	context.addTextNode(dboNode.item(0), "displayName", item.getName());
+                	context.addTextNode(dboNode.item(0), "displayName", 
+                		com.twinsoft.convertigo.engine.Engine.theApp.databaseObjectsManager.getDatabaseObjectByQName(
+                			item.getFullQName()
+                		).toString()
+                	); 
                 	context.addTextNode(dboNode.item(0), "className", item.getClass().getName());
                 	context.addTextNode(dboNode.item(0), "isStarting", true);
                 	
@@ -411,7 +415,9 @@
                 				// creating new dbo''s node for children
                 				var dboChildNode = context.addTextNode(childNode, "dbo", "");
                 				context.addTextNode(dboChildNode, "qname", '''' + childQName);
-                				context.addTextNode(dboChildNode, "displayName", '''' + childDisplayName);
+                				context.addTextNode(dboChildNode, "displayName", 
+                					com.twinsoft.convertigo.engine.Engine.theApp.databaseObjectsManager.getDatabaseObjectByQName(childQName).toString()
+                				);
                 				context.addTextNode(dboChildNode, "className", '''' + childClassName);
                 				context.addTextNode(dboChildNode, "isStarting", false)
                 				
@@ -458,7 +464,7 @@
               nodeName: qname
             ↓jElement11 [steps.ElementStep-1606222997583]: 
               expression: item.getName()
-              nodeName: dislayName
+              nodeName: displayName
             ↓jElement111 [steps.ElementStep-1606222997586]: 
               expression: item.getClass().getName()
               nodeName: className
