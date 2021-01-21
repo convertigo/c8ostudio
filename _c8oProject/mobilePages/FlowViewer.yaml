@@ -109,22 +109,51 @@ scriptContent:
         		return paper;
         	}
         	
-        	embedIteratorBox() {
-        		var elements = this.graph.getElements();
+        	embedIteratorBox(graph:joint.dia.Graph) {
+        		var elements = graph.getElements();
+        		var iteratorBox;
         		for(var i = 0; i < elements.length; i++) {
-        			console.log("LIST OF ELEMENTS: " + JSON.stringify(elements[i]))
+        //			console.log("LIST OF ELEMENTS: " + JSON.stringify(elements[i]))
         			if(elements[i].attributes.isIteratorBox) {
         				if(elements[i].attributes.refIteratorBox.length != 0) {
-        					var previousBox = this.graph.getCell(elements[i].attributes.refIteratorBox)
+        					var previousBox = graph.getCell(elements[i].attributes.refIteratorBox)
         					previousBox.embed(elements[i])
         					//@ts-ignore
         					previousBox.fitEmbeds({
         						padding: 20,
         						deep: true
         					})
+        					
+        					// previousBox.attributes.embeds.push(elements[i].attributes.id);
         				}
         			}
         		}
+        	}
+        	
+        	findElementInGetGraphResponse(elementQName) {
+        //		console.log(JSON.stringify(this.global.getGraphResponse))
+        		let obj;
+        		_.forEach(this.global.getGraphResponse, function(el) {
+        			if(el.dbo.qname == elementQName) {
+        //				console.log(''first here'')
+        //				console.log(JSON.stringify(el.dbo))
+        				if (el.dbo.children != undefined && el.dbo.children.length > 0)
+        					obj = el.dbo.children
+        			} else {
+        				if(el.dbo.children != undefined && el.dbo.children.length > 0) {
+        					_.forEach(el.dbo.children, function(children) {
+        						if(children.dbo.qname == elementQName) {
+        //							console.log(''second here'')
+        //							console.log(JSON.stringify(children.dbo))
+        							if(children.dbo.children != undefined && children.dbo.children.length > 0)
+        								obj = children.dbo.children;
+        						}
+        					})
+        				}
+        			}
+        		})
+        		
+        		return obj;
         	}
         	
         	highlightBreadcrumb(id) {
@@ -1053,7 +1082,7 @@ scriptContent:
         				previousElse = false
         			}
         			
-        			this.embedIteratorBox();
+        			this.embedIteratorBox(this.graph);
         		
         			if(!parentIsComplex && nodeObject[i].dbo.children != undefined && nodeObject[i].dbo.children.length > 0) {
         					this.walkChildren(nodeObject[i].dbo.children, previous, previousThen, previousElse, refId, graph);
@@ -1161,6 +1190,8 @@ scriptContent:
         			
         			var priority = this.getPriority(elementProperties);
         			
+        			let elementFromGetGraphResponse = this.findElementInGetGraphResponse(elementQName);
+        			
         			// on vérifie si la priority de l''objet est contenue dans le tableau des cards, si c''est le cas c''est que l''objet est déjà open, 
         			// alors, si c''est vrai, on highlight la card
         			
@@ -1183,6 +1214,7 @@ scriptContent:
         				qname: elementQName,
         				isSelected: true,
         				graph: newGraph, 
+        				cells: []
         			});
         			
         			this.addToBreadcrumb({
@@ -1203,7 +1235,8 @@ scriptContent:
         		            height: ''100%'',
         		            model: newGraph,
         		            gridSize: 10,
-        					embeddingMode: false,
+        					embeddingMode: true,
+        					cellViewNamespace: joint.shapes,
         					interactive: false,
         		            defaultLink: new joint.dia.Link({
         		            	attrs: {
@@ -1240,11 +1273,6 @@ scriptContent:
         				var originY = (computedSize.height / 2);
         			
         //				paper.setOrigin(this.graphOriginX, originY)
-        			
-        				this.c8o.callJsonObject(''.GetGraph'', {
-        					qname: elementQName,
-        					level: 2
-        				}).then((resp, param) => {
         					
         					this.graph.clear();
         
@@ -1264,7 +1292,7 @@ scriptContent:
         					var lastCell = this.graph.getLastCell();
         					this.paper.setOrigin(this.graphOriginX, this.graphOriginY)
         					
-        					_.each(resp[''array''], (newElement, i) => {
+        					_.each(elementFromGetGraphResponse, (newElement, i) => {
         
         						x = 70 + this.horizontalSpace * parseInt(i);
         						y = 70;
@@ -1525,16 +1553,60 @@ scriptContent:
         
         					
         					var cellsToAdd = this.graph.getCells();
-        					this.updateGraph(newGraph, cellsToAdd);
+        					this.global["clonedCells"] = cellsToAdd;
         					
-        					return null;
-        				}).fail((error: any) => {
-        					console.log(error)
-        				});
+        					var clonedElements = [];
+        					var elements = this.graph.getElements();
+        					var tmpTab = [];
+        					_.each(elements, (element) => {
+        						if(element.attributes.isIteratorBox) {
+        							clonedElements.push(element.clone({deep: true}))
+        						} else if(!element.attributes.isInIterator) {
+        							clonedElements.push(element.clone())
+        						}
+        						
+        					})
+        //					_.each(elements, (element) => {
+        //						if(element.attributes.isIteratorBox) {
+        //							clonedElements.push(element.clone())
+        //						}
+        //						else {
+        //							if(Array.isArray(element) && tmpTab != undefined && tmpTab.length == 0 ) {
+        //								tmpTab = element
+        //							} else {
+        //								if(tmpTab.length != 0) {
+        //									_.each(tmpTab, (el) => {
+        //										if(!_.isEqual(el, element)) {
+        //											clonedElements.push(element.clone())
+        //										}	
+        //									})
+        //									tmpTab = [];
+        //								} else {
+        //									clonedElements.push(element.clone())
+        //								}
+        //								// clonedElements.push(element.clone())
+        //							}
+        //							
+        //			
+        //						}
+        //										
+        //					})
+        					
+        //					var links = this.graph.getLinks()
+        //					_.each(links, (link) => {
+        //						clonedElements.push(link.clone())
+        //					})
+        
+        					this.miniMapsArray[this.miniMapsArray.length - 1].cells = clonedElements
+        					
+        					this.updateGraph(this.miniMapsArray[this.miniMapsArray.length - 1].graph, this.miniMapsArray[this.miniMapsArray.length - 1].cells)
+        //					this.updateGraph(newGraph, cellsToAdd);
+        
+        
         //					console.log(element)
         				
-        				})
-        			}
+        				}) // end foreach
+        			} // end else
         			}, 0o400); // = 0.4s
         			
         			
@@ -1619,6 +1691,13 @@ title: Title for FlowViewer
   topic: dboFocus
   ↓GetGraph [ngx.components.UIDynamicAction-1588686924736]: 
     beanData: '{"ionBean":"CallSequenceAction","requestable":"plain:C8oStudio.GetGraph"}'
+    ↓SetGlobal [ngx.components.UIDynamicAction-1611159964092]: 
+      beanData: |
+        '{
+         "ionBean": "SetGlobalAction",
+         "Property": "plain:getGraphResponse",
+         "Value": "source:{\"filter\":\"Action\",\"project\":\"C8oStudio\",\"input\":\"\",\"model\":{\"data\":[{\"priority\":1588686924736}],\"path\":\"?.out?.array\",\"prefix\":\"\",\"suffix\":\"\",\"custom\":\"\",\"useCustom\":false}}"
+        }'
     ↓GetProperties [ngx.components.UIDynamicAction-1608133810936]: 
       beanData: '{"ionBean":"CallSequenceAction","requestable":"plain:C8oStudio.GetProperties"}'
       ↓qname [ngx.components.UIControlVariable-1608133836413]: 
@@ -2008,8 +2087,89 @@ title: Title for FlowViewer
                       →: |
                         '		page.c8o.log.debug(''[MB] ''+ props.actionFunction +'': ''+ props.actionName);
                         		var cellsToAdd = vars.graph.getCells();
-                        		this.updateGraph(this.graph, cellsToAdd);
+                        //		_.each(vars.cardObject.cells, (cell) => {
+                        //			
+                        //		})
                         		
+                        //		console.log(JSON.stringify(vars.cardObject.copiedGraph))
+                        //		this.graph.removeCells(this.graph.getCells())
+                        //		this.graph.fromJSON(vars.cardObject.copiedGraph)
+                        		var clonedElements = [];
+                        		var elements = vars.graph.getElements();
+                        		var tmpTabObj = {
+                        			subElements: []
+                        		};
+                        		var isInTmpTabObj = false;
+                        		_.each(elements, (element) => {
+                        			if(element.attributes.isIteratorBox) {
+                        				clonedElements.push(element.clone({deep: true}))
+                        				tmpTabObj.subElements = element.clone({deep:true})
+                        			} else if(element.attributes.isInIterator) { // si mon élement est dans un iterator
+                        				var elementPriority = this.getPriority(element.attributes.properties)
+                        				if(tmpTabObj.subElements != undefined && tmpTabObj.subElements.length > 0) { // je regarde si le tab tmpo est rempli de sub element d''un iterator
+                        					
+                        					if(tmpTabObj.subElements.filter(e => e.attributes.properties === element.attributes.properties))
+                        						console.log("it contains")
+                        //					_.each(tmpTabObj.subElements, (subElement) => { // pour chaque element 
+                        //						var subElementPriority = (subElement.attributes.properties != undefined) ? this.getPriority(subElement.attributes.properties) : undefined
+                        //						if(subElement.attributes.properties != undefined) {
+                        ////							var i = _.findIndex(subElement.attributes.properties[subElement.attributes.properties.length -1], element.attributes.properties[element.attributes.properties.length -1])
+                        //							if(subElement.attributes.properties[subElement.attributes.properties.length -1][''value''] == element.attributes.properties[element.attributes.properties.length -1][''value'']) {
+                        //								isInTmpTabObj = true
+                        //							}
+                        //								
+                        //						}
+                        //						
+                        ////						if(elementPriority != subElementPriority) {
+                        ////							clonedElements.push(element.clone())
+                        ////						}
+                        ////						if(_.findIndex(subElement.attributes.properties[subElement.attributes.properties.length -1], element.attributes.properties[element.attributes.properties.length -1]) != -1)
+                        ////							clonedElements.push(element.clone())
+                        ////						if(!_.isEqual(subElement, element)) { // je regarde si mon current element n''y est pas et je le rajoute
+                        ////							clonedElements.push(element.clone())
+                        ////						}
+                        //					})
+                        					
+                        					if(!isInTmpTabObj)
+                        						clonedElements.push(element.clone())
+                        					
+                        				}
+                        			} else {
+                        				clonedElements.push(element.clone())
+                        			}				
+                        		})
+                        //		_.each(elements, (element) => {
+                        //						if(element.attributes.isIteratorBox) {
+                        //							clonedElements.push(element.clone())
+                        //						}
+                        //						else {
+                        //							if(Array.isArray(element) && tmpTab != undefined && tmpTab.length == 0 ) {
+                        //								tmpTab = element
+                        //							} else {
+                        //								if(tmpTab.length != 0) {
+                        //									_.each(tmpTab, (el) => {
+                        //										if(!_.isEqual(el, element)) {
+                        //											clonedElements.push(element.clone())
+                        //										}	
+                        //									})
+                        //									tmpTab = [];
+                        //								} else {
+                        //									clonedElements.push(element.clone())
+                        //								}
+                        //								// clonedElements.push(element.clone())
+                        //							}
+                        //							
+                        //			
+                        //						}
+                        //										
+                        //				})
+                        		
+                        //		var links = vars.graph.getLinks()
+                        //		_.each(links, (link) => {
+                        //			clonedElements.push(link.clone())
+                        //		})
+                        		
+                        		this.updateGraph(this.graph, clonedElements);
                         		this.paper.setOrigin(this.graphOriginX, this.graphOriginY);
                         		
                         		if(!vars.cardObject.isSelected)
