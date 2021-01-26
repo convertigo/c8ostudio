@@ -43,7 +43,7 @@ scriptContent:
         			''#26418f''
         		]
         	}
-        	graph = new joint.dia.Graph;
+        	graph = new joint.dia.Graph({}, {cellNamespace: joint.shapes})
         	paper : joint.dia.Paper
         	miniMapsArray = [];
         	breadcrumb = [];
@@ -100,7 +100,7 @@ scriptContent:
         	}
         	
         	createGraph() {
-        		var graph = new joint.dia.Graph;
+        		var graph = new joint.dia.Graph({}, {cellNamespace: joint.shapes})
         		return graph;
         	}
         	
@@ -179,6 +179,11 @@ scriptContent:
         			return true
         		else 
         			return false
+        	}
+        	
+        	importFromJSON(graph, json) {
+        		graph.clear();
+        		graph.fromJSON(json);
         	}
         	
         	onGridSizeChanged() {
@@ -838,7 +843,7 @@ scriptContent:
         				var iteratorBox = this.makeIteratorBox(iteratorBoxOpts, this.graph, elColor)
         				refIteratorBox = iteratorBox.id
         				
-        				console.log("itebox:" + JSON.stringify(iteratorBox)) 
+        //				console.log("itebox:" + JSON.stringify(iteratorBox)) 
         			}
         			
         			if(!parentIsComplex && stepClassName != "ThenStep" && stepClassName != "ElseStep") {
@@ -1551,64 +1556,9 @@ scriptContent:
         							this.walkChildren(newElement.dbo.children, previous, false, false, '''', this.graph)
         					});
         
-        					
-        					var cellsToAdd = this.graph.getCells();
-        					this.global["clonedCells"] = cellsToAdd;
-        					
-        					var clonedElements = [];
-        					var elements = this.graph.getElements();
-        // 					var links = this.graph.getLinks();
-        					var tmpTab = [];
-        					_.each(elements, (element) => {
-        						if(element.attributes.isIteratorBox) {
-        							clonedElements.push(element.clone({deep: true}))
-        						} else if(!element.attributes.isInIterator) {
-        							clonedElements.push(element.clone())
-        						}
-        						
-        					})
-        					
-        //					_.each(links, (link) => {
-        //						clonedElements.push(link.clone())
-        //					})
-        //					_.each(elements, (element) => {
-        //						if(element.attributes.isIteratorBox) {
-        //							clonedElements.push(element.clone())
-        //						}
-        //						else {
-        //							if(Array.isArray(element) && tmpTab != undefined && tmpTab.length == 0 ) {
-        //								tmpTab = element
-        //							} else {
-        //								if(tmpTab.length != 0) {
-        //									_.each(tmpTab, (el) => {
-        //										if(!_.isEqual(el, element)) {
-        //											clonedElements.push(element.clone())
-        //										}	
-        //									})
-        //									tmpTab = [];
-        //								} else {
-        //									clonedElements.push(element.clone())
-        //								}
-        //								// clonedElements.push(element.clone())
-        //							}
-        //							
-        //			
-        //						}
-        //										
-        //					})
-        					
-        //					var links = this.graph.getLinks()
-        //					_.each(links, (link) => {
-        //						clonedElements.push(link.clone())
-        //					})
+        					var jsonString = this.graph.toJSON();
+        					this.importFromJSON(this.miniMapsArray[this.miniMapsArray.length - 1].graph, jsonString)
         
-        					this.miniMapsArray[this.miniMapsArray.length - 1].cells = clonedElements
-        					
-        					this.updateGraph(this.miniMapsArray[this.miniMapsArray.length - 1].graph, this.miniMapsArray[this.miniMapsArray.length - 1].cells)
-        //					this.updateGraph(newGraph, cellsToAdd);
-        
-        
-        //					console.log(element)
         				
         				}) // end foreach
         			} // end else
@@ -2091,54 +2041,9 @@ title: Title for FlowViewer
                     - com.twinsoft.convertigo.beans.common.FormatedContent: 
                       →: |
                         '		page.c8o.log.debug(''[MB] ''+ props.actionFunction +'': ''+ props.actionName);
-                        		var cellsToAdd = vars.graph.getCells();
-                        //		_.each(vars.cardObject.cells, (cell) => {
-                        //			
-                        //		})
-                        		
-                        //		console.log(JSON.stringify(vars.cardObject.copiedGraph))
-                        //		this.graph.removeCells(this.graph.getCells())
-                        //		this.graph.fromJSON(vars.cardObject.copiedGraph)
-                        		var clonedElements = [];
-                        		var elements = vars.graph.getElements();
-                        // 		var links = vars.graph.getLinks();
-                        		var tmpTabObj = {
-                        			subElements: []
-                        		};
-                        		_.each(elements, (element) => {
-                        			if(element.attributes.isIteratorBox) {
-                        				// clonedElements.push(element.clone({deep:true})) // cloning the box
-                        				// tmpTabObj.subElements = element.clone({deep:true}) // cloning the box and its content
-                        				if(tmpTabObj.subElements.length == 0) {
-                        					tmpTabObj.subElements = element.clone({deep:true})
-                        					_.each(tmpTabObj.subElements, (subEl) => { clonedElements.push(subEl) });
-                        				}
                         
-                        				if(tmpTabObj.subElements.length > 0) {
-                        					if(!tmpTabObj.subElements.filter(e => e.attributes.properties == element.attributes.properties)) {
-                        						clonedElements.push(element.clone({deep:true}));
-                        						console.log("is not contains")
-                        					}
-                        				}
-                        			} else if(element.attributes.isInIterator) { // si mon élement est dans un iterator
-                        				var elementPriority = this.getPriority(element.attributes.properties)
-                        				if(tmpTabObj.subElements != undefined && tmpTabObj.subElements.length > 0) { // je regarde si le tab tmpo est rempli de sub element d''un iterator
-                        					if(!tmpTabObj.subElements.filter(e => e.attributes.properties == element.attributes.properties)) {
-                        						clonedElements.push(element.clone())
-                        						console.log("is not contains")
-                        					}					
-                        				}
-                        			} else {
-                        				clonedElements.push(element.clone())
-                        			}				
-                        		})
-                        		
-                        //		_.each(links, (link) => {
-                        //			clonedElements.push(link.clone())
-                        //		})
-                        		
-                        		
-                        		this.updateGraph(this.graph, clonedElements);
+                        		var jsonString = vars.graph.toJSON();
+                        		this.importFromJSON(this.graph, jsonString)
                         		this.paper.setOrigin(this.graphOriginX, this.graphOriginY);
                         		
                         		if(!vars.cardObject.isSelected)
@@ -2534,9 +2439,8 @@ title: Title for FlowViewer
                             - com.twinsoft.convertigo.beans.common.FormatedContent: 
                               →: |
                                 '		page.c8o.log.debug(''[MB] ''+ props.actionFunction +'': ''+ props.actionName);
-                                		var cellsToAdd = vars.breadcrumbObject.graph.getCells();
-                                		this.updateGraph(this.graph, cellsToAdd);
-                                		
+                                		var jsonString = vars.breadcrumbObject.graph.toJSON();
+                                		this.importFromJSON(this.graph, jsonString)
                                 		this.paper.setOrigin(this.graphOriginX, this.graphOriginY);
                                 		
                                 		if(!vars.breadcrumbObject.isSelected)
