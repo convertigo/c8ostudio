@@ -130,6 +130,18 @@ scriptContent:
         		}
         	}
         	
+        	ellipseString(string) {
+        		if(string.length > 25) {
+        			var sbStr = string.substring(0,25)
+        			sbStr = sbStr + "(...)"
+        			return sbStr
+        		} else {
+        			return string
+        		}
+        		
+        		
+        	}
+        	
         	findElementInGetGraphResponse(elementQName) {
         //		console.log(JSON.stringify(this.global.getGraphResponse))
         		let obj;
@@ -154,6 +166,13 @@ scriptContent:
         		})
         		
         		return obj;
+        	}
+        	
+        	getElementViewLength(element) {
+        		let elementBBox = element.findView(this.paper).getBBox();
+        		let elementViewLength = element.attributes.position.x + Math.round(elementBBox.width)
+        		// Math.round(elementBBox.x)
+        		return elementViewLength
         	}
         	
         	highlightBreadcrumb(id) {
@@ -293,7 +312,7 @@ scriptContent:
         		element.resize(70,70);
         		element.position(opts.attrs.position.x, opts.attrs.position.y)
         		element.attr(''root/title'', opts.props.displayName)
-        		element.attr(''label/text'', opts.props.displayName)
+        		element.attr(''label/text'', joint.util.breakText(this.ellipseString(opts.props.displayName), { width: 150})) // opts.props.displayName
         		element.attr(''label/fill'', ''#fff'');
         		element.attr(''background/fill'', color);
         		element.attr(''border/stroke'', borderColor); //#1E7C6D
@@ -461,7 +480,7 @@ scriptContent:
         		element.position(opts.attrs.position.x, opts.attrs.position.y)
         		element.attr(''root/title'', opts.props.displayName)
         		element.attr(''rect/fill'', color) // ''#00CDFF
-        		element.attr(''text/text'', opts.props.displayName)
+        		element.attr(''text/text'', joint.util.breakText(opts.props.displayName, { width: 70 }))
         		
         		for(var key in opts.props) {
         			element.prop(key, opts.props[key])
@@ -683,20 +702,27 @@ scriptContent:
         			
         			// this previous is the one inside loop
         			let previousClassName = this.getClassName(previous.attributes.className)
+        			// let previousBBox = previous.findView(this.paper).getBBox();
+        			let previousViewLength = this.getElementViewLength(previous)
+        			// let previousViewLength = Math.round(previousBBox.x) + Math.round(previousBBox.width)
         
         //			console.log(''parent: '' + parentClassName);
         //			console.log(''current: '' + displayName)
         			
-        			if(parentClassName == "IfStep") {
-        				x = parentX + this.horizontalSpace;
-        				y = parentY - 100;
-        			} else if(stepClassName == "ElseStep") {
-        				x = previous.attributes.position.x 
-        				y = previous.attributes.position.y + this.verticalSpace
-        			} else {
-        				x = previous.attributes.position.x + this.horizontalSpace
-        				y = previous.attributes.position.y 
-        			}
+        //			if(parentClassName == "IfStep") {
+        //				x = parentX + this.horizontalSpace;
+        //				y = parentY - 100;
+        //			} else if(stepClassName == "ElseStep") {
+        //				x = previous.attributes.position.x 
+        //				y = previous.attributes.position.y + this.verticalSpace
+        //			} else {
+        //				x = previous.attributes.position.x + this.horizontalSpace
+        //				y = previous.attributes.position.y 
+        //			}
+        			
+        			x = previousViewLength + this.horizontalSpace
+        			// x = previous.attributes.position.x + this.horizontalSpace
+        			y = previous.attributes.position.y 
         			
         			if(this.isInArray(this.ifThenElseSteps, parentClassName) && previousThen) { // parentClassName == "IfThenElseStep"
         				x = parentX + this.horizontalSpace
@@ -709,7 +735,8 @@ scriptContent:
         			}
         			
         			if(this.isInArray(this.ifSteps, previousClassName)) {
-        				x = previous.attributes.position.x + this.horizontalSpace
+        				x = previousViewLength + this.horizontalSpace
+        				// x = previous.attributes.position.x + this.horizontalSpace
         				y = previous.attributes.position.y - 120
         				stepIsInBranch = true			
         			}
@@ -718,7 +745,8 @@ scriptContent:
         				
         				nbChildren = previousNodeObject.dbo.children.length		
         //				console.log(''nbChildren: '' + nbChildren)
-        				x = previous.attributes.position.x + (70 + this.horizontalSpace * nbChildren) + 45
+        				x = previousViewLength + (70 + this.horizontalSpace * nbChildren) + 45
+        				// x = previous.attributes.position.x + (70 + this.horizontalSpace * nbChildren) + 45
         				y = previous.attributes.position.y
         				
         			}
@@ -729,8 +757,11 @@ scriptContent:
         					// So if it a link, the true last cell is its target
         					if(lastCell.attributes.target != undefined && !previousThen && !previousElse) {
         						var lastCellTarget = lastCell.attributes.target
+        						var lastCellTargetViewLength = this.getElementViewLength(lastCellTarget)
+        						
         						//console.log(''target: '' + JSON.stringify(lastCellTarget))
-        						x = lastCellTarget.attributes.position.x + this.horizontalSpace;
+        						x = lastCellTargetViewLength + this.horizontalSpace
+        						// x = lastCellTarget.attributes.position.x + this.horizontalSpace;
         						// y = lastCellTarget.attributes.position.y
         					}
         //					var lastCellTarget = lastCell.attributes.target
@@ -764,7 +795,8 @@ scriptContent:
         							
         					var nbChildren = this.compareBranches(children.then, children.else)
         //					console.log(''nbChildren: '' + nbChildren)
-        					x = previous.attributes.position.x + (70 + this.horizontalSpace * nbChildren) + 45
+        					x = previousViewLength + (70 + this.horizontalSpace * nbChildren) + 45
+        					// x = previous.attributes.position.x + (70 + this.horizontalSpace * nbChildren) + 45
         					y = previous.attributes.position.y
         					stepIsInBranch = true
         			}
@@ -1180,7 +1212,9 @@ scriptContent:
         		
         		this.paper.on(''element:contextmenu'', (cellView, event, x, y) => {
         			var element = this.makePropertiesPanel(cellView.model.attributes.displayName, cellView.model.attributes.properties)
-        			element.position(cellView.model.attributes.position.x + 40, 70)
+        			element.position(70, 70)
+        			//element.position(cellView.model.attributes.position.x + 40, 70)
+        			console.log("model x: "+ cellView.model.attributes.position.x)
         			event.preventDefault()
         		})
         
@@ -1283,6 +1317,7 @@ scriptContent:
         
         					var previous = null;
         					var previousFromSequence = null;
+        					var previousViewLength;
         					var nbChildren = 0;
         					
         					var isIterator = false;
@@ -1309,8 +1344,11 @@ scriptContent:
         						if(previousFromSequence != null)
         							var previousFromSequenceClassName = this.getClassName(previousFromSequence.dbo.className)
         						
-        						if(previous != null)
+        						if(previous != null) {
         							var previousClassName = this.getClassName(previous.attributes.className)
+        							previousViewLength = this.getElementViewLength(previous)
+        							x = previousViewLength + this.horizontalSpace
+        						}
         
         						var thenNumber = 0;
         						var elseNumber = 0;
@@ -1328,14 +1366,17 @@ scriptContent:
         							
         							var nbChildren = this.compareBranches(children.then, children.else)
         //							console.log(''nbChildren: '' + nbChildren)
-        							x = previous.attributes.position.x + (70 + this.horizontalSpace * nbChildren) + 45
+        							x = previousViewLength + (70 + this.horizontalSpace * nbChildren) + this.horizontalSpace
+        							// x = previous.attributes.position.x + (70 + this.horizontalSpace * nbChildren) + 45
         							y = 70
         						}
         						
         						if(previous != null && this.isInArray(this.ifSteps, previousClassName) || this.isInArray(this.iteratorSteps, previousClassName)) { //previousClassName == "IfStep"g
         							if(previousClassName != previousFromSequenceClassName) {
         								var lastElement = this.getLastElementFromSimpleBranch(previous, 1);
-        								x = lastElement.attributes.position.x + this.horizontalSpace;
+        								var lastElementViewLength = this.getElementViewLength(lastElement)
+        								x = lastElementViewLength + this.horizontalSpace
+        								// x = lastElement.attributes.position.x + this.horizontalSpace;
         							} else {
         								lastCell = this.graph.getLastCell()
         //								console.log(''lastCell: '' + JSON.stringify(lastCell))
@@ -1345,7 +1386,9 @@ scriptContent:
         										if(lastCell.attributes.target != undefined) {
         											var lastCellTarget = lastCell.attributes.target
         //											console.log(''target: '' + JSON.stringify(lastCellTarget))
-        											x = lastCellTarget.attributes.position.x + this.horizontalSpace;
+        											var lastCellTargetViewLength = this.getElementViewLength(lastCellTarget)
+        											x = lastCellTargetViewLength + this.horizontalSpace
+        											// x = lastCellTarget.attributes.position.x + this.horizontalSpace;
         											// y = lastCellTarget.attributes.position.y
         										}
         					//					var lastCellTarget = lastCell.attributes.target
@@ -1353,7 +1396,8 @@ scriptContent:
         					//					y = lastCellTarget.attributes.position.y
         								} 
         								else {
-        									x = lastCell.attributes.position.x + this.horizontalSpace
+        									x = previousViewLength + this.horizontalSpace
+        									// x = lastCell.attributes.position.x + this.horizontalSpace
         									// y = lastCell.attributes.position.y
         								}								
         							}
@@ -1366,16 +1410,21 @@ scriptContent:
         							if(lastCell.attributes.type == "standard.ShadowLink") {
         								// So if it a link, the true last cell is its target
         								var lastCellTarget = lastCell.attributes.target
+        								// var lastCellTargetViewLength = this.getElementViewLength(lastCellTarget)
+        								// x = lastCellTargetViewLength + this.horizontalSpace;
         								x = lastCellTarget.attributes.position.x + this.horizontalSpace;
         								y = lastCellTarget.attributes.position.y
         							} else {
+        								// var lastCellViewLength = this.getElementViewLength(lastCell)
+        								// x = lastCellViewLength + this.horizontalSpace;
         								x = lastCell.attributes.position.x + this.horizontalSpace
         								y = lastCell.attributes.position.y
         							}
         						}
         						
-        						if(previous != null && x < previous.attributes.position.x) {
-        							x = previous.attributes.position.x + this.horizontalSpace
+        						if(previous != null && x < previousViewLength) { // previous.attributes.position.x
+        							x = previousViewLength + this.horizontalSpace
+        							// x = previous.attributes.position.x + this.horizontalSpace
         						}
         						
         						if(this.isInArray(this.iteratorSteps, newElementClassName))
@@ -1766,7 +1815,11 @@ title: Title for FlowViewer
                       		for (var i=0; i < vars.flow.length ; i++) {
                   				let stepClassName = vars.flow[i].dbo.className.substring(this.strStep.length)
                   //				console.log("DisplayFlow - stepClassName : " + stepClassName)
-                  				
+                  				var x = 70 + this.horizontalSpace * i
+                  				if(previous != null) {
+                  					var previousViewLength = this.getElementViewLength(previous)
+                  					x = previousViewLength + this.horizontalSpace
+                  				}
                   				isComplex = (stepClassName == "XMLComplexStep") ? true : false
                   				var elColor;
                   				if(isComplex) {
@@ -1777,7 +1830,7 @@ title: Title for FlowViewer
                   				var opts = {
                   				    attrs: {
                   				        position: {
-                  				            x: 70 + this.horizontalSpace * i,
+                  				            x: x,
                   				            y: 70
                   				        }
                   				    },

@@ -25,6 +25,7 @@
           ↓Iterator [steps.IteratorStep-1608803513707]: 
             ↓Element [steps.XMLElementStep-1608803521435]: 
   ↓jIfThenElse [steps.IfThenElseStep-1606398425655]: 
+    condition: x
     ↓jThen [steps.ThenStep-1606398427087]: 
       ↓Complex [steps.XMLComplexStep-1606471421899]: 
     ↓jElse [steps.ElseStep-1606398427089]: 
@@ -36,8 +37,25 @@
   ↓Sort [steps.XMLSortStep-1606398502644]: 
   ↓Parallel [steps.ParallelStep-1606470941733]: 
   ↓g [steps.IfStep-1607340235081]: 
+    condition: element.resize(70,70);jklgklfjljkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk
     ↓IfExist [steps.IfExistStep-1607340252376]: 
+      sourceDefinition: 
+        - xmlizable: 
+          - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+          - com.twinsoft.convertigo.beans.common.XMLVector: 
+            - java.lang.String: 
+              - ↑value: 1606398495418
+            - java.lang.String: 
+              - ↑value: .
       ↓IfExistThenElse [steps.IfExistThenElseStep-1607340261242]: 
+        sourceDefinition: 
+          - xmlizable: 
+            - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+            - com.twinsoft.convertigo.beans.common.XMLVector: 
+              - java.lang.String: 
+                - ↑value: 1606301775939
+              - java.lang.String: 
+                - ↑value: .
         ↓jThen [steps.ThenStep-1607340261759]: 
           ↓Element [steps.XMLElementStep-1607355121513]: 
             nodeName: true
@@ -45,12 +63,29 @@
           ↓Element [steps.XMLElementStep-1607355150545]: 
             nodeName: false
       ↓IfFileExists [steps.IfFileExistStep-1607340270896]: 
+        condition: element.resize(70,70);jklgklfjljkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk
         ↓Element [steps.XMLElementStep-1607355176459]: 
           nodeName: true
       ↓IfIsIn [steps.IsInStep-1607340279651]: 
+        sourceDefinition: 
+          - xmlizable: 
+            - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+            - com.twinsoft.convertigo.beans.common.XMLVector: 
+              - java.lang.String: 
+                - ↑value: 1606398495418
+              - java.lang.String: 
+                - ↑value: .
         ↓Element [steps.XMLElementStep-1607355178776]: 
           nodeName: true
       ↓IfIsInThenElse [steps.IsInThenElseStep-1607340289521]: 
+        sourceDefinition: 
+          - xmlizable: 
+            - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
+            - com.twinsoft.convertigo.beans.common.XMLVector: 
+              - java.lang.String: 
+                - ↑value: 1606398495418
+              - java.lang.String: 
+                - ↑value: .
         ↓jThen [steps.ThenStep-1607340289991]: 
           ↓Element [steps.XMLElementStep-1607355166454]: 
             nodeName: true
