@@ -71,6 +71,7 @@ scriptContent:
         /*Begin_c8o_PageConstructor*/		
         		this.local.maxX = 0
         		this.local.maxY = 0
+        		this.global.showSpinner = false;
         		/*End_c8o_PageConstructor*/
         /*Begin_c8o_PageFunction*/
         	
@@ -131,8 +132,8 @@ scriptContent:
         	}
         	
         	ellipseString(string) {
-        		if(string.length > 25) {
-        			var sbStr = string.substring(0,25)
+        		if(string.length > 20) {
+        			var sbStr = string.substring(0,20)
         			sbStr = sbStr + "(...)"
         			return sbStr
         		} else {
@@ -297,8 +298,6 @@ scriptContent:
             }
         
         	makeElement(opts, graph, color) {
-        		var element = new joint.shapes.standard.InscribedImage
-        		
         		var colorIndex;
         		var borderColor;
         		
@@ -309,24 +308,70 @@ scriptContent:
         			borderColor = this.elementColors.mainBorder;
         		}
         
-        		element.resize(70,70);
-        		element.position(opts.attrs.position.x, opts.attrs.position.y)
-        		element.attr(''root/title'', opts.props.displayName)
-        		element.attr(''label/text'', joint.util.breakText(this.ellipseString(opts.props.displayName), { width: 150})) // opts.props.displayName
-        		element.attr(''label/fill'', ''#fff'');
-        		element.attr(''background/fill'', color);
-        		element.attr(''border/stroke'', borderColor); //#1E7C6D
-        		element.attr(''background/fillOpacity'', 0.5);
-        		element.attr(''image'', {
-        				xlinkHref: this.c8o.endpoint + ''/.bin?__sequence=GetIcon&className='' + opts.props.className + ''&large=true&__nolog=true'',
-        		})
         
+        //		element.resize(70,70);
+        //		element.position(opts.attrs.position.x, opts.attrs.position.y)
+        //		element.attr(''root/title'', opts.props.displayName)
+        //		element.attr(''label/text'', opts.props.displayName)
+        //		element.attr(''label/fill'', ''#fff'');
+        //		element.attr(''background/fill'', color);
+        //		element.attr(''border/stroke'', borderColor); //#1E7C6D
+        //		element.attr(''background/fillOpacity'', 0.5);
+        //		element.attr(''image'', {
+        //				xlinkHref: this.c8o.endpoint + ''/.bin?__sequence=GetIcon&className='' + opts.props.className + ''&large=true&__nolog=true'',
+        //		})
+        		var element = new joint.shapes.standard.InscribedImage({
+        			size: {
+        				width: 70,
+        				height: 70
+        			},
+        			position: {
+        				x: opts.attrs.position.x,
+        				y: opts.attrs.position.y
+        			},
+        			// portMarkup: ''<g class="port port<%= id %>"><path class="port-body"/><text class="port-label"/></g>'',
+        			ports: {
+        			    groups: {
+        			      ''in'': {
+        			        position: { name: ''left'' },
+        			        attrs: {circle: {fill: color, magnet: ''passive'', refY: 12, refX: 2 }},
+        					
+        			      },
+        			      ''out'': {
+        			        position: { name: ''right'' },
+        			        attrs: {circle: {fill: color, magnet: true, refY: 12, refX: 2}},    
+        			      }
+        			    },
+        			    items:[ { group: ''in'' }, { group: ''out'' } ]
+        		  	},
+        			attrs:{
+        		      border: {
+        		         stroke: borderColor
+        		      },
+        		      background: {
+        		         fill: color,
+        		         fillOpacity: 0.5
+        		      },
+        		      image: {
+        		         xlinkHref: this.c8o.endpoint + ''/.bin?__sequence=GetIcon&className='' + opts.props.className + ''&large=true&__nolog=true''
+        		      },
+        		      label: {
+        		         fill: ''#fff'',
+        		         text: this.ellipseString(opts.props.displayName)
+        		      },
+        		      root: {
+        		         title: opts.props.displayName,
+        				 magnet: true
+        		      },
+        		   }
+        		})
+        		
         		for(var key in opts.props) {
         			element.prop(key, opts.props[key])
         //			console.log("key:" + key + " value: " + opts.props[key])
         		}
         		
-        //		console.log("makeElement ELT :" + JSON.stringify(element))
+        // 		console.log(JSON.stringify(element.toJSON()))
         		element.addTo(graph)
         		return element;
         		
@@ -361,7 +406,7 @@ scriptContent:
                 }, joint.shapes.basic.Rect.prototype.defaults)
             	});
         
-        joint.shapes[''html''].ElementView = joint.dia.ElementView.extend({
+        		joint.shapes[''html''].ElementView = joint.dia.ElementView.extend({
                 template: [
                     template
                 ].join(''''),
@@ -474,13 +519,49 @@ scriptContent:
         	}
         	
         	makeComplexElement(opts, graph, color) {
-        		var element = new joint.shapes.basic.Rect;
+        		var element = new joint.shapes.basic.Rect({
+        			size: {
+        				width: 70,
+        				height: 70
+        			},
+        			position: {
+        				x: opts.attrs.position.x,
+        				y: opts.attrs.position.y
+        			},
+        			// portMarkup: ''<g class="port port<%= id %>"><path class="port-body"/><text class="port-label"/></g>'',
+        			ports: {
+        			    groups: {
+        			      ''in'': {
+        			        position: { name: ''left'' },
+        			        attrs: {circle: {fill: color, magnet: ''passive'', refX: -6 }},
+        					
+        			      },
+        			      ''out'': {
+        			        position: { name: ''right'' },
+        			        attrs: {circle: {fill: color, magnet: true, refX: 6 }},    
+        			      }
+        			    },
+        			    items:[ { group: ''in'' }, { group: ''out'' } ]
+        		  	},
+        			attrs:{
+        		    	text: {
+        					text : joint.util.breakText(this.ellipseString(opts.props.displayName), { width: 70})
+        				},
+        		      	root: {
+        		         	title: opts.props.displayName,
+        					magnet: true
+        		      	},
+        				rect: {
+        					fill: color
+        				}
+        		   }
+        		})
         		
-        		element.resize(70,70)
-        		element.position(opts.attrs.position.x, opts.attrs.position.y)
-        		element.attr(''root/title'', opts.props.displayName)
-        		element.attr(''rect/fill'', color) // ''#00CDFF
-        		element.attr(''text/text'', joint.util.breakText(opts.props.displayName, { width: 70 }))
+        //		element.resize(70,70)
+        //		element.position(opts.attrs.position.x, opts.attrs.position.y)
+        //		element.attr(''root/title'', opts.props.displayName)
+        //		element.attr(''rect/fill'', color) // ''#00CDFF
+        //		element.attr(''text/text'', opts.props.displayName)
         		
         		for(var key in opts.props) {
         			element.prop(key, opts.props[key])
@@ -1134,6 +1215,8 @@ scriptContent:
         	     * 
         	     */
         
+        		this.global.showSpinner = false;
+        
         	    let graphDomElement = this.graphDomElement as ElementRef
         		let paperOpts = {
                     el: graphDomElement.nativeElement,
@@ -1265,8 +1348,10 @@ scriptContent:
         			})
         		
         			this.unselectBreadcrumb(this.breadcrumb[this.breadcrumb.length - 1].id);
-        			this.unselectCard(this.miniMapsArray[this.miniMapsArray.length - 1].id);	
+        			this.unselectCard(this.miniMapsArray[this.miniMapsArray.length - 1].id);
+        			this.global.showSpinner = true;	
         			setTimeout(() => {
+        				
         				var card = document.getElementById("level-"+this.levelCount)			
         				var paperOpts = {
         		            el: card,
@@ -1607,7 +1692,8 @@ scriptContent:
         
         					var jsonString = this.graph.toJSON();
         					this.importFromJSON(this.miniMapsArray[this.miniMapsArray.length - 1].graph, jsonString)
-        
+        					
+        					this.global.showSpinner = false;
         				
         				}) // end foreach
         			} // end else
@@ -1693,6 +1779,13 @@ title: Title for FlowViewer
                 - ↑value: graphlib
 ↓Subscribe_Handler [ngx.components.UIEventSubscriber-1588686865663]: 
   topic: dboFocus
+  ↓SetGlobal [ngx.components.UIDynamicAction-1611935398699]: 
+    beanData: |
+      '{
+       "ionBean": "SetGlobalAction",
+       "Property": "plain:showSpinner",
+       "Value": "script:true"
+      }'
   ↓GetGraph [ngx.components.UIDynamicAction-1588686924736]: 
     beanData: '{"ionBean":"CallSequenceAction","requestable":"plain:C8oStudio.GetGraph"}'
     ↓SetGlobal [ngx.components.UIDynamicAction-1611159964092]: 
@@ -1805,7 +1898,6 @@ title: Title for FlowViewer
                   '            class walkTree {
                                   
                               }
-                  		    
                       		this.graph.clear();
                   			var bbox = this.paper.getContentBBox();
                   // 			console.log("I AM VARS FLOW" + JSON.stringify(vars.flow));
@@ -1861,8 +1953,10 @@ title: Title for FlowViewer
                   				}
                   
                       		}
+                  				this.global.showSpinner = false;
                   				var cellsToAdd = this.graph.getCells();
                   				this.updateGraph(this.global.firstGraphInColumn, cellsToAdd);
+                  				
                   //			this.walkChildren(vars.flow, null)
                       		resolve();
                   '
@@ -2536,6 +2630,35 @@ title: Title for FlowViewer
                         - xmlizable: 
                           - ↑classname: com.twinsoft.convertigo.beans.ngx.components.MobileSmartSourceType
                           - MobileSmartSourceType: 'script:(item.isSelected) ? ''background-color: #0CBBE7;''  : ''background-color: #fff; '' '
+          ↓Directive [ngx.components.UIControlDirective-1611931226397]: 
+            directiveExpression: this.global.showSpinner
+            directiveName: If
+            ↓divSpinner [ngx.components.UIDynamicElement-1611940250567]: 
+              beanData: '{"ionBean":"DivTag"}'
+              tagName: div
+              ↓Spinner [ngx.components.UIDynamicElement-1611931320241]: 
+                beanData: '{"ionBean":"Spinner","IonColor":"plain:light"}'
+                tagName: ion-spinner
+              ↓Style [ngx.components.UIStyle-1611938938007]: 
+                styleContent: 
+                  - xmlizable: 
+                    - ↑classname: com.twinsoft.convertigo.beans.common.FormatedContent
+                    - com.twinsoft.convertigo.beans.common.FormatedContent: 
+                      →: |
+                        '/**
+                         * Custom properties (sometimes referred to as CSS variables or cascading variables)
+                         * are entities defined by CSS authors that contain specific values to be reused throughout a document.
+                         * They are set using custom property notation, e.g.: --main-color: black;
+                         * and are accessed using the var() function, e.g.: color: var(--main-color);
+                         * You can find below your component''s properties you can customize within the page.
+                         * If you''d like to make some customizations for whole app, please see your app Style & Theme components.
+                         * For more informations see https://ionicframework.com/docs/theming.
+                        **/
+                        //--color	//Color of the spinner
+                        	z-index: 9999;
+                        	top: 150px;
+                        	left: 250px;
+                        '
     ↓GridCol1 [ngx.components.UIDynamicElement-1600682513448]: 
       beanData: '{"ionBean":"GridCol","SizeXl":"plain:2"}'
       isEnabled: false
