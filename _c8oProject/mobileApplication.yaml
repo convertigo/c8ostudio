@@ -120,6 +120,7 @@ tplProjectName: C8oStudio
             --ion-color-light-contrast-rgb: 0, 0, 0;
             --ion-color-light-shade: #d7d8da;
             --ion-color-light-tint: #f5f6f9;
+          
           }
           
           '
@@ -1414,6 +1415,10 @@ tplProjectName: C8oStudio
           
           #0CBBE7 bleu c8o
           */
+          
+          ion-spinner > svg > circle {
+          	z-index: 9999 !important;
+          }
           .bd_content {
           	width: 100%;
           	z-index: 1000;
