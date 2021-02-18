@@ -111,119 +111,29 @@ scriptContent:
         		return paper;
         	}
         	
-        	displayFlow(cellView) {
-        		
-        			var element = cellView;
-        			var elementQName = cellView.model.attributes.qname;
-        			var elementDisplayName = cellView.model.attributes.displayName;
-        			var elementIsComplex = cellView.model.attributes.isComplex;
-        			var elementProperties = cellView.model.attributes.properties;
-        			
-        			var priority = this.getPriority(elementProperties);
-        			
-        			let elementFromGetGraphResponse = this.findElementInGetGraphResponse(elementQName);
-        			
-        			var x, y;
-        			
-        			
-        			// on vérifie si la priority de l''objet est contenue dans le tableau des cards, si c''est le cas c''est que l''objet est déjà open, 
-        			// alors, si c''est vrai, on highlight la card
-        			
-        			if(this.cardIsOpen(priority)) {
-        				var card = this.getCardByPriority(priority);
-        				this.highlightCard(card.id);
-        				this.highlightBreadcrumb(card.id)
-        				var cellsToAdd = card.graph.getCells();
-        				this.updateGraph(this.graph, cellsToAdd);
-        			} else {
-        				
-        			
-        			// pushing data to array to retrieve the correct dom element
-        			this.levelCount++;
-        			var newGraph = this.createGraph();
-        			this.miniMapsArray.push({
-        				id: ''level-'' + this.levelCount,
-        				displayName: elementDisplayName,
-        				priority: priority,
-        				qname: elementQName,
-        				isSelected: true,
-        				graph: newGraph, 
-        				cells: []
-        			});
-        			
-        			this.addToBreadcrumb({
-        				id: ''level-''+ this.levelCount,
-        				displayName: elementDisplayName,
-        				priority: priority,
-        				graph: newGraph,
-        				isSelected: true
-        			})
-        		
-        			this.unselectBreadcrumb(this.breadcrumb[this.breadcrumb.length - 1].id);
-        			this.unselectCard(this.miniMapsArray[this.miniMapsArray.length - 1].id);
-        			
-        			setTimeout(() => {
-        				
-        				var card = document.getElementById("level-"+this.levelCount)			
-        				var paperOpts = {
-        		            el: card,
-        		            width: ''100%'',
-        		            height: ''100%'',
-        		            model: newGraph,
-        		            gridSize: 10,
-        					embeddingMode: true,
-        					cellViewNamespace: joint.shapes,
-        					interactive: false,
-        		            defaultLink: new joint.dia.Link({
-        		            	attrs: {
-        		                    ''.connection'' : {
-        		                        stroke: ''orange'',
-        		                        strokeWidth: 2
-        		                    }
-        		                }                
-        		            }),
-        		            defaultRouter: {
-        		                name: ''manhattan''
-        		            },
-        		            defaultConnector: {
-        		                name: ''rounded''
-        		            },
-        		            validateConnection: function(cellViewS, magnetS, cellViewT, magnetT, end, linkView) {
-        		                // Prevent connections if not on Magnets from ports
-        		                if (magnetT == undefined|| magnetS ==undefined)
-        		                    return false
-        		                else
-        		                    return true
-        		            }
-        		        }
-        			
-        				var paper = this.createPaper(paperOpts);
-        				paper.scale(0.1)
-        				var computedSize = paper.getComputedSize();
-        				var originY = (computedSize.height / 2);
-        			
-        //				paper.setOrigin(this.graphOriginX, originY)
-        					
-        					this.graph.clear();
+        	displayFlow(qName) {
+        		this.graph.clear();
         
-        					var previous = null;
-        					var previousFromSequence = null;
-        					var previousViewLength;
-        					var nbChildren = 0;
+        		var previous = null;
+        		var previousFromSequence = null;
+        		var previousViewLength;
+        		var nbChildren = 0;
         					
-        					var isIterator = false;
-        					var isInIterator = false; 
-        					var refIteratorBox : any = ''''
+        		var isIterator = false;
+        		var isInIterator = false; 
+        		var refIteratorBox : any = ''''
         					
-        					var children = {
-        						then: 0,
-        						else: 0	
-        					};
+        		var children = {
+        				then: 0,
+        				else: 0	
+        		};
+        		
+        		var x, y;
         					
-        					var lastCell = this.graph.getLastCell();
-        					this.paper.setOrigin(this.graphOriginX, this.graphOriginY)
+        		var lastCell = this.graph.getLastCell();
+        		this.paper.setOrigin(this.graphOriginX, this.graphOriginY)
         					
-        					_.each(elementFromGetGraphResponse, (newElement, i) => {
+        		_.each(qName, (newElement, i) => {
         
         						x = 70 + this.horizontalSpace * parseInt(i);
         						y = 70;
@@ -449,13 +359,14 @@ scriptContent:
         													this.makeLink(lastCellTarget, el, '''', this.graph, false, false, "right", ''#77ACA1'')
         												}
         											}
-        
+        											this.makeLink(lastCellTarget, el, '''', this.graph, false, false, "right", ''#77ACA1'')
         											// y = lastCellTarget.attributes.position.y
         										}
         										
         					//					var lastCellTarget = lastCell.attributes.target
         					//					x = lastCellTarget.attributes.position.x + this.horizontalSpace;
         					//					y = lastCellTarget.attributes.position.y
+        									// this.makeLink(lastCell, el, '''', this.graph, false, false, "right", ''#77ACA1'')
         								} 
         								else {
         									this.makeLink(lastCell, el, '''', this.graph, false, false, "right", ''#77ACA1'')
@@ -474,10 +385,14 @@ scriptContent:
         //											console.log(''target: '' + JSON.stringify(lastCellTarget))
         											if(lastCellTarget.attributes.isInIterator) {
         												this.makeLink(lastCellTarget, el, '''', this.graph, false, false, "right", ''#77ACA1'')
+        											} else {
+        												this.makeLink(lastCellTarget, el, '''', this.graph, false, false, "right", ''#77ACA1'')
         											}
         
         											// y = lastCellTarget.attributes.position.y
         										}
+        							} else {
+        								this.makeLink(lastCell, el, '''', this.graph, false, false, "right", ''#77ACA1'')
         							}
         						} else {
         							if(previous != null && !this.isInArray(this.ifThenElseSteps, previousClassName)) // && previousClassName != "IfThenElseStep"
@@ -494,18 +409,9 @@ scriptContent:
         						
         						if(!newElementIsComplex && newElement.dbo.children != undefined && newElement.dbo.children.length > 0) 
         							this.walkChildren(newElement.dbo.children, previous, false, false, '''', this.graph)
-        					}); // end foreach
-        
-        					var jsonString = this.graph.toJSON();
-        					this.importFromJSON(this.miniMapsArray[this.miniMapsArray.length - 1].graph, jsonString)
-        					
-        					this.global.showSpinner = false;
-        				
-        				}, 0o400)
-        			} // end else
-        			// this.global.showSpinner = false;
-        }
-        	
+        				}); // end foreach
+        	}
+        		
         	embedIteratorBox(graph:joint.dia.Graph) {
         		var elements = graph.getElements();
         		var iteratorBox;
@@ -539,30 +445,34 @@ scriptContent:
         		
         	}
         	
-        	findElementInGetGraphResponse(elementQName) {
+        	findElementInGetGraphResponse(array, elementQName) {
         //		console.log(JSON.stringify(this.global.getGraphResponse))
         		let obj;
-        		_.forEach(this.global.getGraphResponse, function(el) {
+        		let _this = this;
+        		let breakFlag = false;
+        
+        		for(var i = 0; i < array.length; i++) {
+        			var el = array[i];
+        			if(breakFlag)
+        				break;
+        					
         			if(el.dbo.qname == elementQName) {
-        //				console.log(''first here'')
-        //				console.log(JSON.stringify(el.dbo))
-        				if (el.dbo.children != undefined && el.dbo.children.length > 0)
-        					obj = el.dbo.children
+        				if (el.dbo.children != undefined && el.dbo.children.length > 0) {
+        					this.global[''nextElementInGetGraphResponse''] = el.dbo.children
+        					break;
+        				}
         			} else {
         				if(el.dbo.children != undefined && el.dbo.children.length > 0) {
-        					_.forEach(el.dbo.children, function(children) {
-        						if(children.dbo.qname == elementQName) {
-        //							console.log(''second here'')
-        //							console.log(JSON.stringify(children.dbo))
-        							if(children.dbo.children != undefined && children.dbo.children.length > 0)
-        								obj = children.dbo.children;
-        						}
-        					})
+        					obj = _this.findElementInGetGraphResponse(el.dbo.children, elementQName)
         				}
         			}
-        		})
+        			
+        		}
         		
-        		return obj;
+        		if (this.global[''nextElementInGetGraphResponse''] != undefined && this.global[''nextElementInGetGraphResponse''].length > 0)
+        			return this.global[''nextElementInGetGraphResponse''];
+        		
+        		// return obj;
         	}
         	
         	getElementViewLength(element) {
@@ -625,9 +535,18 @@ scriptContent:
         	
         	makeLink(source, target, label, graph: joint.dia.Graph, previousThen, previousElse, startDirection, colorLink) {
         		
+        		startDirection = (previousThen) ? ''top'' : (previousElse) ? 	''bottom'' : startDirection;
+        		
                 var link = new joint.shapes.standard.ShadowLink({
         		    source: source,
         		    target: target,
+        //			router: { 
+        //				name: ''manhattan'' ,
+        //				args : {
+        //					startDirections: [startDirection],
+        //				}
+        //			},
+        		    connector: { name: ''rounded'' },
         		    markup: [{
         		        tagName: ''path'',
         		        selector: ''shadow'',
@@ -677,19 +596,22 @@ scriptContent:
             		}
         		})
         		
-        		startDirection = (previousThen) ? ''top'' : (previousElse) ? 	''bottom'' : startDirection;
+        		
         		
         		link.router(''manhattan'', {
         		    startDirections: [startDirection],
-        		    endDirections: [''left''],
+        //		    endDirections: [''left''],
         			step: 10,
-        			maximumLoops: 4000,
+        			maximumLoops: 2000,
         			padding: {
         				horizontal: 20
         			},
-        			maxAllowedDirectionChange: 120
+        			perpendicular: true,
+        			maxAllowedDirectionChange: 1200
         		});
-        
+        		
+        		link.connector(''rounded'')
+        		link.toBack()
         		link.addTo(graph)
         		
             }
@@ -972,6 +894,7 @@ scriptContent:
         	}
         	
         	makeIteratorBox(opts, graph, color) {
+        		
         		var element = new joint.shapes.basic.Rect({
         			position: {
         				x: opts.attrs.position.x,
@@ -1148,8 +1071,23 @@ scriptContent:
         			return false;
         	}
         	
+        	getElementsUnderElement() {
+        		var links = this.graph.getLinks();
+        		var elementsUnderLink = [];
+        		for(var i = 0; i < links.length; i++) {
+        //			console.log("LIST OF ELEMENTS: " + JSON.stringify(elements[i]))
+        				var link = links[i]
+        				var bbox = link.getSourceCell().getBBox()
+        				var linkView = this.paper.findViewByModel(link)
+        	
+        				console.log("polyline: " + link.getPolyline())
+        		}
+        		
+        		return elementsUnderLink;
+        	}
+        	
         	updateGraph(graph: joint.dia.Graph, cellsToAdd) {
-        		graph.clear();
+        		//graph.clear();
         		graph.addCells(cellsToAdd);
         	}
         	
@@ -1244,8 +1182,15 @@ scriptContent:
         						var lastCellTarget = lastCell.attributes.target
         						var lastCellTargetViewLength = this.getElementViewLength(lastCellTarget)
         						
+        						if(lastCellTarget.attributes.isInIterator && lastCellTarget.attributes.refIteratorBranch != previous.id) {
+        							var lastCellTargetIteratorBox = this.graph.getCell(lastCellTarget.attributes.refIteratorBox)
+        							var lastCellTargetIteratorBoxViewLength = this.getElementViewLength(lastCellTargetIteratorBox)
+        							x = lastCellTargetIteratorBoxViewLength + this.horizontalSpace
+        						} else {
+        							x = lastCellTargetViewLength + this.horizontalSpace
+        						}
         						//console.log(''target: '' + JSON.stringify(lastCellTarget))
-        						x = lastCellTargetViewLength + this.horizontalSpace
+        						// x = lastCellTargetViewLength + this.horizontalSpace
         						// x = lastCellTarget.attributes.position.x + this.horizontalSpace;
         						// y = lastCellTarget.attributes.position.y
         					}
@@ -1253,10 +1198,10 @@ scriptContent:
         //					x = lastCellTarget.attributes.position.x + this.horizontalSpace;
         //					y = lastCellTarget.attributes.position.y
         			} 
-        //			else {
-        //				x = lastCell.attributes.position.x + this.horizontalSpace
-        //				// y = lastCell.attributes.position.y
-        //			}
+        			else {
+        				x = lastCell.attributes.position.x + this.horizontalSpace
+        				// y = lastCell.attributes.position.y
+        			}
         		
         			// walking through branches
         			
@@ -1485,28 +1430,55 @@ scriptContent:
         					linkColor = this.linkColors.main
         				}
         				
+        				var link;
+        
         				if(this.isInArray(this.ifSteps, previousClassName) && !this.isInArray(this.ifSteps, stepClassName)) {
-        //					startDirection = (this.isInArray(this.ifThenElseSteps, stepClassName)) ? ''right'' : ''top''
-        //					startDirection = (previous.attributes.depthLvl == el.attributes.depthLvl) ? ''bottom'' : ''top''
+        
         					startDirection = (this.isInArray(this.ifThenElseSteps, stepClassName)) ? ''right'' : (previous.attributes.depthLvl == el.attributes.depthLvl) ? ''bottom'' : ''top''
         					startDirection = (this.isInArray(this.ifSteps, previousClassName) && this.isInArray(this.ifThenElseSteps, stepClassName) && previous.attributes.depthLvl != el.attributes.depthLvl) ? ''top'' : startDirection
-        	//				startDirection = (!this.isInArray(this.ifSteps, stepClassName) && !this.isInArray(this.ifThenElseSteps, stepClassName)) ? ''bottom'' : startDirection
-        //					startDirection = (this.isInArray(this.ifSteps, previousClassName) && !this.isInArray(this.ifSteps, stepClassName) && !this.isInArray(this.ifThenElseSteps, stepClassName)) ? ''top'' : startDirection  
-        					this.makeLink(previous, el, label, graph, previousThen, previousElse, startDirection, linkColor)
+        
+        					link = this.makeLink(previous, el, label, graph, previousThen, previousElse, startDirection, linkColor)
         				} else if (this.isInArray(this.ifSteps, previousClassName) && this.isInArray(this.ifSteps, stepClassName)) {
-        					//startDirection = (previousNodeObject.dbo.children != undefined) ? ''right '' : ''top''
+        					
         					startDirection = (this.graph.getSuccessors(previous).length <= 0) ? ''top'' : ''right''
-        					this.makeLink(previous, el, label, graph, previousThen, previousElse, startDirection, linkColor) // right
+        					link = this.makeLink(previous, el, label, graph, previousThen, previousElse, startDirection, linkColor) // right
+        					
         				} else if (this.isInArray(this.ifSteps, previousClassName) && this.isInArray(this.ifThenElseSteps, stepClassName)) {
+        					
         					startDirection = (previousNodeObject.dbo.children != undefined) ? ''right '' : ''top''
-        					this.makeLink(previous, el, label, graph, previousThen, previousElse, startDirection, linkColor) // top
+        					link = this.makeLink(previous, el, label, graph, previousThen, previousElse, startDirection, linkColor) // top
+        					
         				} else if(this.isInArray(this.iteratorSteps, previousClassName) && !el.attributes.isInIterator) {
-        					this.makeLink(previous, el, label, graph, previousThen, previousElse, "bottom", linkColor)
+        					
+        					link = this.makeLink(previous, el, label, graph, previousThen, previousElse, "bottom", linkColor)
+        					
         				} else if(!this.isInArray(this.ifSteps, previousClassName) && !this.isInArray(this.ifThenElseSteps, previousClassName)) {
-        					this.makeLink(previous, el, label, graph, previousThen, previousElse, "right", linkColor)
-        				} else if(!this.isInArray(this.ifThenElseSteps, stepClassName) && !this.isInArray(this.ifSteps, stepClassName)) {
-        					this.makeLink(previous, el, label, graph, previousThen, previousElse, "right", linkColor)
-        				}
+        					
+        					link = this.makeLink(previous, el, label, graph, previousThen, previousElse, "right", linkColor)
+        				} 
+        				else if(!this.isInArray(this.ifThenElseSteps, previousClassName) && !this.isInArray(this.ifSteps, stepClassName)) {
+        					
+        					link = this.makeLink(previous, el, label, graph, previousThen, previousElse, "right", linkColor)
+        				} else if(this.isInArray(this.ifThenElseSteps, previousClassName) && this.isInArray(this.ifThenElseSteps, stepClassName)) {
+        					link = this.makeLink(previous, el, label, graph, previousThen, previousElse, "top", linkColor)
+        					
+        				} 
+        				else if (!this.isInArray(this.ifThenElseSteps, previousClassName) && !el.attributes.isInIterator) {
+        					
+        				} else if(!this.isInArray(this.ifThenElseSteps, stepClassName) && !this.isInArray(this.ifSteps, stepClassName) && previous.id == el.attributes.refBranchStart) {
+        					
+        					link = this.makeLink(previous, el, label, graph, previousThen, previousElse, "right", linkColor)
+        					
+        				} 
+        //				else if(!this.isInArray(this.ifThenElseSteps, stepClassName) && !this.isInArray(this.ifSteps, stepClassName)) {
+        //					
+        //					link = this.makeLink(previous, el, label, graph, previousThen, previousElse, "right", linkColor)
+        //				}  
+        //				else {
+        //					link = this.makeLink(previous, el, label, graph, previousThen, previousElse, "right", linkColor)
+        //				}
+        				
+        				
         //			} 
         //				this.makeLink(previous, el, label, graph, previousThen, previousElse)
         				
@@ -1517,15 +1489,15 @@ scriptContent:
         				var lastElements = this.getLastElementsFromThenAndElseBranch(previous)
         				var jThenLastElement = lastElements.jThen[lastElements.jThen.length - 1]
         				var jElseLastElement = lastElements.jElse[lastElements.jElse.length - 1]
-        
+        				
         //							console.log("jThenLastElement: " + JSON.stringify(jThenLastElement) )
         				if(jThenLastElement != undefined) {
-        					this.makeLink(jThenLastElement, el, label, this.graph, false, false, "right", linkColor) // right
+        					link = this.makeLink(jThenLastElement, el, label, this.graph, false, false, "right", linkColor) // right
         //					previous = jThenLastElement
         				}
         							
         				if(jElseLastElement != undefined) {
-        					this.makeLink(jElseLastElement, el, label, this.graph, false, false, "right", linkColor) // right
+        					link = this.makeLink(jElseLastElement, el, label, this.graph, false, false, "right", linkColor) // right
         //					previous = jElseLastElement
         				}
         								
@@ -1539,7 +1511,7 @@ scriptContent:
         			else if(previousNodeObject != null && this.isInArray(this.ifSteps, previousClassName)) { // this.getClassName(previous.attributes.className) == "IfStep"
         				if(previousClassName != this.getClassName(previousNodeObject.dbo.className)) {
         					var lastElement = this.getLastElementFromSimpleBranch(previous, 2);
-        					this.makeLink(lastElement, el, '''', this.graph, false, false, "right", linkColor)
+        					link = this.makeLink(lastElement, el, '''', this.graph, false, false, "right", linkColor)
         				} else {			
         					if(lastCell != undefined && lastCell.attributes.type == "standard.ShadowLink") {
         						// So if it a link, the true last cell is its target
@@ -1560,18 +1532,18 @@ scriptContent:
         
         				//							console.log("jThenLastElement: " + JSON.stringify(jThenLastElement) )
         								if(jThenLastElement != undefined) {
-        									this.makeLink(jThenLastElement, el, label, this.graph, false, false, "right", linkColor) // right
+        									link = this.makeLink(jThenLastElement, el, label, this.graph, false, false, "right", linkColor) // right
         				//					previous = jThenLastElement
         								}
         											
         								if(jElseLastElement != undefined) {
         									el.position(el.attributes.position.x, jElseLastElement.attributes.position.y)
-        									this.makeLink(jElseLastElement, el, label, this.graph, false, false, "right", linkColor) // right
+        									link = this.makeLink(jElseLastElement, el, label, this.graph, false, false, "right", linkColor) // right
         				//					previous = jElseLastElement
         								}	
         							}
         							
-        							this.makeLink(lastCellTarget, el, '''', this.graph, false, false, "right", linkColor)
+        							// link = this.makeLink(lastCellTarget, el, '''', this.graph, false, false, "right", linkColor)
         
         							
         											// y = lastCellTarget.attributes.position.y
@@ -1581,7 +1553,7 @@ scriptContent:
         					//					y = lastCellTarget.attributes.position.y
         					} 
         					else {
-        						this.makeLink(lastCell, el, '''', this.graph, false, false, "right", linkColor)
+        						link = this.makeLink(lastCell, el, '''', this.graph, false, false, "right", linkColor)
         						// y = lastCell.attributes.position.y
         					}								
         				}
@@ -1605,12 +1577,14 @@ scriptContent:
         			}
         			
         			this.embedIteratorBox(this.graph);
+        //			console.log("linkIsOverElement: " + linkIsOverElement)
         		
         			if(!parentIsComplex && nodeObject[i].dbo.children != undefined && nodeObject[i].dbo.children.length > 0) {
         					this.walkChildren(nodeObject[i].dbo.children, previous, previousThen, previousElse, refId, graph);
         			}
         
         		}
+        		
         	}
         
         	ngAfterViewInit() {
@@ -1632,13 +1606,111 @@ scriptContent:
         			embeddingMode: true,
         			cellViewNamespace: joint.shapes,
         			preventContextMenu: false,
+        			drawGrid: {
+        				name: "dot"
+        			},
         			elementView: joint.dia.ElementView.extend({
         		        pointerdblclick: function(evt, x, y) {
         					_this.global.showSpinner = true;
         					var cellView = this;
-        					_this.displayFlow(cellView)
+        					var element = cellView;
+        					var elementQName = cellView.model.attributes.qname;
+        					var elementDisplayName = cellView.model.attributes.displayName;
+        					var elementIsComplex = cellView.model.attributes.isComplex;
+        					var elementProperties = cellView.model.attributes.properties;
         					
-        		        }
+        					var priority = _this.getPriority(elementProperties);
+        					
+        					let elementFromGetGraphResponse = _this.findElementInGetGraphResponse(_this.global.getGraphResponse, elementQName);
+        					_this.global[''nextElementInGetGraphResponse''] = [];
+        					//let elementFromGetGraphResponse = _this.findNextElementInGetGraphResponse(_this.global.getGraphResponse, elementQName)
+        
+        					// on vérifie si la priority de l''objet est contenue dans le tableau des cards, si c''est le cas c''est que l''objet est déjà open, 
+        					// alors, si c''est vrai, on highlight la card
+        			
+        					if(_this.cardIsOpen(priority)) {
+        						
+        						var card = _this.getCardByPriority(priority);
+        						_this.highlightCard(card.id);
+        						_this.highlightBreadcrumb(card.id)
+        						var cellsToAdd = card.graph.getCells();
+        						_this.updateGraph(_this.graph, cellsToAdd);
+        						
+        					} else {
+        						
+        						_this.levelCount++;
+        						var newGraph = _this.createGraph();
+        						// pushing data to array to retrieve the correct dom element
+        						_this.miniMapsArray.push({
+        								id: ''level-'' + _this.levelCount,
+        								displayName: elementDisplayName,
+        								priority: priority,
+        								qname: elementQName,
+        								isSelected: true,
+        								graph: newGraph, 
+        								cells: []
+        						});
+        						
+        						_this.addToBreadcrumb({
+        								id: ''level-''+ _this.levelCount,
+        								displayName: elementDisplayName,
+        								priority: priority,
+        								graph: newGraph,
+        								isSelected: true
+        						})
+        						setTimeout(() => {
+        							
+        							var card = document.getElementById("level-"+_this.levelCount)
+        							var paperOpts = {
+        					            el: card,
+        					            width: ''100%'',
+        					            height: ''100%'',
+        					            model: newGraph,
+        					            gridSize: 10,
+        								embeddingMode: true,
+        								cellViewNamespace: joint.shapes,
+        								interactive: false,
+        					            defaultLink: new joint.dia.Link({
+        					            	attrs: {
+        					                    ''.connection'' : {
+        					                        stroke: ''orange'',
+        					                        strokeWidth: 2
+        					                    }
+        					                }                
+        					            }),
+        					            defaultRouter: {
+        					                name: ''manhattan''
+        					            },
+        					            defaultConnector: {
+        					                name: ''rounded''
+        					            },
+        					            validateConnection: function(cellViewS, magnetS, cellViewT, magnetT, end, linkView) {
+        					                // Prevent connections if not on Magnets from ports
+        					                if (magnetT == undefined|| magnetS ==undefined)
+        					                    return false
+        					                else
+        					                    return true
+        					            }
+        					        }
+        						
+        							var paper = _this.createPaper(paperOpts);
+        							paper.scale(0.1)
+        							var computedSize = paper.getComputedSize();
+        							var originY = (computedSize.height / 2);
+        							
+        							_this.displayFlow(elementFromGetGraphResponse)
+        
+        							_this.unselectBreadcrumb(_this.breadcrumb[_this.breadcrumb.length - 1].id);
+        							_this.unselectCard(_this.miniMapsArray[_this.miniMapsArray.length - 1].id);
+        							
+        							var jsonString = _this.graph.toJSON();
+        							_this.importFromJSON(_this.miniMapsArray[_this.miniMapsArray.length - 1].graph, jsonString)
+        					
+        							_this.global.showSpinner = false;
+        							
+        						}, 0o400) // end setTimeout
+        		        	} // end else
+        				}
         		    }),
                     defaultRouter: {
                         name: ''manhattan''
@@ -1652,17 +1724,7 @@ scriptContent:
                             return false
                         else
                             return true
-                    },
-        			beforeRender: function() {
-        				this.global.showSpinner = true;
-        			},
-        			afterRender: function(stats, options, paper) {
-        				console.log("i am stats" + stats)
-        //				console.log(''stats:'' + stats)
-        //				console.log(this.waitingToBeRendered)
-        				alert(this.waitingToBeRendered)
-        //				console.log("paper:" + paper)
-        			}
+                    }
                 }
         
         //			drawGrid: {
@@ -2315,317 +2377,16 @@ title: Title for FlowViewer
               - ↑classname: com.twinsoft.convertigo.beans.common.FormatedContent
               - com.twinsoft.convertigo.beans.common.FormatedContent: 
                 →: |
-                  '            class walkTree {
-                                  
-                              }
-                      		this.graph.clear();
-                  			var bbox = this.paper.getContentBBox();
-                  // 			console.log("I AM VARS FLOW" + JSON.stringify(vars.flow));
-                  
-                  			var isComplex = false;
-                  			var refIdEmbed = '''';
-                  			
-                  			var previous = null;
-                  					var previousFromSequence = null;
-                  					var previousViewLength;
-                  					var nbChildren = 0;
-                  					
-                  					var isIterator = false;
-                  					var isInIterator = false; 
-                  					var refIteratorBox : any = ''''
-                  					
-                  					var children = {
-                  						then: 0,
-                  						else: 0	
-                  					};
-                  					var x;
-                  					var y;
-                  					
-                      		_.each(vars.flow, (newElement, i) => {
-                  
-                  						x = 70 + this.horizontalSpace * parseInt(i);
-                  						y = 70;
-                  						
-                  						var newElementIsComplex = newElement.dbo.isComplex;
-                  						var newElementQName = newElement.dbo.qname;
-                  						var newElementClassName = this.getClassName(newElement.dbo.className);
-                  											
-                  						if(previousFromSequence != null)
-                  							var previousFromSequenceClassName = this.getClassName(previousFromSequence.dbo.className)
-                  						
-                  						if(previous != null) {
-                  							var previousClassName = this.getClassName(previous.attributes.className)
-                  							previousViewLength = this.getElementViewLength(previous)
-                  							x = previousViewLength + this.horizontalSpace
-                  						}
-                  
-                  						var thenNumber = 0;
-                  						var elseNumber = 0;
-                  						if(previousFromSequence != null && previousFromSequenceClassName != undefined && this.isInArray(this.ifThenElseSteps, previousFromSequenceClassName)) { // previousFromSequenceClassName == "IfThenElseStep"
-                  							if(previousFromSequence.dbo.children[0].dbo.children != undefined)
-                  								thenNumber = previousFromSequence.dbo.children[0].dbo.children.length
-                  							
-                  							if(previousFromSequence.dbo.children[1].dbo.children != undefined)
-                  								elseNumber = previousFromSequence.dbo.children[1].dbo.children.length
-                  								
-                  							children = {
-                  								then: thenNumber,
-                  								else: elseNumber
-                  							}
-                  							
-                  							var nbChildren = this.compareBranches(children.then, children.else)
-                  //							console.log(''nbChildren: '' + nbChildren)
-                  							x = previousViewLength + (70 + this.horizontalSpace * nbChildren) + this.horizontalSpace
-                  							// x = previous.attributes.position.x + (70 + this.horizontalSpace * nbChildren) + 45
-                  							y = 70
-                  						}
-                  						
-                  						if(previous != null && this.isInArray(this.ifSteps, previousClassName) || this.isInArray(this.iteratorSteps, previousClassName)) { //previousClassName == "IfStep"g
-                  							if(previousClassName != previousFromSequenceClassName) {
-                  								var lastElement = this.getLastElementFromSimpleBranch(previous, 1);
-                  								var lastElementViewLength = this.getElementViewLength(lastElement)
-                  								x = lastElementViewLength + this.horizontalSpace
-                  								// x = lastElement.attributes.position.x + this.horizontalSpace;
-                  							} else {
-                  								lastCell = this.graph.getLastCell()
-                  //								console.log(''lastCell: '' + JSON.stringify(lastCell))
-                  											
-                  								if(lastCell != undefined && lastCell.attributes.type == "standard.ShadowLink") {
-                  										// So if it a link, the true last cell is its target
-                  										if(lastCell.attributes.target != undefined) {
-                  											var lastCellTarget = lastCell.attributes.target
-                  //											console.log(''target: '' + JSON.stringify(lastCellTarget))
-                  											var lastCellTargetViewLength = this.getElementViewLength(lastCellTarget)
-                  											x = lastCellTargetViewLength + this.horizontalSpace
-                  											// x = lastCellTarget.attributes.position.x + this.horizontalSpace;
-                  											// y = lastCellTarget.attributes.position.y
-                  										}
-                  					//					var lastCellTarget = lastCell.attributes.target
-                  					//					x = lastCellTarget.attributes.position.x + this.horizontalSpace;
-                  					//					y = lastCellTarget.attributes.position.y
-                  								} 
-                  								else {
-                  									x = previousViewLength + this.horizontalSpace
-                  									// x = lastCell.attributes.position.x + this.horizontalSpace
-                  									// y = lastCell.attributes.position.y
-                  								}								
-                  							}
-                  							
-                  						}
-                  						
-                  						if(this.checkElementOnPoint(x,y)) {
-                  							// Last cell might be a link or en element
-                  							var lastCell = this.graph.getLastCell();
-                  							if(lastCell.attributes.type == "standard.ShadowLink") {
-                  								// So if it a link, the true last cell is its target
-                  								var lastCellTarget = lastCell.attributes.target
-                  								// var lastCellTargetViewLength = this.getElementViewLength(lastCellTarget)
-                  								// x = lastCellTargetViewLength + this.horizontalSpace;
-                  								x = lastCellTarget.attributes.position.x + this.horizontalSpace;
-                  								y = lastCellTarget.attributes.position.y
-                  							} else {
-                  								// var lastCellViewLength = this.getElementViewLength(lastCell)
-                  								// x = lastCellViewLength + this.horizontalSpace;
-                  								x = lastCell.attributes.position.x + this.horizontalSpace
-                  								y = lastCell.attributes.position.y
-                  							}
-                  						}
-                  						
-                  						if(previous != null && x < previousViewLength) { // previous.attributes.position.x
-                  							x = previousViewLength + this.horizontalSpace
-                  							// x = previous.attributes.position.x + this.horizontalSpace
-                  						}
-                  						
-                  						if(this.isInArray(this.iteratorSteps, newElementClassName))
-                  							isIterator = true;
-                  						
-                  //						if(previous != null && previous.attributes.isIterator)
-                  //							isInIterator = true;
-                  //						if(previous != null) {
-                  //							x = previous.atrributes.position.x + this.horizontalSpace;
-                  //							y = previous.attributes.position.y
-                  //
-                  						var elColor;
-                  						if(this.isInArray(this.iteratorSteps, newElementClassName)) {
-                  							elColor = this.elementColors.iterators[newElement.dbo.depthLvl]
-                  						} else {
-                  							if(newElement.dbo.isComplex)
-                  								elColor = this.elementColors.complex
-                  							else
-                  								elColor = this.elementColors.main
-                  						}
-                  						
-                  //						if(isIterator) {
-                  //							var iteratorBoxOpts = {
-                  //								attrs: {
-                  //									position: {
-                  //										x: x,
-                  //										y: y
-                  //									}
-                  //								}, 
-                  //								props: {
-                  //									refIteratorBox : '''',
-                  //									isIteratorBox: true
-                  //								}
-                  //							}
-                  //							var iteratorBox = this.makeIteratorBox(iteratorBoxOpts, this.graph, elColor)
-                  //							refIteratorBox = iteratorBox.id
-                  //						}
-                  						var elmtOpts = {
-                      						attrs: {
-                          						position: {
-                             	 						x: x,
-                              						y: y
-                          						}
-                      						},
-                      						props: {
-                  							    qname: newElement.dbo.qname,
-                  							    displayName: newElement.dbo.displayName,
-                  							    className: newElement.dbo.className,
-                  							    isComplex: newElement.dbo.isComplex,
-                  								isIterator: isIterator,
-                  								isInIterator: isInIterator,
-                  							    isInBranch: false,
-                  							    refBranchStart: '''',
-                  								refBranchIterator: '''',
-                  								refIteratorBox: refIteratorBox,
-                  							    depthLvl: newElement.dbo.depthLvl,
-                  							    properties: newElement.dbo.properties
-                      						}
-                  						}
-                  						var el = (newElement.dbo.isComplex) ? this.makeComplexElement(elmtOpts, this.graph, elColor) : this.makeElement(elmtOpts, this.graph, elColor)
-                  //						if(this.isInArray(this.iteratorSteps, newElementClassName)) {
-                  //							if(iteratorBox != undefined) {
-                  //								iteratorBox.embed(el);
-                  //								iteratorBox.fitEmbeds({
-                  //									padding: 5,
-                  //									deep: true
-                  //								})
-                  //							}
-                  //						}
-                  						
-                  //						if(previous != null && !this.isInArray(this.ifThenElseSteps, previousClassName)) // && previousClassName != "IfThenElseStep"
-                  //							var link = this.makeLink(previous, el, '''', this.graph, false, false, "right", ''#77ACA1'')
-                  							
-                  //						if(previous != null && this.isInArray(this.iteratorSteps, previousClassName))
-                  //							this.makeLink(previous, el, '''', this.graph, false, false, "bottom", "#77ACA1")
-                  
-                  						
-                  						if(previous != null && this.isInArray(this.ifThenElseSteps, previousClassName)) { // this.getClassName(previous.attributes.className) == "IfThenElseStep"
-                  							var lastElements = this.getLastElementsFromThenAndElseBranch(previous)
-                  							var jThenLastElement = lastElements.jThen[lastElements.jThen.length - 1]
-                  							var jElseLastElement = lastElements.jElse[lastElements.jElse.length - 1]
-                  
-                  //							console.log("jThenLastElement: " + JSON.stringify(jThenLastElement) )
-                  							if(jThenLastElement != undefined) {
-                  								this.makeLink(jThenLastElement, el, '''', this.graph, false, false, "right", ''#77ACA1'')
-                  //								lastCell = jThenLastElement
-                  							}
-                  								
-                  							
-                  							if(jElseLastElement != undefined) {
-                  								this.makeLink(jElseLastElement, el, '''', this.graph, false, false, "right", ''#77ACA1'')
-                  //								lastCell = jElseLastElement
-                  							}
-                  								
-                  								
-                  						}  else if(previous != null && this.isInArray(this.ifSteps, previousClassName)) { // this.getClassName(previous.attributes.className) == "IfStep"
-                  							if(previousClassName != previousFromSequenceClassName) {
-                  								var lastElement = this.getLastElementFromSimpleBranch(previous, 1);
-                  								this.makeLink(lastElement, el, '''', this.graph, false, false, "right", ''#77ACA1'')
-                  							} else {
-                  										
-                  								if(lastCell != undefined && lastCell.attributes.type == "standard.ShadowLink") {
-                  										// So if it a link, the true last cell is its target
-                  										if(lastCell.attributes.target != undefined) {
-                  											var lastCellTarget = lastCell.attributes.target
-                  //											console.log(''target: '' + JSON.stringify(lastCellTarget))
-                  											if(lastCellTarget.attributes.isInBranch) {
-                  												var startBranchElement = this.graph.getCell(lastCellTarget.attributes.refBranchStart)
-                  												if(this.isInArray(this.ifThenElseSteps, this.getClassName(startBranchElement.attributes.className))) {
-                  													// var startBranchElement = this.graph.getCell(lastCellTarget.attributes.refBranchStart)
-                  													var lastElements = this.getLastElementsFromThenAndElseBranch(startBranchElement)
-                  													var jThenLastElement = lastElements.jThen[lastElements.jThen.length - 1]
-                  													var jElseLastElement = lastElements.jElse[lastElements.jElse.length - 1]
-                  													
-                  													// positionning current element on Y position of the start branch element
-                  													//el.position(el.attributes.position.x, startBranchElement.attributes.position.y)
-                  					
-                  									//							console.log("jThenLastElement: " + JSON.stringify(jThenLastElement) )
-                  													if(jThenLastElement != undefined) {
-                  														this.makeLink(jThenLastElement, el, "", this.graph, false, false, "right", ''#77ACA1'') // right
-                  									//					previous = jThenLastElement
-                  													}
-                  																
-                  													if(jElseLastElement != undefined) {
-                  														el.position(el.attributes.position.x, jElseLastElement.attributes.position.y)
-                  														this.makeLink(jElseLastElement, el, "", this.graph, false, false, "right", ''#77ACA1'') // right
-                  									//					previous = jElseLastElement
-                  													}
-                  																								
-                  												} else {
-                  													this.makeLink(lastCellTarget, el, '''', this.graph, false, false, "right", ''#77ACA1'')
-                  												}
-                  											}
-                  											this.makeLink(lastCellTarget, el, '''', this.graph, false, false, "right", ''#77ACA1'')
-                  											// y = lastCellTarget.attributes.position.y
-                  										}
-                  										
-                  					//					var lastCellTarget = lastCell.attributes.target
-                  					//					x = lastCellTarget.attributes.position.x + this.horizontalSpace;
-                  					//					y = lastCellTarget.attributes.position.y
-                  									// this.makeLink(lastCell, el, '''', this.graph, false, false, "right", ''#77ACA1'')
-                  								} 
-                  								else {
-                  									this.makeLink(lastCell, el, '''', this.graph, false, false, "right", ''#77ACA1'')
-                  									// y = lastCell.attributes.position.y
-                  								}								
-                  							}
-                  							// minus = 2 because element has been created so the successors length got + 1
-                  //							var lastElementFromSimpleBranch = this.getLastElementFromSimpleBranch(previous, 2)
-                  //							this.makeLink(lastElementFromSimpleBranch, el, '''', this.graph, false, false)
-                  						} else if(previous != null && this.isInArray(this.iteratorSteps, previousClassName)) {
-                  //							this.makeLink(previous, el, '''', this.graph, false, false, "bottom", "#77ACA1")
-                  							if(lastCell != undefined && lastCell.attributes.type == "standard.ShadowLink") {
-                  										// So if it a link, the true last cell is its target
-                  										if(lastCell.attributes.target != undefined) {
-                  											var lastCellTarget = lastCell.attributes.target
-                  //											console.log(''target: '' + JSON.stringify(lastCellTarget))
-                  											if(lastCellTarget.attributes.isInIterator) {
-                  												this.makeLink(lastCellTarget, el, '''', this.graph, false, false, "right", ''#77ACA1'')
-                  											} else {
-                  												this.makeLink(lastCellTarget, el, '''', this.graph, false, false, "right", ''#77ACA1'')
-                  											}
-                  
-                  											// y = lastCellTarget.attributes.position.y
-                  										}
-                  							} else {
-                  								this.makeLink(lastCell, el, '''', this.graph, false, false, "right", ''#77ACA1'')
-                  							}
-                  						} else {
-                  							if(previous != null && !this.isInArray(this.ifThenElseSteps, previousClassName)) // && previousClassName != "IfThenElseStep"
-                  								var link = this.makeLink(previous, el, '''', this.graph, false, false, "right", ''#77ACA1'')
-                  						}
-                  						
-                  						previous = el
-                  						previousFromSequence = newElement;
-                  						
-                  					
-                  //						console.log("Element: " + newElement.dbo.displayName + JSON.stringify(this.graph.getPredecessors(el)))
-                  //						console.log("Previous sequence element: " + JSON.stringify(previousFromSequence));
-                  //						console.log("Element: " + newElement.dbo.displayName + JSON.stringify(this.graph.getNeighbors(el)));
-                  						
-                  						if(!newElementIsComplex && newElement.dbo.children != undefined && newElement.dbo.children.length > 0) 
-                  							this.walkChildren(newElement.dbo.children, previous, false, false, '''', this.graph)
-                  				}); // end foreach
+                  				this.displayFlow(vars.flow);
                   				this.embedIteratorBox(this.graph);
                   				this.global.showSpinner = false;
-                  				var cellsToAdd = this.graph.getCells();
-                  				this.updateGraph(this.global.firstGraphInColumn, cellsToAdd);
+                  				var cellsToAdd = this.graph.toJSON();
+                  				this.importFromJSON(this.global.firstGraphInColumn, cellsToAdd);
+                  				
                   				
                   //			this.walkChildren(vars.flow, null)
                       		resolve();
-                  '
+                  
           ↓flow [ngx.components.UIControlVariable-1588693303067]: 
             varValue: 
               - xmlizable: 
