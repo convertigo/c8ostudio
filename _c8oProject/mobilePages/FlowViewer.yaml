@@ -111,6 +111,139 @@ scriptContent:
         		return paper;
         	}
         	
+        	defineContainerShape() {
+        		var headerHeight = 30;
+           	 	var buttonSize = 14;
+        		
+        		joint.shapes[''container''] = {};
+        
+        		joint.shapes[''container''][''Parent''] = joint.dia.Element.define(''container.Parent'', {
+        	        collapsed: false,
+        	        attrs: {
+        	            root: {
+        	                magnetSelector: ''body''
+        	            },
+        	            shadow: {
+        	                refWidth: ''100%'',
+        	                refHeight: ''100%'',
+        	                x: 3,
+        	                y: 3,
+        	                fill: ''#000000'',
+        	                opacity: 0.05
+        	            },
+        	            body: {
+        	                refWidth: ''100%'',
+        	                refHeight: ''100%'',
+        	                strokeWidth: 1,
+        	                stroke: ''#DDDDDD'',
+        	                fill: ''#FCFCFC''
+        	            },
+        	            header: {
+        	                refWidth: ''100%'',
+        	                height: headerHeight,
+        	                strokeWidth: 0.5,
+        	                stroke: ''#4666E5'',
+        	                fill: ''#4666E5''
+        	            },
+        	            headerText: {
+        	                textVerticalAnchor: ''middle'',
+        	                textAnchor: ''start'',
+        	                refX: 8,
+        	                refY: headerHeight / 2,
+        	                fontSize: 16,
+        	                fontFamily: ''sans-serif'',
+        	                letterSpacing: 1,
+        	                fill: ''#FFFFFF'',
+        	                textWrap: {
+        	                    width: -40,
+        	                    maxLineCount: 1,
+        	                    ellipsis: ''*''
+        	                },
+        	                style: {
+        	                    textShadow: ''1px 1px #222222'',
+        	                }
+        	            },
+        	            button: {
+        	                refDx: - buttonSize - (headerHeight - buttonSize) / 2,
+        	                refY: (headerHeight - buttonSize) / 2,
+        	                cursor: ''pointer'',
+        	                event: ''element:button:pointerdown'',
+        	                title: ''Collapse / Expand''
+        	            },
+        	            buttonBorder: {
+        	                width: buttonSize,
+        	                height: buttonSize,
+        	                fill: ''#000000'',
+        	                fillOpacity: 0.2,
+        	                stroke: ''#FFFFFF'',
+        	                strokeWidth: 0.5,
+        	            },
+        	            buttonIcon: {
+        	                fill: ''none'',
+        	                stroke: ''#FFFFFF'',
+        	                strokeWidth: 1
+        	            }
+        	        }
+        	    }, {
+        	
+        	        markup: [{
+        	            tagName: ''rect'',
+        	            selector: ''shadow''
+        	        }, {
+        	            tagName: ''rect'',
+        	            selector: ''body''
+        	        }, {
+        	            tagName: ''rect'',
+        	            selector: ''header''
+        	        }, {
+        	            tagName: ''text'',
+        	            selector: ''headerText''
+        	        }, {
+        	            tagName: ''g'',
+        	            selector: ''button'',
+        	            children: [{
+        	                tagName: ''rect'',
+        	                selector: ''buttonBorder''
+        	            }, {
+        	                tagName: ''path'',
+        	                selector: ''buttonIcon''
+        	            }]
+        	        }],
+        	
+        	        toggle: function(shouldCollapse) {
+        	            var buttonD;
+        	            var collapsed = (shouldCollapse === undefined) ? !this.get(''collapsed'') : shouldCollapse;
+        	            if (collapsed) {
+        	                buttonD = ''M 2 7 12 7 M 7 2 7 12'';
+        	                this.resize(140, 30);
+        	            } else {
+        	                buttonD = ''M 2 7 12 7'';
+        	                this.fitChildren();
+        	            }
+        	            this.attr([''buttonIcon'',''d''], buttonD);
+        	            this.set(''collapsed'', collapsed);
+        	        },
+        	
+        	        isCollapsed: function() {
+        	            return Boolean(this.get(''collapsed''));
+        	        },
+        	
+        	        fitChildren: function() {
+        	            var padding = 10;
+        	            this.fitEmbeds({
+        	                padding: {
+        	                    top: headerHeight + padding,
+        	                    left: padding,
+        	                    right: padding,
+        	                    bottom: padding
+        	                }
+        	            });
+        	        }
+        	    });
+        
+        	// return element;
+        	}
+        	
         	displayFlow(qName) {
         		this.graph.clear();
         
@@ -895,38 +1028,36 @@ scriptContent:
         	
         	makeIteratorBox(opts, graph, color) {
         		
-        		var element = new joint.shapes.basic.Rect({
-        			position: {
-        				x: opts.attrs.position.x,
-        				y: opts.attrs.position.y
-        			},
-        //			size: {
-        //				width: 200,
-        //				height: 50
-        //			},
-        			attrs: {
-        				rect: {
-        					fill: ''#222222'',
-        					strokeWidth: 1,
-        					stroke: color,
-        					strokeDasharray: 5
-        				}
-        			}
+        
+        		var shape = joint.shapes[''container''].Parent;
+        		var element = new shape({
+        			attrs: { headerText: { text: ''Container A'' }}
         		})
-        		
-        //		console.log(''props'' + opts.props)
+        //		var element = new joint.shapes.basic.Rect({
+        //			position: {
+        //				x: opts.attrs.position.x,
+        //				y: opts.attrs.position.y
+        //			},
+        ////			size: {
+        ////				width: 200,
+        ////				height: 50
+        ////			},
+        //			attrs: {
+        //				rect: {
+        //					fill: ''#222222'',
+        //					strokeWidth: 1,
+        //					stroke: color,
+        //					strokeDasharray: 5
+        //				}
+        //			}
+        //		})
+        //		
+        ////		console.log(''props'' + opts.props)
         		for(var key in opts.props)
         			element.prop(key, opts.props[key])
-        		
-        //		element.resize(50,50);
-        //		element.position(80,80);
-        //		element.attr(''rect/fill'', ''none'');
-        //		element.attr(''rect/strokeWidth'', 1);
-        //		element.attr(''rect/stroke'', color);
-        //		element.attr(''rect/strokeDasharray'', ''5 5'')
-        		
-        //		console.log(''ele: '' + JSON.stringify(element))
+        
         		element.addTo(graph);
+        		element.toggle(false)
         		return element;
         	}
         
@@ -1091,6 +1222,12 @@ scriptContent:
         		graph.addCells(cellsToAdd);
         	}
         	
+        	fitAncestors(element) {
+                element.getAncestors().forEach(function(container) {
+                    container.fitChildren();
+                });
+            }
+        	
         	walkChildren(nodeObject: any, previous = null, previousThen, previousElse, refId, graph) {
         		// refid = id du complex
         		let x;
@@ -1182,7 +1319,7 @@ scriptContent:
         						var lastCellTarget = lastCell.attributes.target
         						var lastCellTargetViewLength = this.getElementViewLength(lastCellTarget)
         						
-        						if(lastCellTarget.attributes.isInIterator && lastCellTarget.attributes.refIteratorBranch != previous.id) {
+        						if(lastCellTarget.attributes.isInIterator && lastCellTarget.attributes.refBranchIterator != previous.id) {
         							var lastCellTargetIteratorBox = this.graph.getCell(lastCellTarget.attributes.refIteratorBox)
         							var lastCellTargetIteratorBoxViewLength = this.getElementViewLength(lastCellTargetIteratorBox)
         							x = lastCellTargetIteratorBoxViewLength + this.horizontalSpace
@@ -1593,6 +1730,9 @@ scriptContent:
         	     * 
         	     */
         
+        		this.global[''joint''] = joint;
+        		this.defineContainerShape()
+        
         		this.global.showSpinner = false;
         		var _this = this;
         
@@ -1606,16 +1746,18 @@ scriptContent:
         			embeddingMode: true,
         			cellViewNamespace: joint.shapes,
         			preventContextMenu: false,
-        			drawGrid: {
-        				name: "dot"
-        			},
+        //			drawGrid: {
+        //				name: "dot"
+        //			},
         			elementView: joint.dia.ElementView.extend({
         		        pointerdblclick: function(evt, x, y) {
         					_this.global.showSpinner = true;
+        					_this.graph.clear()
+        					_this.paper.scale(1);
         					var cellView = this;
         					var element = cellView;
         					var elementQName = cellView.model.attributes.qname;
-        					var elementDisplayName = cellView.model.attributes.displayName;
+        					var elementDisplayName = _this.ellipseString(cellView.model.attributes.displayName);
         					var elementIsComplex = cellView.model.attributes.isComplex;
         					var elementProperties = cellView.model.attributes.properties;
         					
@@ -1640,28 +1782,10 @@ scriptContent:
         						
         						_this.levelCount++;
         						var newGraph = _this.createGraph();
-        						// pushing data to array to retrieve the correct dom element
-        						_this.miniMapsArray.push({
-        								id: ''level-'' + _this.levelCount,
-        								displayName: elementDisplayName,
-        								priority: priority,
-        								qname: elementQName,
-        								isSelected: true,
-        								graph: newGraph, 
-        								cells: []
-        						});
-        						
-        						_this.addToBreadcrumb({
-        								id: ''level-''+ _this.levelCount,
-        								displayName: elementDisplayName,
-        								priority: priority,
-        								graph: newGraph,
-        								isSelected: true
-        						})
         						setTimeout(() => {
         							
         							var card = document.getElementById("level-"+_this.levelCount)
-        							var paperOpts = {
+        							var miniPaperOpts = {
         					            el: card,
         					            width: ''100%'',
         					            height: ''100%'',
@@ -1693,12 +1817,23 @@ scriptContent:
         					            }
         					        }
         						
-        							var paper = _this.createPaper(paperOpts);
-        							paper.scale(0.1)
-        							var computedSize = paper.getComputedSize();
-        							var originY = (computedSize.height / 2);
+        							var miniPaper = _this.createPaper(miniPaperOpts);
+        							miniPaper.scaleContentToFit({
+        								padding: 10
+        							});
+        							miniPaper.scale(0.5)
+        							console.log("scale:" + JSON.stringify(miniPaper.scale()))
+        //							paper.scaleContentToFit({
+        //								padding: 10,
+        //								scaleGrid: 0.2
+        //							});
+        //							var computedSize = paper.getComputedSize();
+        //							var originY = computedSize.height / 2;
+        //							paper.setOrigin(this.graphOriginX, originY)
         							
         							_this.displayFlow(elementFromGetGraphResponse)
+        							
+        							
         
         							_this.unselectBreadcrumb(_this.breadcrumb[_this.breadcrumb.length - 1].id);
         							_this.unselectCard(_this.miniMapsArray[_this.miniMapsArray.length - 1].id);
@@ -1709,6 +1844,28 @@ scriptContent:
         							_this.global.showSpinner = false;
         							
         						}, 0o400) // end setTimeout
+        						
+        						// pushing data to array to retrieve the correct dom element
+        						_this.miniMapsArray.push({
+        								id: ''level-'' + _this.levelCount,
+        								displayName: elementDisplayName,
+        								priority: priority,
+        								qname: elementQName,
+        								isSelected: true,
+        								graph: newGraph, 
+        								cells: []
+        						});
+        						
+        						_this.addToBreadcrumb({
+        								id: ''level-''+ _this.levelCount,
+        								displayName: elementDisplayName,
+        								priority: priority,
+        								graph: newGraph,
+        								isSelected: true
+        						})
+        						
+        						
+        						
         		        	} // end else
         				}
         		    }),
@@ -1724,7 +1881,15 @@ scriptContent:
                             return false
                         else
                             return true
-                    }
+                    },
+        			viewport: function(view) {
+        			            var element = view.model;
+        			            // Hide any element or link which is embedded inside a collapsed parent (or parent of the parent).
+        			            var hidden = element.getAncestors().some(function(ancestor) {
+        			                return ancestor.isCollapsed();
+        			            });
+        			            return !hidden;
+        			}
                 }
         
         //			drawGrid: {
@@ -1776,6 +1941,16 @@ scriptContent:
         			event.preventDefault()
         		})
         		
+        		this.paper.on(''element:button:pointerdown'', (elementView) => {
+        	        var element = elementView.model;
+        	        element.toggle();
+        	        this.fitAncestors(element);
+            	});
+        
+        	   this.paper.on(''element:pointermove'', (elementView) => {
+        	        var element = elementView.model;
+        	        this.fitAncestors(element);
+        	    });
         
         //		this.paper.on(''cell:pointerdblclick'', (cellView, event, x, y) => {
         			// this.global.showSpinner = true;
@@ -2199,14 +2374,14 @@ title: Title for FlowViewer
               - java.lang.String: 
                 - ↑value: jointjs
               - java.lang.String: 
-                - ↑value: 3.1.1
+                - ↑value: 3.3.1
           - xmlizable: 
             - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
             - com.twinsoft.convertigo.beans.common.XMLVector: 
               - java.lang.String: 
                 - ↑value: '@types/lodash'
               - java.lang.String: 
-                - ↑value: 3.10.1
+                - ↑value: 4.14.168
           - xmlizable: 
             - ↑classname: com.twinsoft.convertigo.beans.common.XMLVector
             - com.twinsoft.convertigo.beans.common.XMLVector: 
@@ -2307,7 +2482,7 @@ title: Title for FlowViewer
                 		
                 		this.miniMapsArray.push({
                 			id: ''level-'' + this.levelCount,
-                			displayName: displayName,
+                			displayName: this.ellipseString(displayName),
                 			priority: priority,
                 			graph: this.global.firstGraphInColumn,
                 			isSelected: true,
@@ -2329,8 +2504,9 @@ title: Title for FlowViewer
                 	            height: ''100%'',
                 	            model: this.global.firstGraphInColumn,
                 	            gridSize: 10,
-                				embeddingMode: false,
+                				embeddingMode: true,
                 				interactive: false,
+                				cellViewNamespace: joint.shapes,
                 	            defaultLink: new joint.dia.Link({
                 	            	attrs: {
                 	                    ''.connection'' : {
@@ -2357,8 +2533,8 @@ title: Title for FlowViewer
                 			paper.scaleContentToFit({
                 				padding: 10
                 			});
-                			var computedSize = paper.getComputedSize();
-                			var originY = computedSize.height / 2;
+                //			var computedSize = paper.getComputedSize();
+                //			var originY = computedSize.height / 2;
                 //			paper.scaleContentToFit()
                 			
                 //			paper.setOrigin(this.graphOriginX, originY)
@@ -2377,6 +2553,8 @@ title: Title for FlowViewer
               - ↑classname: com.twinsoft.convertigo.beans.common.FormatedContent
               - com.twinsoft.convertigo.beans.common.FormatedContent: 
                 →: |
+                  				this.graph.clear()
+                  				this.paper.scale(1);
                   				this.displayFlow(vars.flow);
                   				this.embedIteratorBox(this.graph);
                   				this.global.showSpinner = false;
